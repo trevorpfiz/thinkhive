@@ -7,9 +7,9 @@ import Button from '@/components/Button';
 import { Container } from '@/components/Container';
 import { Logo } from '@/components/Logo';
 import { NavLink } from '@/components/NavLink';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
-function MobileNavLink({ href, children }) {
+function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Popover.Button as={Link} href={href} className="block w-full p-2">
       {children}
@@ -17,7 +17,7 @@ function MobileNavLink({ href, children }) {
   );
 }
 
-function MobileNavIcon({ open }) {
+function MobileNavIcon({ open }: { open: boolean }) {
   return (
     <svg
       aria-hidden="true"

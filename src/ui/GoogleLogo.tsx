@@ -1,4 +1,4 @@
-export const GoogleLogo = (props) => (
+export const GoogleLogo = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     width="24"
     height="24"

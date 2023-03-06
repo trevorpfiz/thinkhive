@@ -3,8 +3,18 @@ import Head from 'next/head';
 
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const DashboardPage: NextPage = () => {
+  const { status } = useSession();
+  const router = useRouter();
+
+  if (status === 'unauthenticated') {
+    void router.push('/'); // navigate to the home page
+    return null; // return null to prevent rendering of the DashboardPage component
+  }
+
   return (
     <>
       <Head>

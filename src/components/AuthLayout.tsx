@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import backgroundImage from '@/images/background-auth.jpg';
 
-export function AuthLayout({ children }) {
+export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center">

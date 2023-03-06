@@ -1,34 +1,38 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { SparklesIcon } from '@heroicons/react/24/outline';
+import { signIn, useSession } from 'next-auth/react';
+import { IconBrandWindows } from '@tabler/icons-react';
 
 import { AuthLayout } from '@/components/AuthLayout';
-import Button from '@/components/Button';
-import { SelectField, TextField } from '@/components/Fields';
 import { Logo } from '@/components/Logo';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { IconBrandWindows } from '@tabler/icons-react';
 import { GoogleLogo } from '@/ui/GoogleLogo';
 
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
-import { SparklesIcon } from '@heroicons/react/24/outline';
+
+interface FormElements extends HTMLFormControlsCollection {
+  email: HTMLInputElement;
+}
+interface EmailFormElement extends HTMLFormElement {
+  readonly elements: FormElements;
+}
 
 export default function SignUp() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // If the user is authenticated, redirect them to the dashboard
   // page
   if (status === 'authenticated') {
-    router.replace('/dashboard');
-    console.log(session);
+    void router.replace('/dashboard');
   }
 
-  function handleSignIn(e) {
+  function handleSubmit(e: React.FormEvent<EmailFormElement>) {
     e.preventDefault(); // Prevent the form from submitting
-    const email = e.target.email.value; // Get the email entered by the user
+    const email = e.currentTarget.elements.email.value; // Get the email entered by the user
 
-    signIn('email', { email }); // Call the signIn function with the email
+    void signIn('email', { email }); // Call the signIn function with the email
   }
 
   return (
@@ -112,7 +116,7 @@ export default function SignUp() {
           </div>
 
           <div className="mt-6">
-            <form onSubmit={handleSignIn} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label
                   htmlFor="email"
