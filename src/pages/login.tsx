@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 
 import { AuthLayout } from '@/components/AuthLayout';
-import { Logo } from '@/components/Logo';
+import Logo from '@/ui/Logo';
 import { GoogleLogo } from '@/ui/GoogleLogo';
 
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
@@ -43,7 +43,7 @@ export default function Login() {
       <AuthLayout>
         <div className="flex flex-col">
           <Link href="/" aria-label="Home">
-            <Logo className="h-10 w-auto" />
+            <Logo height={44} />
           </Link>
           <div className="mt-8">
             <h2 className="text-lg font-semibold text-gray-900">Log in to your account</h2>

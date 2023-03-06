@@ -1,7 +1,7 @@
 import Link from 'next/link';
+import Logo from '@/ui/Logo';
 
 import { Container } from '@/components/Container';
-import { Logo } from '@/components/Logo';
 import { NavLink } from '@/components/NavLink';
 
 export function Footer() {
@@ -10,7 +10,7 @@ export function Footer() {
       <Container>
         <div className="flex flex-col items-center justify-center py-16">
           <Link href="/" aria-label="Home" className="mx-auto">
-            <Logo className="h-10 w-auto" />
+            <Logo height={28} />
           </Link>
           <nav className="mt-10 text-sm" aria-label="quick links">
             <div className="-my-1 flex justify-center gap-x-6">

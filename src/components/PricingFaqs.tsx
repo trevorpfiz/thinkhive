@@ -6,50 +6,38 @@ import backgroundImage from '@/images/background-faqs.jpg';
 const faqs = [
   [
     {
-      question: 'Does ThinkHive handle VAT?',
-      answer: 'Well no, but if you move your company offshore you can probably ignore it.',
-    },
-    {
-      question: 'Can I pay for my subscription via purchase order?',
-      answer: 'Absolutely, we are happy to take your money in all forms.',
-    },
-    {
-      question: 'How do I apply for a job at ThinkHive?',
+      question: 'What counts as one message?',
       answer:
-        'We only hire our customers, so subscribe for a minimum of 6 months and then let’s talk.',
+        'Each time a user asks a question to an expert and receives a response, it counts as one message.',
+    },
+    {
+      question: 'What is the word count of the files that I wish to upload?',
+      answer:
+        'Once you attach your files for upload, we will display the total word count of all the attached files.',
+    },
+    {
+      question: 'How can I determine if I need more usage?',
+      answer:
+        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your expert and uploading new information will not be possible.',
     },
   ],
   [
     {
-      question: 'What was that testimonial about tax fraud all about?',
+      question: 'What is the Trial Plan?',
       answer:
-        'ThinkHive is just a software application, ultimately your books are your responsibility.',
+        'The Trial Plan is a no-cost plan that provides you with a complete end-to-end experience of using ThinkHive. This allows you to determine whether the platform is valuable to you before you decide to make any payment.',
     },
     {
-      question: 'ThinkHive sounds horrible but why do I still feel compelled to purchase?',
+      question: 'Does the Trial Plan renew each month?',
       answer:
-        'This is the power of excellent visual design. You just can’t resist it, no matter how poorly it actually functions.',
-    },
-    {
-      question: 'I found other companies called ThinkHive, are you sure you can use this name?',
-      answer:
-        'Honestly not sure at all. We haven’t actually incorporated or anything, we just thought it sounded cool and made this website.',
+        'No, it does not renew each month. The reason behind this is that we aim to provide our users with a generous and complete testing experience of ThinkHive, using all their data. If the fixed usage renewed every month, it would put a significant financial strain on us.',
     },
   ],
   [
     {
-      question: 'How do you generate reports?',
+      question: 'What is the difference between monthly billing and yearly billing?',
       answer:
-        'You just tell us what data you need a report for, and we get our kids to create beautiful charts for you using only the finest crayons.',
-    },
-    {
-      question: 'Can we expect more inventory features?',
-      answer: 'In life it’s really better to never expect anything at all.',
-    },
-    {
-      question: 'I lost my password, how do I get into my account?',
-      answer:
-        'Send us an email and we will send you a copy of our latest password spreadsheet so you can find your information.',
+        'You have the option to subscribe and be billed either monthly or annually. If you choose to pay annually, you will be charged the full amount for the entire year upfront, but at a discounted price compared to paying on a monthly basis. You will receive one month free as part of the annual payment plan.',
     },
   ],
 ];
@@ -78,8 +66,15 @@ export function PricingFaqs() {
             Pricing FAQs
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, email our support team and if you’re lucky
-            someone will get back to you.
+            If you have any confusion whatsoever, contact us through our{' '}
+            <a
+              href="https://discord.gg/xYw9VScdzg"
+              target="_blank"
+              className="underline decoration-indigo-500 decoration-2 underline-offset-[3px] hover:decoration-indigo-700 hover:decoration-[3px]"
+            >
+              Discord server
+            </a>
+            .
           </p>
         </div>
         <ul

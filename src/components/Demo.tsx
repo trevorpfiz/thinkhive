@@ -3,15 +3,21 @@ const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 function Demo() {
   return (
-    <div className="w-full">
-      <ReactPlayer
-        url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-        controls={true}
-        playing={true}
-        muted={true}
-        width="100%"
-        height="100%"
-      />
+    <div className="mx-auto my-16 flex max-w-7xl flex-col items-center justify-center gap-8 lg:my-32">
+      <div className="flex flex-col items-center justify-center gap-3">
+        <h2 className="text-3xl font-extrabold text-slate-900">ThinkHive Demo</h2>
+      </div>
+
+      <div className="w-full">
+        <ReactPlayer
+          url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+          controls={true}
+          playing={true}
+          muted={true}
+          width="100%"
+          height="100%"
+        />
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { PrimaryFeatures } from '@/components/PrimaryFeatures';
+import Demo from '@/components/Demo';
 
 const HomePage: NextPage = () => {
   return (
@@ -22,6 +23,7 @@ const HomePage: NextPage = () => {
       <main>
         <Hero />
         <PrimaryFeatures />
+        <Demo />
         <Faqs />
       </main>
       <Footer />

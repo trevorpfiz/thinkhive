@@ -8,31 +8,39 @@ const frequencies: Frequency[] = [
 ];
 const tiers: Tier[] = [
   {
-    name: 'Freelancer',
-    id: 'tier-freelancer',
+    name: 'Trial',
+    id: 'tier-trial',
     href: '#',
-    price: { monthly: '$15', annually: '$144' },
-    description: 'The essentials to provide your best work for clients.',
+    price: { monthly: '$0', annually: '$0' },
+    description: 'The essentials to try out everything we offer.',
+    features: ['20 messages', '10,000 words uploaded', '1 Expert', 'Deploy your own Discord bot'],
+    mostPopular: false,
+  },
+  {
+    name: 'Hangout',
+    id: 'tier-hangout',
+    href: '#',
+    price: { monthly: '$20', annually: '$220' },
+    description: 'Ideal for small groups or individuals.',
     features: [
-      '5 products',
-      'Up to 1,000 subscribers',
-      'Basic analytics',
-      '48-hour support response time',
+      '1,000 messages',
+      '50,000 words uploaded',
+      '3 Experts',
+      'Deploy your own Discord bot',
     ],
     mostPopular: false,
   },
   {
-    name: 'Startup',
-    id: 'tier-startup',
+    name: 'Community',
+    id: 'tier-community',
     href: '#',
-    price: { monthly: '$30', annually: '$288' },
-    description: 'A plan that scales with your rapidly growing business.',
+    price: { monthly: '$100', annually: '$1,100' },
+    description: 'Perfect for growing teams and communities.',
     features: [
-      '25 products',
-      'Up to 10,000 subscribers',
-      'Advanced analytics',
-      '24-hour support response time',
-      'Marketing automations',
+      '25,000 messages',
+      '100,000 words uploaded',
+      '5 Experts',
+      'Deploy your own Discord bot',
     ],
     mostPopular: true,
   },
@@ -40,15 +48,13 @@ const tiers: Tier[] = [
     name: 'Enterprise',
     id: 'tier-enterprise',
     href: '#',
-    price: { monthly: '$60', annually: '$576' },
-    description: 'Dedicated support and infrastructure for your company.',
+    price: { monthly: '$300', annually: '$3,300' },
+    description: 'Designed for large organizations and enterprises.',
     features: [
-      'Unlimited products',
-      'Unlimited subscribers',
-      'Advanced analytics',
-      '1-hour, dedicated support response time',
-      'Marketing automations',
-      'Custom reporting tools',
+      '100,000 messages',
+      '1,000,000 words uploaded',
+      '10 Experts',
+      'Deploy your own Discord bot',
     ],
     mostPopular: false,
   },
@@ -118,31 +124,24 @@ export default function Pricing() {
             ))}
           </RadioGroup>
         </div>
-        <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+        <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 md:max-w-2xl md:grid-cols-2 lg:max-w-4xl xl:mx-0 xl:max-w-none xl:grid-cols-4">
           {tiers.map((tier) => (
             <div
               key={tier.id}
               className={classNames(
                 tier.mostPopular ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-200',
-                'rounded-3xl p-8 xl:p-10'
+                'rounded-3xl p-8'
               )}
             >
-              <div className="flex items-center justify-between gap-x-4">
-                <h3
-                  id={tier.id}
-                  className={classNames(
-                    tier.mostPopular ? 'text-indigo-600' : 'text-gray-900',
-                    'text-lg font-semibold leading-8'
-                  )}
-                >
-                  {tier.name}
-                </h3>
-                {tier.mostPopular ? (
-                  <p className="rounded-full bg-indigo-600/10 py-1 px-2.5 text-xs font-semibold leading-5 text-indigo-600">
-                    Most popular
-                  </p>
-                ) : null}
-              </div>
+              <h3
+                id={tier.id}
+                className={classNames(
+                  tier.mostPopular ? 'text-indigo-600' : 'text-gray-900',
+                  'text-lg font-semibold leading-8'
+                )}
+              >
+                {tier.name}
+              </h3>
               <p className="mt-4 text-sm leading-6 text-gray-600">{tier.description}</p>
               <p className="mt-6 flex items-baseline gap-x-1">
                 <span className="text-4xl font-bold tracking-tight text-gray-900">
@@ -164,7 +163,7 @@ export default function Pricing() {
               >
                 Buy plan
               </a>
-              <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
+              <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-x-3">
                     <CheckIcon className="h-6 w-5 flex-none text-indigo-600" aria-hidden="true" />

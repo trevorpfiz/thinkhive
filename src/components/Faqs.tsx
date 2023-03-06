@@ -6,50 +6,56 @@ import backgroundImage from '@/images/background-faqs.jpg';
 const faqs = [
   [
     {
-      question: 'Does ThinkHive handle VAT?',
-      answer: 'Well no, but if you move your company offshore you can probably ignore it.',
-    },
-    {
-      question: 'Can I pay for my subscription via purchase order?',
-      answer: 'Absolutely, we are happy to take your money in all forms.',
-    },
-    {
-      question: 'How do I apply for a job at ThinkHive?',
+      question: 'What is an AI-Powered Business Expert?',
       answer:
-        'We only hire our customers, so subscribe for a minimum of 6 months and then let’s talk.',
+        'An AI-Powered Business Expert is a chatbot that has been trained to intelligently answer questions about a set of uploaded documents. This chatbot can become an expert on your business processes, allowing users or team members to talk to the chatbot anytime to better understand your business or its processes.',
+    },
+    {
+      question: 'What documents can be uploaded to the chatbot?',
+      answer:
+        'Any documents that detail your business processes can be uploaded to the chatbot. This could include procedures, policies, and guidelines. We currently support uploading PDFs.',
+    },
+    {
+      question: 'Where is my data stored?',
+      answer:
+        'The complete documents are not stored, only their content is securely saved using Google Cloud servers. The content is restricted to be accessed only by users who engage with your expert.',
     },
   ],
   [
     {
-      question: 'What was that testimonial about tax fraud all about?',
-      answer:
-        'ThinkHive is just a software application, ultimately your books are your responsibility.',
+      question: `How accurate are the chatbot's answers?`,
+      answer: `The chatbot's answers are highly accurate as it has been trained to understand company-specific questions.`,
     },
     {
-      question: 'ThinkHive sounds horrible but why do I still feel compelled to purchase?',
-      answer:
-        'This is the power of excellent visual design. You just can’t resist it, no matter how poorly it actually functions.',
+      question: 'What is the response time of the chatbot?',
+      answer: `Our chatbot utilizes the latest AI technology, ChatGPT, resulting in rapid responses in under one second.`,
     },
     {
-      question: 'I found other companies called ThinkHive, are you sure you can use this name?',
-      answer:
-        'Honestly not sure at all. We haven’t actually incorporated or anything, we just thought it sounded cool and made this website.',
+      question: 'How can I train the chatbot?',
+      answer: `You can easily train the chatbot for your company by simply uploading your organization's specific documents.`,
+    },
+    {
+      question: `Can I customize the chatbot's responses?`,
+      answer: `Yes, the chatbot's responses can be customized to fit your business's tone and voice. You can also update its knowledge as your business processes change and evolve.`,
+    },
+    {
+      question: 'What platforms does the chatbot support?',
+      answer: `The chatbot currently supports deployment as a Discord bot. Support for Slack, Microsoft Teams, and integration with website chat widgets are coming soon!`,
     },
   ],
   [
     {
-      question: 'How do you generate reports?',
-      answer:
-        'You just tell us what data you need a report for, and we get our kids to create beautiful charts for you using only the finest crayons.',
+      question: 'Does the chatbot support other languages?',
+      answer: `Yes, the chatbot has support for around 95 different languages and tries to respond in the same language as the user's question, regardless of the language of the documents.`,
     },
     {
-      question: 'Can we expect more inventory features?',
-      answer: 'In life it’s really better to never expect anything at all.',
+      question: 'Can I use the chatbot for customer support?',
+      answer: `Yes, the chatbot can be used for customer support. Customers can ask the chatbot questions about your products or services, and the chatbot will provide accurate answers based on the uploaded documents.`,
     },
     {
-      question: 'I lost my password, how do I get into my account?',
+      question: 'What industries can benefit from using the chatbot?',
       answer:
-        'Send us an email and we will send you a copy of our latest password spreadsheet so you can find your information.',
+        'The chatbot can be useful for any industry because there will always be team members or users who may not have complete knowledge or information about certain aspects of the business. The chatbot can provide such information easily and quickly.',
     },
   ],
 ];
@@ -78,13 +84,20 @@ export function Faqs() {
             Frequently asked questions
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, email our support team and if you’re lucky
-            someone will get back to you.
+            If you can’t find what you’re looking for, talk to our expert in the ThinkHive{' '}
+            <a
+              href="https://discord.gg/xYw9VScdzg"
+              target="_blank"
+              className="underline decoration-indigo-500 decoration-2 underline-offset-[3px] hover:decoration-indigo-700 hover:decoration-[3px]"
+            >
+              Discord community
+            </a>
+            .
           </p>
         </div>
         <ul
           role="list"
-          className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3"
+          className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 lg:max-w-7xl lg:grid-cols-3"
         >
           {faqs.map((column, columnIndex) => (
             <li key={columnIndex}>
