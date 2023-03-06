@@ -1,8 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { IconBrandWindows } from '@tabler/icons-react';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 
 import { AuthLayout } from '@/components/AuthLayout';
@@ -12,6 +11,9 @@ import { GoogleLogo } from '@/ui/GoogleLogo';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
+import { type GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/server/auth';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -21,15 +23,6 @@ interface EmailFormElement extends HTMLFormElement {
 }
 
 export default function Login() {
-  const { status } = useSession();
-  const router = useRouter();
-
-  // If the user is authenticated, redirect them to the dashboard
-  // page
-  if (status === 'authenticated') {
-    void router.replace('/dashboard');
-  }
-
   function handleSubmit(e: React.FormEvent<EmailFormElement>) {
     e.preventDefault(); // Prevent the form from submitting
     const email = e.currentTarget.elements.email.value; // Get the email entered by the user
@@ -164,3 +157,22 @@ export default function Login() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
