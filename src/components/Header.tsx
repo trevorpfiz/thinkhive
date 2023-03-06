@@ -7,6 +7,7 @@ import Button from '@/components/Button';
 import { Container } from '@/components/Container';
 import { Logo } from '@/components/Logo';
 import { NavLink } from '@/components/NavLink';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 function MobileNavLink({ href, children }) {
   return (
@@ -74,7 +75,7 @@ function MobileNavigation() {
             <MobileNavLink href="/#features">Features</MobileNavLink>
             <MobileNavLink href="/pricing">Pricing</MobileNavLink>
             <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/login">Sign in</MobileNavLink>
+            <MobileNavLink href="/login">Log in</MobileNavLink>
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -83,6 +84,8 @@ function MobileNavigation() {
 }
 
 export function Header() {
+  const { status } = useSession();
+
   return (
     <header className="py-10">
       <Container>
@@ -98,6 +101,17 @@ export function Header() {
           </div>
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
+              {status === 'authenticated' && (
+                <button
+                  onClick={() =>
+                    void signOut({
+                      callbackUrl: '/',
+                    })
+                  }
+                >
+                  sign out
+                </button>
+              )}
               <NavLink href="/login">Log in</NavLink>
             </div>
             <Button href="/signup" intent="solidBlue">

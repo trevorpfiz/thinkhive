@@ -25,6 +25,7 @@
     "focus-visible": "^5.2.0",
     "next": "^13.2.1",
     "next-auth": "^4.19.0",
+    "nodemailer": "^6.9.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-player": "^2.11.2",
@@ -32,6 +33,7 @@
     "zod": "^3.20.6"
   },
   "devDependencies": {
+    "@svgr/webpack": "^6.5.1",
     "@tailwindcss/forms": "^0.5.3",
     "@types/eslint": "^8.21.1",
     "@types/node": "^18.14.0",

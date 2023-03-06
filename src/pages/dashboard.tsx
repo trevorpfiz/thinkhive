@@ -1,17 +1,14 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
 
-import { Faqs } from '@/components/Faqs';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
-import { Hero } from '@/components/Hero';
-import { PrimaryFeatures } from '@/components/PrimaryFeatures';
 
-const HomePage: NextPage = () => {
+const DashboardPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ThinkHive - Intelligent knowledge bases</title>
+        <title>Dashboard - ThinkHive</title>
         <meta
           name="description"
           content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
@@ -20,13 +17,11 @@ const HomePage: NextPage = () => {
       </Head>
       <Header />
       <main>
-        <Hero />
-        <PrimaryFeatures />
-        <Faqs />
+        <h2>Dashboard page</h2>
       </main>
       <Footer />
     </>
   );
 };
 
-export default HomePage;
+export default DashboardPage;

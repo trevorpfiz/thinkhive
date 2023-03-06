@@ -5,8 +5,32 @@ import { AuthLayout } from '@/components/AuthLayout';
 import Button from '@/components/Button';
 import { SelectField, TextField } from '@/components/Fields';
 import { Logo } from '@/components/Logo';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { IconBrandWindows } from '@tabler/icons-react';
+import { GoogleLogo } from '@/ui/GoogleLogo';
 
-export default function Register() {
+import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
+import { SparklesIcon } from '@heroicons/react/24/outline';
+
+export default function SignUp() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // If the user is authenticated, redirect them to the dashboard
+  // page
+  if (status === 'authenticated') {
+    router.replace('/dashboard');
+    console.log(session);
+  }
+
+  function handleSignIn(e) {
+    e.preventDefault(); // Prevent the form from submitting
+    const email = e.target.email.value; // Get the email entered by the user
+
+    signIn('email', { email }); // Call the signIn function with the email
+  }
+
   return (
     <>
       <Head>
@@ -17,71 +41,113 @@ export default function Register() {
           <Link href="/" aria-label="Home">
             <Logo className="h-10 w-auto" />
           </Link>
-          <div className="mt-20">
-            <h2 className="text-lg font-semibold text-gray-900">Get started for free</h2>
-            <p className="mt-2 text-sm text-gray-700">
-              Already registered?{' '}
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold text-gray-900">Create your account</h2>
+            <p className="text-sm text-gray-700">
+              Already have an account?{' '}
               <Link href="/login" className="font-medium text-blue-600 hover:underline">
-                Sign in
+                Log in
               </Link>{' '}
-              to your account.
             </p>
           </div>
         </div>
-        <form action="#" className="mt-10 grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
-          <TextField
-            label="First name"
-            id="first_name"
-            name="first_name"
-            type="text"
-            autoComplete="given-name"
-            required
-          />
-          <TextField
-            label="Last name"
-            id="last_name"
-            name="last_name"
-            type="text"
-            autoComplete="family-name"
-            required
-          />
-          <TextField
-            className="col-span-full"
-            label="Email address"
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-          />
-          <TextField
-            className="col-span-full"
-            label="Password"
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-          />
-          <SelectField
-            className="col-span-full"
-            label="How did you hear about us?"
-            id="referral_source"
-            name="referral_source"
-          >
-            <option>AltaVista search</option>
-            <option>Super Bowl commercial</option>
-            <option>Our route 34 city bus ad</option>
-            <option>The “Never Use This” podcast</option>
-          </SelectField>
-          <div className="col-span-full">
-            <Button type="submit" intent="solidBlue" className="w-full">
-              <span>
-                Sign up <span aria-hidden="true">&rarr;</span>
-              </span>
-            </Button>
+
+        <div className="mt-8">
+          <div>
+            <div className="mt-2 flex flex-col gap-3">
+              <div>
+                <button
+                  onClick={() =>
+                    void signIn('google', {
+                      callbackUrl: '/dashboard',
+                    })
+                  }
+                  className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+                >
+                  <span className="sr-only">Sign up with Google</span>
+                  <div className="flex flex-row items-center">
+                    <GoogleLogo />
+                    <span className="ml-4 font-medium">Continue with Google</span>
+                  </div>
+                </button>
+              </div>
+
+              <div>
+                <button
+                  onClick={() => void signIn()}
+                  className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+                >
+                  <span className="sr-only">Sign up with Microsoft</span>
+                  <IconBrandWindows size={24} stroke={2} />
+                  <span className="ml-4 font-medium">Continue with Microsoft Account</span>
+                </button>
+              </div>
+
+              <div>
+                <button
+                  onClick={() =>
+                    void signIn('discord', {
+                      callbackUrl: '/dashboard',
+                    })
+                  }
+                  className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+                >
+                  <span className="sr-only">Sign up with Discord</span>
+                  <div className="flex flex-row items-center">
+                    <DiscordLogo className="w-6" />
+                    <span className="ml-4 font-medium">Continue with Discord</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div className="relative mt-6">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+              </div>
+            </div>
           </div>
-        </form>
+
+          <div className="mt-6">
+            <form onSubmit={handleSignIn} className="space-y-3">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Email address
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Sign up with email
+                </button>
+              </div>
+            </form>
+
+            <span className="mt-3 inline-flex gap-2 rounded-md bg-indigo-100 px-6 py-2 text-sm font-medium text-indigo-800">
+              <SparklesIcon className="h-5 w-5 text-indigo-800" />
+              We’ll email you a magic link for a password-free log in.
+            </span>
+          </div>
+        </div>
       </AuthLayout>
     </>
   );

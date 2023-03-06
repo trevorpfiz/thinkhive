@@ -6,7 +6,7 @@ export function AuthLayout({ children }) {
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center">
-        <div className="fixed -z-10 h-screen w-screen overflow-hidden">
+        <div className="fixed -z-10 hidden h-screen w-screen overflow-hidden sm:block">
           <Image
             className="absolute inset-0 h-full w-full object-cover"
             src={backgroundImage}
@@ -20,7 +20,7 @@ export function AuthLayout({ children }) {
             }}
           />
         </div>
-        <div className="z-10 mx-auto w-full max-w-md rounded-lg bg-white py-10 px-4 shadow-2xl sm:px-10">
+        <div className="z-10 mx-auto h-full w-full rounded-lg bg-white py-10 px-4 shadow-2xl sm:h-auto sm:max-w-md sm:px-10">
           <div>{children}</div>
         </div>
       </div>
