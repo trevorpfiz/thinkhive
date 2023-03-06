@@ -5,17 +5,19 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import Pricing from '@/components/Pricing';
 import { PricingFaqs } from '@/components/PricingFaqs';
+import Meta from '@/components/seo/Meta';
+import MetaDescription from '@/components/seo/MetaDescription';
 
 const PricingPage: NextPage = () => {
   return (
     <>
       <Head>
         <title>Pricing - ThinkHive</title>
-        <meta
-          name="description"
-          content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
+        <Meta />
+        <MetaDescription
+          value="Create intelligent chatbots that answer questions based on your organization's
+        knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
       <main>

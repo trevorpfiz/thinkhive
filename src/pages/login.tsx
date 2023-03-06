@@ -10,6 +10,8 @@ import Logo from '@/ui/Logo';
 import { GoogleLogo } from '@/ui/GoogleLogo';
 
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
+import Meta from '@/components/seo/Meta';
+import MetaDescription from '@/components/seo/MetaDescription';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -39,6 +41,11 @@ export default function Login() {
     <>
       <Head>
         <title>Log In - ThinkHive</title>
+        <Meta />
+        <MetaDescription
+          value="Create intelligent chatbots that answer questions based on your organization's
+        knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
+        />
       </Head>
       <AuthLayout>
         <div className="flex flex-col">

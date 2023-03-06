@@ -5,6 +5,8 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import MetaDescription from '@/components/seo/MetaDescription';
+import Meta from '@/components/seo/Meta';
 
 const DashboardPage: NextPage = () => {
   const { status } = useSession();
@@ -19,11 +21,11 @@ const DashboardPage: NextPage = () => {
     <>
       <Head>
         <title>Dashboard - ThinkHive</title>
-        <meta
-          name="description"
-          content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
+        <Meta />
+        <MetaDescription
+          value="Create intelligent chatbots that answer questions based on your organization's
+        knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
       <main>

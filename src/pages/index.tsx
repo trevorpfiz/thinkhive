@@ -7,17 +7,19 @@ import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { PrimaryFeatures } from '@/components/PrimaryFeatures';
 import Demo from '@/components/Demo';
+import Meta from '@/components/seo/Meta';
+import MetaDescription from '@/components/seo/MetaDescription';
 
 const HomePage: NextPage = () => {
   return (
     <>
       <Head>
         <title>ThinkHive - Intelligent knowledge bases</title>
-        <meta
-          name="description"
-          content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
+        <Meta />
+        <MetaDescription
+          value="Create intelligent chatbots that answer questions based on your organization's
+        knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
       <main>
