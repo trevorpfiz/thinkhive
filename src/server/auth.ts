@@ -50,17 +50,20 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
-    AzureADB2CProvider({
-      tenantId: env.AZURE_AD_B2C_TENANT_NAME,
-      clientId: env.AZURE_AD_B2C_CLIENT_ID,
-      clientSecret: env.AZURE_AD_B2C_CLIENT_SECRET,
-      primaryUserFlow: env.AZURE_AD_B2C_PRIMARY_USER_FLOW,
-      authorization: { params: { scope: 'offline_access openid' } },
-    }),
+    // AzureADB2CProvider({
+    //   tenantId: env.AZURE_AD_B2C_TENANT_NAME,
+    //   clientId: env.AZURE_AD_B2C_CLIENT_ID,
+    //   clientSecret: env.AZURE_AD_B2C_CLIENT_SECRET,
+    //   primaryUserFlow: env.AZURE_AD_B2C_PRIMARY_USER_FLOW,
+    //   authorization: { params: { scope: 'offline_access openid' } },
+    //   allowDangerousEmailAccountLinking: true,
+    // }),
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
     EmailProvider({
       server: env.EMAIL_SERVER,

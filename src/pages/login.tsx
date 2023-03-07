@@ -72,7 +72,7 @@ export default function Login() {
                 </button>
               </div>
 
-              <div>
+              {/* <div>
                 <button
                   onClick={() =>
                     void signIn('azure-ad-b2c', {
@@ -85,15 +85,11 @@ export default function Login() {
                   <MicrosoftLogo className="w-6" />
                   <span className="ml-4 font-medium">Continue with Microsoft</span>
                 </button>
-              </div>
+              </div> */}
 
               <div>
                 <button
-                  onClick={() =>
-                    void signIn('discord', {
-                      callbackUrl: '/dashboard',
-                    })
-                  }
+                  onClick={() => void signIn('discord')}
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                 >
                   <span className="sr-only">Log in with Discord</span>
