@@ -1,7 +1,6 @@
 import { type GetServerSidePropsContext } from 'next';
 import { getServerSession, type NextAuthOptions, type DefaultSession } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import DiscordProvider from 'next-auth/providers/discord';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
