@@ -27,6 +27,7 @@ const server = z.object({
   AZURE_AD_B2C_CLIENT_ID: z.string().min(1),
   AZURE_AD_B2C_CLIENT_SECRET: z.string().min(1),
   AZURE_AD_B2C_PRIMARY_USER_FLOW: z.string().min(1),
+  OPENAI_API_KEY: z.string().min(1),
 });
 
 /**
@@ -58,6 +59,7 @@ const processEnv = {
   AZURE_AD_B2C_CLIENT_ID: process.env.AZURE_AD_B2C_CLIENT_ID,
   AZURE_AD_B2C_CLIENT_SECRET: process.env.AZURE_AD_B2C_CLIENT_SECRET,
   AZURE_AD_B2C_PRIMARY_USER_FLOW: process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

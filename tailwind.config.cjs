@@ -1,4 +1,4 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -24,8 +24,8 @@ const config = {
         '4xl': '2rem',
       },
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans],
-        display: ['Lexend', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--font-inter)', ...fontFamily.sans],
+        display: ['var(--font-lexend)', ...fontFamily.sans],
       },
       maxWidth: {
         '2xl': '40rem',
