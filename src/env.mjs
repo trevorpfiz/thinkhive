@@ -23,6 +23,10 @@ const server = z.object({
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   EMAIL_SERVER: z.string().url().min(1),
   EMAIL_FROM: z.string().email().min(1),
+  AZURE_AD_B2C_TENANT_NAME: z.string().min(1),
+  AZURE_AD_B2C_CLIENT_ID: z.string().min(1),
+  AZURE_AD_B2C_CLIENT_SECRET: z.string().min(1),
+  AZURE_AD_B2C_PRIMARY_USER_FLOW: z.string().min(1),
 });
 
 /**
@@ -50,6 +54,10 @@ const processEnv = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   EMAIL_SERVER: process.env.EMAIL_SERVER,
   EMAIL_FROM: process.env.EMAIL_FROM,
+  AZURE_AD_B2C_TENANT_NAME: process.env.AZURE_AD_B2C_TENANT_NAME,
+  AZURE_AD_B2C_CLIENT_ID: process.env.AZURE_AD_B2C_CLIENT_ID,
+  AZURE_AD_B2C_CLIENT_SECRET: process.env.AZURE_AD_B2C_CLIENT_SECRET,
+  AZURE_AD_B2C_PRIMARY_USER_FLOW: process.env.AZURE_AD_B2C_PRIMARY_USER_FLOW,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

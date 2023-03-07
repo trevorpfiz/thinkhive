@@ -9,9 +9,9 @@ export default function Meta() {
       <link rel="manifest" href="/favicon/site.webmanifest" />
       <link rel="shortcut icon" href="/favicon/favicon.ico" />
       <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#000000" />
-      <meta name="msapplication-TileColor" content="#000000" />
+      <meta name="msapplication-TileColor" content="#ffc40d" />
       <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
-      <meta name="theme-color" content="#000000" />
+      <meta name="theme-color" content="#ffffff" />
     </>
   );
 }

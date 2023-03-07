@@ -1,7 +1,8 @@
 import { type GetServerSidePropsContext } from 'next';
 import { getServerSession, type NextAuthOptions, type DefaultSession } from 'next-auth';
-import DiscordProvider from 'next-auth/providers/discord';
 import GoogleProvider from 'next-auth/providers/google';
+import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
+import DiscordProvider from 'next-auth/providers/discord';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
@@ -46,13 +47,20 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    AzureADB2CProvider({
+      tenantId: env.AZURE_AD_B2C_TENANT_NAME,
+      clientId: env.AZURE_AD_B2C_CLIENT_ID,
+      clientSecret: env.AZURE_AD_B2C_CLIENT_SECRET,
+      primaryUserFlow: env.AZURE_AD_B2C_PRIMARY_USER_FLOW,
+      authorization: { params: { scope: 'offline_access openid' } },
+    }),
+    DiscordProvider({
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
     EmailProvider({
       server: env.EMAIL_SERVER,

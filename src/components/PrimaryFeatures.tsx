@@ -55,7 +55,7 @@ export function PrimaryFeatures() {
   return (
     <section
       id="features"
-      aria-label="Features for running your books"
+      aria-label="Features for creating an intelligent knowledge base"
       className="relative overflow-hidden bg-blue-600 pt-20 pb-28 sm:py-32"
     >
       <Image
@@ -64,7 +64,7 @@ export function PrimaryFeatures() {
         alt=""
         width={2245}
         height={1636}
-        unoptimized
+        placeholder="blur"
       />
       <Container className="relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">

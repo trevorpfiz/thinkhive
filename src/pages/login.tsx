@@ -1,18 +1,17 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { IconBrandWindows } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
+import { type GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 
 import { AuthLayout } from '@/components/AuthLayout';
 import Logo from '@/ui/Logo';
 import { GoogleLogo } from '@/ui/GoogleLogo';
-
+import MicrosoftLogo from '@/images/logos/ms-symbol.svg';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
-import { type GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 
 interface FormElements extends HTMLFormControlsCollection {
@@ -33,7 +32,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Log In - ThinkHive</title>
+        <title>Login - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -46,13 +45,9 @@ export default function Login() {
             <Logo height={44} />
           </Link>
           <div className="mt-8">
-            <h2 className="text-lg font-semibold text-gray-900">Log in to your account</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Welcome to ThinkHive</h2>
             <p className="text-sm text-gray-700">
-              Don’t have an account?{' '}
-              <Link href="/signup" className="font-medium text-blue-600 hover:underline">
-                Sign up
-              </Link>{' '}
-              for a free trial.
+              Continue with a social account or enter your email.
             </p>
           </div>
         </div>
@@ -79,12 +74,16 @@ export default function Login() {
 
               <div>
                 <button
-                  onClick={() => void signIn()}
+                  onClick={() =>
+                    void signIn('azure-ad-b2c', {
+                      callbackUrl: '/dashboard',
+                    })
+                  }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                 >
                   <span className="sr-only">Log in with Microsoft</span>
-                  <IconBrandWindows size={24} stroke={2} />
-                  <span className="ml-4 font-medium">Continue with Microsoft Account</span>
+                  <MicrosoftLogo className="w-6" />
+                  <span className="ml-4 font-medium">Continue with Microsoft</span>
                 </button>
               </div>
 
@@ -111,7 +110,7 @@ export default function Login() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">OR</span>
               </div>
             </div>
           </div>
@@ -142,7 +141,7 @@ export default function Login() {
                   type="submit"
                   className="flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Log in with email
+                  Continue with email
                 </button>
               </div>
             </form>

@@ -7,7 +7,6 @@ import Button from '@/components/Button';
 import { Container } from '@/components/Container';
 import { NavLink } from '@/components/NavLink';
 import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Logo from '@/ui/Logo';
 
 function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -113,9 +112,8 @@ export function Header() {
                   sign out
                 </button>
               )}
-              <NavLink href="/login">Log in</NavLink>
             </div>
-            <Button href="/signup" intent="solidBlue">
+            <Button href="/login" intent="solidBlue">
               <span>Get Started</span>
             </Button>
             <div className="-mr-1 md:hidden">

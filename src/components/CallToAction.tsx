@@ -13,7 +13,7 @@ export function CallToAction() {
         alt=""
         width={2347}
         height={1244}
-        unoptimized
+        placeholder="blur"
       />
       <Container className="relative">
         <div className="mx-auto max-w-lg text-center">
@@ -24,7 +24,7 @@ export function CallToAction() {
             It’s time to take control of your books. Buy our software so you can feel like you’re
             doing something productive.
           </p>
-          <Button href="/signup" intent="solidWhite" className="mt-10">
+          <Button href="/login" intent="solidWhite" className="mt-10">
             Get 6 months free
           </Button>
         </div>

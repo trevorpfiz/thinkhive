@@ -23,7 +23,7 @@ export function Hero() {
         knowledge base, providing answers to your company-specific inquiries anytime, anywhere!
       </p>
       <div className="mt-10 flex justify-center gap-x-6">
-        <Button href="/signup" intent="solidSlate" size="xl">
+        <Button href="/login" intent="solidSlate" size="xl">
           Build Your Expert
         </Button>
       </div>

@@ -12,7 +12,6 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
             src={backgroundImage}
             alt="background blur"
             placeholder="blur"
-            quality={100}
             fill
             sizes="100vw"
             style={{

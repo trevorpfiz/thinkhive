@@ -73,7 +73,7 @@ export function Faqs() {
         alt=""
         width={1558}
         height={946}
-        unoptimized
+        placeholder="blur"
       />
       <Container className="relative">
         <div className="mx-auto max-w-2xl lg:mx-0">
