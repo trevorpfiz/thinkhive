@@ -15,6 +15,19 @@ const config = {
 
     scrollRestoration: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        hostname: '*',
+      },
+      // {
+      //   hostname: 'lh3.googleusercontent.com',
+      // },
+      // {
+      //   hostname: 'cdn.discordapp.com',
+      // },
+    ],
+  },
 
   webpack(config) {
     config.module.rules.push({

@@ -1,31 +1,33 @@
-import { type GetServerSideProps, type NextPage } from 'next';
+import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
+import type { ReactElement } from 'react';
 
-import { Footer } from '@/components/Footer';
-import { Header } from '@/components/Header';
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
+import SidebarLayout from '@/ui/SidebarLayout';
+import type { NextPageWithLayout } from '../_app';
 
-const DashboardPage: NextPage = () => {
+const TutorialsPage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Dashboard - ThinkHive</title>
+        <title>Tutorials - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
           knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
         />
       </Head>
-      <Header />
-      <main>
-        <h2>Dashboard page</h2>
-      </main>
-      <Footer />
+
+      <h1>Test</h1>
     </>
   );
+};
+
+TutorialsPage.getLayout = function getLayout(page: ReactElement) {
+  return <SidebarLayout>{page}</SidebarLayout>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -47,4 +49,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default DashboardPage;
+export default TutorialsPage;

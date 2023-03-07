@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import Button from '@/components/Button';
 import { Container } from '@/components/Container';
 import { NavLink } from '@/components/NavLink';
-import { signOut, useSession } from 'next-auth/react';
 import Logo from '@/ui/Logo';
 
 function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -84,8 +83,6 @@ function MobileNavigation() {
 }
 
 export function Header() {
-  const { status } = useSession();
-
   return (
     <header className="py-10">
       <Container>
@@ -101,17 +98,7 @@ export function Header() {
           </div>
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
-              {status === 'authenticated' && (
-                <button
-                  onClick={() =>
-                    void signOut({
-                      callbackUrl: '/',
-                    })
-                  }
-                >
-                  sign out
-                </button>
-              )}
+              <NavLink href="/login">Log in</NavLink>
             </div>
             <Button href="/login" intent="solidBlue">
               <span>Get Started</span>

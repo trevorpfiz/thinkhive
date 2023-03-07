@@ -14,12 +14,6 @@ export default function Document() {
           value="Create intelligent chatbots that answer questions based on your organization's
         knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lexend:wght@400;500&display=swap"
-        />
       </Head>
       <body className="flex h-full flex-col">
         <Main />
