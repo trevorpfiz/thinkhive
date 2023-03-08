@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useRef, useState, useEffect } from 'react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -62,7 +65,7 @@ const TestPage: NextPageWithLayout = () => {
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && query) {
-      handleSearch();
+      void handleSearch();
     } else {
       return;
     }
@@ -95,6 +98,7 @@ const TestPage: NextPageWithLayout = () => {
               onKeyDown={handleEnter}
             />
             <button
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleSearch}
               className="inline-flex h-10 items-center justify-center rounded-md bg-slate-900 py-2 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100"
             >
