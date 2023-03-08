@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Button from '@/components/Button';
 import { Container } from '@/components/Container';
 import { NavLink } from '@/components/NavLink';
-import Logo from '@/ui/Logo';
+import Logo from '@/components/ui/Logo';
 
 function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (

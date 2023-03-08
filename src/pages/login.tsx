@@ -6,8 +6,8 @@ import { type GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 
 import { AuthLayout } from '@/components/AuthLayout';
-import Logo from '@/ui/Logo';
-import { GoogleLogo } from '@/ui/GoogleLogo';
+import Logo from '@/components/ui/Logo';
+import { GoogleLogo } from '@/components/ui/GoogleLogo';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';

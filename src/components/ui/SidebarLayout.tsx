@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import {
   AcademicCapIcon,
   Bars3Icon,
+  BeakerIcon,
   ChartBarIcon,
   DocumentDuplicateIcon,
   InformationCircleIcon,
@@ -26,6 +27,7 @@ const navigation = [
   { name: 'Billing and Usage', href: '/dashboard/billing', icon: ChartBarIcon },
   { name: 'Tutorials', href: '/dashboard/tutorials', icon: AcademicCapIcon },
   { name: 'Help Center', href: '/dashboard/help', icon: InformationCircleIcon },
+  { name: 'Test', href: '/dashboard/test', icon: BeakerIcon },
 ];
 
 function classNames(...classes: string[]) {

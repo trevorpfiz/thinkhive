@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import Logo from '@/ui/Logo';
+import Logo from '@/components/ui/Logo';
 import { Container } from '@/components/Container';
 import { NavLink } from '@/components/NavLink';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';

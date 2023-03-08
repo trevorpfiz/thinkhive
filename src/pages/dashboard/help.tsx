@@ -6,7 +6,7 @@ import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
-import SidebarLayout from '@/ui/SidebarLayout';
+import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
 
 const HelpPage: NextPageWithLayout = () => {
