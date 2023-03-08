@@ -1,6 +1,7 @@
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import type { ReactElement } from 'react';
+import Script from 'next/script';
 
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
@@ -8,6 +9,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
+import FileUpload from '@/components/FileUpload';
+import File from '@/components/File';
 
 const KnowledgePage: NextPageWithLayout = () => {
   return (
@@ -20,8 +23,9 @@ const KnowledgePage: NextPageWithLayout = () => {
           knowledge base, providing answers to your company-specific inquiries anytime, anywhere!"
         />
       </Head>
+      {/* <Script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js" /> */}
 
-      <h1>Test</h1>
+      <File />
     </>
   );
 };
