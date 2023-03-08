@@ -18,7 +18,7 @@ const faqs = [
     {
       question: 'Where is my data stored?',
       answer:
-        'The complete documents are not stored, only their content is securely saved using Google Cloud servers. The content is restricted to be accessed only by users who engage with your expert.',
+        'The complete documents are not stored, only their content is securely saved using Google Cloud servers. The content is restricted to be accessed only by users who engage with your Expert.',
     },
   ],
   [
@@ -84,7 +84,7 @@ export function Faqs() {
             Frequently asked questions
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, talk to our expert in the ThinkHive{' '}
+            If you can’t find what you’re looking for, talk to our Expert in the ThinkHive{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
               target="_blank"

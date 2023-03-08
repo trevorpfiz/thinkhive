@@ -14,7 +14,7 @@ const HomePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ThinkHive - Intelligent knowledge bases</title>
+        <title>ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
