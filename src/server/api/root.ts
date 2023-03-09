@@ -1,5 +1,7 @@
-import { createTRPCRouter } from "@/server/api/trpc";
-import { exampleRouter } from "@/server/api/routers/example";
+import { createTRPCRouter } from '@/server/api/trpc';
+import { exampleRouter } from '@/server/api/routers/example';
+import { openAiPinecone } from '@/server/api/routers/openai-pinecone';
+import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
 
 /**
  * This is the primary router for your server.
@@ -8,6 +10,8 @@ import { exampleRouter } from "@/server/api/routers/example";
  */
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
+  chat: openAiPinecone,
+  upload: uploadPinecone,
 });
 
 // export type definition of API

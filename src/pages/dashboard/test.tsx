@@ -12,11 +12,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
+import { api } from '@/utils/api';
 
 const TestPage: NextPageWithLayout = () => {
+  const { mutateAsync, data, isLoading } = api.chat.getAnswer.useMutation();
+
   const [query, setQuery] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [answer, setAnswer] = useState<string>('');
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,36 +31,12 @@ const TestPage: NextPageWithLayout = () => {
       return;
     }
 
-    setAnswer('');
-    setLoading(true);
-
     const question = query.trim();
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          question,
-        }),
-      });
+    await mutateAsync({ question });
 
-      if (!response.ok) {
-        setLoading(false);
-        throw new Error(response.statusText);
-      }
-
-      const answer = await response.json();
-
-      if (answer.text) {
-        setAnswer(answer.text);
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log('error', error);
+    if (data?.response.text) {
+      console.log(data?.response.text);
     }
   }
 
@@ -105,7 +82,7 @@ const TestPage: NextPageWithLayout = () => {
               Search
             </button>
           </div>
-          {loading && (
+          {isLoading && (
             <div className="mt-3">
               <>
                 <div className="mt-2 animate-pulse">
@@ -118,13 +95,15 @@ const TestPage: NextPageWithLayout = () => {
               </>
             </div>
           )}
-          {!loading && answer.length > 0 && (
+          {!isLoading && data?.response.text.length > 0 && (
             <>
               <div className="mt-4 rounded-md border border-neutral-300 p-5">
                 <h2 className="text-center text-xl font-bold leading-[1.1] tracking-tighter">
                   Answer
                 </h2>
-                <p className="mt-3 leading-normal text-slate-700 sm:leading-7">{answer}</p>
+                <p className="mt-3 leading-normal text-slate-700 sm:leading-7">
+                  {data?.response.text}
+                </p>
               </div>
             </>
           )}
