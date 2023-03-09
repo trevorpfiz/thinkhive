@@ -9,11 +9,22 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 export const uploadPinecone = createTRPCRouter({
   uploadText: protectedProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ text: z.string(), wordCount: z.number(), metadata: z.any() }))
     .mutation(async ({ ctx, input }) => {
-      const { text } = input;
-      const expertId = ulid();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { text, wordCount, metadata } = input;
+      const metadataId = ulid();
+      const uploadDate = new Date().toISOString();
 
+      const finalMetadata = [
+        {
+          ...metadata,
+          metadataId,
+          uploadDate,
+          wordCount,
+          userId: ctx.session.user.id,
+        },
+      ];
       const cleanedText = text.trim().replaceAll('\n', ' ');
       console.log(cleanedText);
 
@@ -33,13 +44,19 @@ export const uploadPinecone = createTRPCRouter({
       const vectorStore = await PineconeStore.fromTexts(
         index,
         texts,
-        [{ id: 1 }],
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        finalMetadata,
         embeddings,
         'text',
         PINECONE_NAME_SPACE
       );
 
       console.log('vectorStore', vectorStore);
+
+      await ctx.prisma.fileMetadata.create({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        data: finalMetadata[0],
+      });
 
       return {
         vectorStore,
