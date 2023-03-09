@@ -38,6 +38,7 @@
     "pdfjs-dist": "^3.4.120",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.43.5",
     "react-player": "^2.12.0",
     "superjson": "1.12.2",
