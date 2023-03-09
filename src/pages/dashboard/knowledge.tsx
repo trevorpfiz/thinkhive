@@ -1,16 +1,27 @@
-import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import type { ReactElement } from 'react';
 
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
 import FileDropzone from '@/components/FileDropzone';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 const KnowledgePage: NextPageWithLayout = () => {
+  const router = useRouter();
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      void router.push('/login');
+    },
+  });
+
+  if (status === 'loading') {
+    return <div>Loading or not authenticated...</div>;
+  }
+
   return (
     <>
       <Head>
@@ -29,25 +40,6 @@ const KnowledgePage: NextPageWithLayout = () => {
 
 KnowledgePage.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout>{page}</SidebarLayout>;
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      session,
-    },
-  };
 };
 
 export default KnowledgePage;
