@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import * as pdfjsLib from 'pdfjs-dist';
+import { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { api } from '@/utils/api';
-import { useMemo } from 'react';
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
+import convertPdfToText from '@/utils/pdf/convert-pdf';
+import { getPdfMetadata, PdfMetadata } from '@/utils/pdf/metadata';
 
 const baseStyle = {
   flex: 1,
@@ -76,41 +75,12 @@ export default function FileDropzone() {
     [isFocused, isDragAccept, isDragReject]
   );
 
-  async function convertPdfToText(file: File): Promise<string> {
-    const fileReader = new FileReader();
-    fileReader.readAsArrayBuffer(file);
-
-    return new Promise<string>((resolve, reject) => {
-      fileReader.onload = async () => {
-        if (!fileReader.result) {
-          reject(new Error('Failed to read PDF file'));
-          return;
-        }
-
-        const pdf = await pdfjsLib.getDocument(fileReader.result).promise;
-        const page = await pdf.getPage(1);
-        const textContent = await page.getTextContent();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        const text = textContent.items
-          .map((item) => {
-            if ('str' in item) {
-              return item.str;
-            } else {
-              return '';
-            }
-          })
-          .join(' ');
-        resolve(text);
-      };
-
-      fileReader.onerror = () => {
-        reject(new Error('Failed to read PDF file'));
-      };
-    });
-  }
-
-  async function sendTextToBackend(text: string): Promise<void> {
-    await mutateAsync({ text });
+  async function sendDataToBackend(
+    text: string,
+    wordCount: number,
+    metadata: PdfMetadata
+  ): Promise<void> {
+    await mutateAsync({ text, wordCount, metadata });
   }
 
   const handleSubmit = async () => {
@@ -121,10 +91,12 @@ export default function FileDropzone() {
       return;
     }
 
-    const text = await convertPdfToText(file);
-    console.log(text);
+    const { text, wordCount } = await convertPdfToText(file);
+    console.log(wordCount);
+    const metadata = await getPdfMetadata(file);
+    console.log(metadata);
 
-    await sendTextToBackend(text);
+    await sendDataToBackend(text, wordCount, metadata);
 
     return;
   };

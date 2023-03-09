@@ -1,5 +1,4 @@
 import { createTRPCRouter } from '@/server/api/trpc';
-import { exampleRouter } from '@/server/api/routers/example';
 import { openAiPinecone } from '@/server/api/routers/openai-pinecone';
 import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
 
@@ -9,7 +8,6 @@ import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
   chat: openAiPinecone,
   upload: uploadPinecone,
 });
