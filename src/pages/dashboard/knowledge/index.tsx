@@ -4,11 +4,11 @@ import type { ReactElement } from 'react';
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
 import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../../_app';
 import FileDropzone from '@/components/dashboard/FileDropzone';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import FileTable from '@/components/dashboard/FileTable';
+import FilesTable from '@/components/dashboard/FilesTable';
 
 const KnowledgePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -35,7 +35,7 @@ const KnowledgePage: NextPageWithLayout = () => {
       </Head>
 
       <FileDropzone />
-      <FileTable />
+      <FilesTable />
     </>
   );
 };

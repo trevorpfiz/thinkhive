@@ -51,11 +51,9 @@ export default function FileDropzone() {
   const utils = api.useContext();
 
   const { mutate, isLoading } = api.upload.uploadText.useMutation({
-    onSuccess(input) {
+    onSuccess() {
       // Refetch the query after a successful delete
       void utils.metadata.getMetadata.invalidate();
-
-      console.log(input);
     },
     onError: () => {
       console.error('Error!');
@@ -138,9 +136,8 @@ export default function FileDropzone() {
     // TODO - is calling sendDataToBackend for each file, will need to convert to handling a page
     for (const file of myFiles) {
       const { text, wordCount } = await convertPdfToText(file);
-      console.log(wordCount);
+
       const metadata = await getPdfMetadata(file);
-      console.log(metadata);
 
       sendDataToBackend(text, wordCount, metadata);
     }

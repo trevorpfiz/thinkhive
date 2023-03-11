@@ -7,14 +7,17 @@ import Meta from '@/components/seo/Meta';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
-import ExpertTable from '@/components/dashboard/ExpertTable';
+import type { NextPageWithLayout } from '../../_app';
+import { useRouter } from 'next/router';
 
-const ExpertsPage: NextPageWithLayout = () => {
+const BrainPage: NextPageWithLayout = () => {
+  const router = useRouter();
+  const brainId = router.query.brainId as string;
+
   return (
     <>
       <Head>
-        <title>Experts - ThinkHive</title>
+        <title>Brain - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -22,12 +25,12 @@ const ExpertsPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <ExpertTable />
+      <div>{brainId}</div>
     </>
   );
 };
 
-ExpertsPage.getLayout = function getLayout(page: ReactElement) {
+BrainPage.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout>{page}</SidebarLayout>;
 };
 
@@ -50,4 +53,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default ExpertsPage;
+export default ExpertPage;

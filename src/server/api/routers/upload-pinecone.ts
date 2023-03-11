@@ -6,6 +6,7 @@ import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
 import { PineconeStore } from 'langchain/vectorstores';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { get_encoding } from '@dqbd/tiktoken';
 
 export const uploadPinecone = createTRPCRouter({
   uploadText: protectedProcedure
@@ -17,17 +18,23 @@ export const uploadPinecone = createTRPCRouter({
       const metadataId = ulid();
       const uploadDate = new Date().toISOString();
 
+      const cleanedText = text.trim().replaceAll('\n', ' ');
+      console.log(cleanedText);
+
+      const encoding = get_encoding('cl100k_base');
+      const tokenCount = encoding.encode(cleanedText).length;
+      console.log(tokenCount);
+
       const finalMetadata = [
         {
           ...metadata,
           metadataId,
           uploadDate,
           wordCount,
+          tokenCount,
           userId: ctx.session.user.id,
         },
       ];
-      const cleanedText = text.trim().replaceAll('\n', ' ');
-      console.log(cleanedText);
 
       /* Split text into chunks */
       const textSplitter = new RecursiveCharacterTextSplitter({
