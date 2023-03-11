@@ -1,12 +1,12 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
 
-import { Faqs } from '@/components/Faqs';
+import { Faqs } from '@/components/landing/Faqs';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
-import { Hero } from '@/components/Hero';
-import { PrimaryFeatures } from '@/components/PrimaryFeatures';
-import Demo from '@/components/Demo';
+import { Hero } from '@/components/landing/Hero';
+import { PrimaryFeatures } from '@/components/landing/PrimaryFeatures';
+import Demo from '@/components/landing/Demo';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
 

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ulid } from 'ulid';
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { pinecone } from '@/utils/pinecone-client';
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
 import { PineconeStore } from 'langchain/vectorstores';
@@ -11,6 +11,7 @@ export const uploadPinecone = createTRPCRouter({
   uploadText: protectedProcedure
     .input(z.object({ text: z.string(), wordCount: z.number(), metadata: z.any() }))
     .mutation(async ({ ctx, input }) => {
+      // FIXME - Need to give metadata a type
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { text, wordCount, metadata } = input;
       const metadataId = ulid();
@@ -42,13 +43,15 @@ export const uploadPinecone = createTRPCRouter({
       const embeddings = new OpenAIEmbeddings();
       const index = pinecone.Index(PINECONE_INDEX_NAME); //change to your own index name
       const vectorStore = await PineconeStore.fromTexts(
-        index,
         texts,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         finalMetadata,
         embeddings,
-        'text',
-        PINECONE_NAME_SPACE
+        {
+          pineconeClient: index,
+          textKey: 'text',
+          namespace: PINECONE_NAME_SPACE,
+        }
       );
 
       console.log('vectorStore', vectorStore);
@@ -59,7 +62,8 @@ export const uploadPinecone = createTRPCRouter({
       });
 
       return {
-        vectorStore,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        metadata,
       };
     }),
 });

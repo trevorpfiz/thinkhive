@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import Logo from './Logo';
-import UserButton from '@/components/UserButton';
+import UserButton from '@/components/dashboard/UserButton';
 import Link from 'next/link';
 
 const navigation = [

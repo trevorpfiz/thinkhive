@@ -17,7 +17,7 @@ const config = {
       {
         hostname: '*',
       },
-      // {
+      // TODO {
       //   hostname: 'lh3.googleusercontent.com',
       // },
       // {

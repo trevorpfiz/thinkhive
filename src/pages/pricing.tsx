@@ -3,8 +3,8 @@ import Head from 'next/head';
 
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
-import Pricing from '@/components/Pricing';
-import { PricingFaqs } from '@/components/PricingFaqs';
+import Pricing from '@/components/landing/Pricing';
+import { PricingFaqs } from '@/components/landing/PricingFaqs';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
 

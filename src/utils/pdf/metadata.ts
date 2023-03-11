@@ -56,7 +56,7 @@ export async function getPdfMetadata(file: File): Promise<PdfMetadata> {
   });
 }
 
-//* will need to rewrite this to convert pdf date if needed
+// TODO will need to rewrite this to convert pdf date if needed
 // export function formatDate(dateStr: string | undefined) {
 //   console.log(dateStr);
 //   if (!dateStr) {

@@ -1,4 +1,4 @@
-import Image, { ImageProps } from 'next/image';
+import Image, { type ImageProps } from 'next/image';
 
 import thinkhivelogo from '@/images/logos/ThinkHive-logo-black.png';
 

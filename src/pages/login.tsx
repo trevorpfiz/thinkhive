@@ -5,7 +5,7 @@ import { SparklesIcon } from '@heroicons/react/24/outline';
 import { type GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 
-import { AuthLayout } from '@/components/AuthLayout';
+import { AuthLayout } from '@/components/ui/AuthLayout';
 import Logo from '@/components/ui/Logo';
 import { GoogleLogo } from '@/components/ui/GoogleLogo';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
