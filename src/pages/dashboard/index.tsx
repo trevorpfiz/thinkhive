@@ -21,7 +21,7 @@ const DashboardPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Test</h1>
+      <h1>Coming soon!</h1>
     </>
   );
 };

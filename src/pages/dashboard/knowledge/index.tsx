@@ -34,8 +34,10 @@ const KnowledgePage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <FileDropzone />
-      <FilesTable />
+      <div className="flex flex-row-reverse flex-wrap gap-8">
+        <FileDropzone />
+        <FilesTable />
+      </div>
     </>
   );
 };

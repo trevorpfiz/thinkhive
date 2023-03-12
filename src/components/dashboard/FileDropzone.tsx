@@ -7,6 +7,7 @@ import convertPdfToText from '@/utils/pdf/convert-pdf';
 import { getPdfMetadata, type PdfMetadata } from '@/utils/pdf/metadata';
 
 const baseStyle = {
+  maxWidth: 300,
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
@@ -144,7 +145,7 @@ export default function FileDropzone() {
   };
 
   return (
-    <section className="container">
+    <section className="flex-grow">
       {/* @ts-ignore */}
       <div {...getRootProps({ style })}>
         <input {...getInputProps()} />

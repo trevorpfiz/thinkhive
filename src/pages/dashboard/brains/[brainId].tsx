@@ -27,7 +27,7 @@ const BrainPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-wrap gap-8">
         <BrainFiles brainId={brainId} />
         <AvailableFiles brainId={brainId} />
       </div>

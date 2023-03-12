@@ -25,7 +25,13 @@ export default function Login() {
     e.preventDefault(); // Prevent the form from submitting
     const email = e.currentTarget.elements.email.value; // Get the email entered by the user
 
-    void signIn('email', { email }); // Call the signIn function with the email
+    void signIn(
+      'email',
+      { email },
+      {
+        callbackUrl: '/dashboard/experts',
+      }
+    ); // Call the signIn function with the email
   }
 
   return (
@@ -58,7 +64,7 @@ export default function Login() {
                 <button
                   onClick={() =>
                     void signIn('google', {
-                      callbackUrl: '/dashboard',
+                      callbackUrl: '/dashboard/experts',
                     })
                   }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
@@ -75,7 +81,7 @@ export default function Login() {
                 <button
                   onClick={() =>
                     void signIn('azure-ad-b2c', {
-                      callbackUrl: '/dashboard',
+                      callbackUrl: '/dashboard/experts',
                     })
                   }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
@@ -88,7 +94,11 @@ export default function Login() {
 
               <div>
                 <button
-                  onClick={() => void signIn('discord')}
+                  onClick={() =>
+                    void signIn('discord', {
+                      callbackUrl: '/dashboard/experts',
+                    })
+                  }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                 >
                   <span className="sr-only">Log in with Discord</span>
@@ -158,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (session) {
     return {
       redirect: {
-        destination: '/dashboard',
+        destination: '/dashboard/experts',
         permanent: false,
       },
     };

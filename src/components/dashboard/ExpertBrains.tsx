@@ -34,7 +34,7 @@ export default function ExpertBrains({ expertId }: { expertId: string }) {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="flex-grow px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold leading-6 text-gray-900">

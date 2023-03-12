@@ -3,12 +3,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import {
   AcademicCapIcon,
   Bars3Icon,
-  BeakerIcon,
   ChartBarIcon,
   CpuChipIcon,
   DocumentDuplicateIcon,
   InformationCircleIcon,
-  Square2StackIcon,
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -18,7 +16,7 @@ import UserButton from '@/components/dashboard/UserButton';
 import Link from 'next/link';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: Square2StackIcon },
+  // { name: 'Dashboard', href: '/dashboard', icon: Square2StackIcon },
   { name: 'AI Experts', href: '/dashboard/experts', icon: UsersIcon },
   { name: 'Brains', href: '/dashboard/brains', icon: CpuChipIcon },
   {
@@ -29,7 +27,6 @@ const navigation = [
   { name: 'Billing and Usage', href: '/dashboard/billing', icon: ChartBarIcon },
   { name: 'Tutorials', href: '/dashboard/tutorials', icon: AcademicCapIcon },
   { name: 'Help Center', href: '/dashboard/help', icon: InformationCircleIcon },
-  { name: 'Test', href: '/dashboard/test', icon: BeakerIcon },
 ];
 
 function classNames(...classes: string[]) {
