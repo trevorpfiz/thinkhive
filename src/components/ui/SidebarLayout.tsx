@@ -5,6 +5,7 @@ import {
   Bars3Icon,
   BeakerIcon,
   ChartBarIcon,
+  CpuChipIcon,
   DocumentDuplicateIcon,
   InformationCircleIcon,
   Square2StackIcon,
@@ -19,6 +20,7 @@ import Link from 'next/link';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Square2StackIcon },
   { name: 'AI Experts', href: '/dashboard/experts', icon: UsersIcon },
+  { name: 'Brains', href: '/dashboard/brains', icon: CpuChipIcon },
   {
     name: 'Knowledge Base',
     href: '/dashboard/knowledge',

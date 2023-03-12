@@ -4,33 +4,33 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ExpertBrains({ expertId }: { expertId: string }) {
+export default function BrainFiles({ brainId }: { brainId: string }) {
   const {
-    isLoading: isExpertLoading,
-    isError: isExpertError,
-    data: expertData,
-    error: expertError,
-  } = api.expert.getExpert.useQuery({ id: expertId });
+    isLoading: isBrainLoading,
+    isError: isBrainError,
+    data: brainData,
+    error: brainError,
+  } = api.brain.getBrain.useQuery({ id: brainId });
 
   const utils = api.useContext();
 
-  const { mutate: unassignMutate } = api.expert.unassignBrain.useMutation({
+  const { mutate: unassignMutate } = api.brain.unassignFiles.useMutation({
     onSuccess() {
       // Refetch the query after a successful unassign
-      void utils.expert.getExpert.invalidate();
-      void utils.expert.getUnassignedBrains.invalidate();
+      void utils.brain.getBrain.invalidate();
+      void utils.brain.getUnassignedFiles.invalidate();
     },
     onError: () => {
       console.error('Error!');
     },
   });
 
-  function handleUnassign(brainId: string) {
-    unassignMutate({ expertId, brainId });
+  function handleUnassign(metadataIds: string[]) {
+    unassignMutate({ brainId, ids: metadataIds });
   }
 
-  if (isExpertError) {
-    return <span>Error: {expertError.message}</span>;
+  if (isBrainError) {
+    return <span>Error: {brainError.message}</span>;
   }
 
   return (
@@ -38,13 +38,13 @@ export default function ExpertBrains({ expertId }: { expertId: string }) {
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold leading-6 text-gray-900">
-            Expert knows {expertData?.size} words
+            Brain contains {brainData?.size} words
           </h2>
         </div>
       </div>
       <div className="mt-8 flow-root">
         <div className="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
-          {isExpertLoading ? (
+          {isBrainLoading ? (
             <div className="mt-3">
               <>
                 <div className="mt-2 animate-pulse">
@@ -88,54 +88,54 @@ export default function ExpertBrains({ expertId }: { expertId: string }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {expertData &&
-                    expertData.brains &&
-                    expertData.brains.map((brain, brainIdx) => (
-                      <tr key={brain.id}>
+                  {brainData &&
+                    brainData.files &&
+                    brainData.files.map((file, fileIdx) => (
+                      <tr key={file.id}>
                         <td
                           className={classNames(
-                            brainIdx !== expertData.brains.length - 1
+                            fileIdx !== brainData.files.length - 1
                               ? 'border-b border-gray-200'
                               : '',
                             'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
                           )}
                         >
-                          {brain.name}
+                          {file.fileName}
                         </td>
                         <td
                           className={classNames(
-                            brainIdx !== expertData.brains.length - 1
+                            fileIdx !== brainData.files.length - 1
                               ? 'border-b border-gray-200'
                               : '',
                             'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell'
                           )}
                         >
-                          {brain.updatedAt.toDateString()}
+                          {file.updatedAt.toDateString()}
                         </td>
                         <td
                           className={classNames(
-                            brainIdx !== expertData.brains.length - 1
+                            fileIdx !== brainData.files.length - 1
                               ? 'border-b border-gray-200'
                               : '',
                             'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell'
                           )}
                         >
-                          {brain.size}
+                          {file.wordCount}
                         </td>
                         <td
                           className={classNames(
-                            brainIdx !== expertData.brains.length - 1
+                            fileIdx !== brainData.files.length - 1
                               ? 'border-b border-gray-200'
                               : '',
                             'relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8'
                           )}
                         >
                           <button
-                            onClick={() => handleUnassign(brain.id)}
+                            onClick={() => handleUnassign([file.id])}
                             type="button"
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                            Unassign<span className="sr-only">, {brain.name}</span>
+                            Unassign<span className="sr-only">, {file.fileName}</span>
                           </button>
                         </td>
                       </tr>

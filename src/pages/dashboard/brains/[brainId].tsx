@@ -9,6 +9,8 @@ import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../../_app';
 import { useRouter } from 'next/router';
+import BrainFiles from '@/components/dashboard/BrainFiles';
+import AvailableFiles from '@/components/dashboard/AvailableFiles';
 
 const BrainPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -25,7 +27,10 @@ const BrainPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div>{brainId}</div>
+      <div className="flex flex-row gap-8">
+        <BrainFiles brainId={brainId} />
+        <AvailableFiles brainId={brainId} />
+      </div>
     </>
   );
 };
@@ -53,4 +58,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default ExpertPage;
+export default BrainPage;

@@ -27,8 +27,7 @@ const ExpertPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div>{expertId}</div>
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-8">
         <ExpertBrains expertId={expertId} />
         <AvailableBrains expertId={expertId} />
       </div>
