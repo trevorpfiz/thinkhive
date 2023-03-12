@@ -8,6 +8,9 @@ export const expertRouter = createTRPCRouter({
       where: {
         userId: ctx.session.user.id,
       },
+      include: {
+        brains: { include: { files: true } },
+      },
     });
   }),
   getExpert: protectedProcedure
@@ -25,7 +28,7 @@ export const expertRouter = createTRPCRouter({
           userId: ctx.session.user.id,
         },
         include: {
-          brains: true,
+          brains: { include: { files: true } },
         },
       });
     }),
@@ -69,10 +72,13 @@ export const expertRouter = createTRPCRouter({
             },
           },
         },
+        include: {
+          files: true,
+        },
       });
     }),
 
-  // mutations
+  // mutations ----------------------------------------
   createExpert: protectedProcedure
     .input(
       z.object({

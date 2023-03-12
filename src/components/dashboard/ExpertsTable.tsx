@@ -1,4 +1,6 @@
 import { api } from '@/utils/api';
+import { calculateExpertsSizes } from '@/utils/word-count';
+import { useEffect, useState } from 'react';
 
 export default function ExpertsTable() {
   const {
@@ -24,6 +26,18 @@ export default function ExpertsTable() {
     // Create a new expert
     mutate({ name: 'New expert', size: 0 });
   }
+
+  const [brainSizes, setBrainSizes] = useState<number[]>([]);
+  const [totalSize, setTotalSize] = useState<number>(0);
+
+  useEffect(() => {
+    if (experts) {
+      const [sizes, total] = calculateExpertsSizes(experts);
+      console.log(sizes);
+      setBrainSizes(sizes);
+      setTotalSize(total);
+    }
+  }, [experts]);
 
   if (isError) {
     return <span>Error: {error.message}</span>;
@@ -93,7 +107,7 @@ export default function ExpertsTable() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              {experts.map((expert) => (
+              {experts.map((expert, index) => (
                 <tr key={expert.id}>
                   <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none">
                     <div className="hidden items-center sm:flex">
@@ -112,8 +126,8 @@ export default function ExpertsTable() {
                     </dl>
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                    <div className="text-gray-900">{expert.size}</div>
-                    <div className="text-gray-500">{expert.size}</div>
+                    <div className="text-gray-900">{brainSizes[index]}</div>
+                    <div className="text-gray-500">{experts[index]?.brains.length}</div>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">

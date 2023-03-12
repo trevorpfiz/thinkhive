@@ -1,4 +1,6 @@
 import { api } from '@/utils/api';
+import { calculateExpertSizes } from '@/utils/word-count';
+import { useEffect, useState } from 'react';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -29,6 +31,18 @@ export default function ExpertBrains({ expertId }: { expertId: string }) {
     unassignMutate({ expertId, brainId });
   }
 
+  const [brainSizes, setBrainSizes] = useState<number[]>([]);
+  const [totalSize, setTotalSize] = useState<number>(0);
+
+  useEffect(() => {
+    if (expertData) {
+      const [sizes, total] = calculateExpertSizes(expertData);
+      console.log(sizes);
+      setBrainSizes(sizes);
+      setTotalSize(total);
+    }
+  }, [expertData]);
+
   if (isExpertError) {
     return <span>Error: {expertError.message}</span>;
   }
@@ -38,7 +52,7 @@ export default function ExpertBrains({ expertId }: { expertId: string }) {
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold leading-6 text-gray-900">
-            Expert knows {expertData?.size} words
+            Expert has {totalSize} words
           </h2>
         </div>
       </div>
@@ -120,7 +134,7 @@ export default function ExpertBrains({ expertId }: { expertId: string }) {
                             'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell'
                           )}
                         >
-                          {brain.size}
+                          {brainSizes[brainIdx]}
                         </td>
                         <td
                           className={classNames(

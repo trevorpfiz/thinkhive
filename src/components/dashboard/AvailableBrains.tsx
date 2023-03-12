@@ -1,4 +1,6 @@
 import { api } from '@/utils/api';
+import { calculateBrainSizes } from '@/utils/word-count';
+import { useEffect, useState } from 'react';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -28,6 +30,18 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
   function handleAssign(brainId: string) {
     mutate({ expertId, brainId });
   }
+
+  const [brainSizes, setBrainSizes] = useState<number[]>([]);
+  const [totalSize, setTotalSize] = useState<number>(0);
+
+  useEffect(() => {
+    if (brains) {
+      const [sizes, total] = calculateBrainSizes(brains);
+      console.log(sizes);
+      setBrainSizes(sizes);
+      setTotalSize(total);
+    }
+  }, [brains]);
 
   if (isError) {
     return <span>Error: {error.message}</span>;
@@ -110,7 +124,7 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                           'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell'
                         )}
                       >
-                        {brain.size}
+                        {brainSizes[brainIdx]}
                       </td>
                       <td
                         className={classNames(

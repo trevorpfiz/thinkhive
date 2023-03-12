@@ -8,6 +8,9 @@ export const brainRouter = createTRPCRouter({
       where: {
         userId: ctx.session.user.id,
       },
+      include: {
+        files: true,
+      },
     });
   }),
   getBrain: protectedProcedure
@@ -72,7 +75,7 @@ export const brainRouter = createTRPCRouter({
       });
     }),
 
-  // mutations
+  // mutations ----------------------------------------------
   createBrain: protectedProcedure
     .input(
       z.object({
@@ -127,6 +130,18 @@ export const brainRouter = createTRPCRouter({
         },
       });
 
+      // FIXME - Calculate the total size of files being assigned
+      // const totalSize = (await ctx.prisma.fileMetadata.aggregate({
+      //   where: {
+      //     id: {
+      //       in: ids,
+      //     },
+      //   },
+      //   _sum: {
+      //     wordCount: true,
+      //   },
+      // })) as { _sum: { wordCount: number } };
+
       // Iterate over all the brains and update the files relation
       const updatedBrains = await Promise.all(
         brains.map((brain) => {
@@ -138,6 +153,7 @@ export const brainRouter = createTRPCRouter({
               files: {
                 connect: ids.map((id) => ({ id })),
               },
+              // size: brain.size + totalSize._sum.wordCount,
             },
             include: {
               files: true,
@@ -170,6 +186,18 @@ export const brainRouter = createTRPCRouter({
         },
       });
 
+      // FIXME - Calculate the total size of files being unassigned
+      // const totalSize = (await ctx.prisma.fileMetadata.aggregate({
+      //   where: {
+      //     id: {
+      //       in: ids,
+      //     },
+      //   },
+      //   _sum: {
+      //     wordCount: true,
+      //   },
+      // })) as { _sum: { wordCount: number } };
+
       // Iterate over all the brains and update the files relation
       const updatedBrains = await Promise.all(
         brains.map((brain) => {
@@ -181,6 +209,7 @@ export const brainRouter = createTRPCRouter({
               files: {
                 disconnect: ids.map((id) => ({ id })),
               },
+              // size: Math.max(0, brain.size - totalSize._sum.wordCount),
             },
             include: {
               files: true,
@@ -191,5 +220,50 @@ export const brainRouter = createTRPCRouter({
 
       // Return the updated brains
       return updatedBrains;
+    }),
+  updateSize: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      const brain = await ctx.prisma.brain.findFirst({
+        where: {
+          id,
+          userId: ctx.session.user.id,
+        },
+        include: {
+          files: true,
+        },
+      });
+
+      if (!brain) {
+        throw new Error('Brain not found');
+      }
+
+      const totalSize = (await ctx.prisma.fileMetadata.aggregate({
+        where: {
+          id: {
+            in: brain.files.map((file) => file.id),
+          },
+        },
+        _sum: {
+          wordCount: true,
+        },
+      })) as { _sum: { wordCount: number } };
+
+      const updatedBrain = await ctx.prisma.brain.update({
+        where: {
+          id,
+        },
+        data: {
+          size: totalSize._sum.wordCount,
+        },
+      });
+
+      return updatedBrain;
     }),
 });

@@ -1,4 +1,6 @@
 import { api } from '@/utils/api';
+import { calculateBrainSizes } from '@/utils/word-count';
+import { useEffect, useState } from 'react';
 
 export default function BrainsTable() {
   const { isLoading: brainsLoading, isError, data: brains, error } = api.brain.getBrains.useQuery();
@@ -19,6 +21,18 @@ export default function BrainsTable() {
     // Create a new brain
     mutate({ name: 'New brain', size: 0 });
   }
+
+  const [brainSizes, setBrainSizes] = useState<number[]>([]);
+  const [totalSize, setTotalSize] = useState<number>(0);
+
+  useEffect(() => {
+    if (brains) {
+      const [sizes, total] = calculateBrainSizes(brains);
+      console.log(sizes);
+      setBrainSizes(sizes);
+      setTotalSize(total);
+    }
+  }, [brains]);
 
   if (isError) {
     return <span>Error: {error.message}</span>;
@@ -88,7 +102,7 @@ export default function BrainsTable() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              {brains.map((brain) => (
+              {brains.map((brain, index) => (
                 <tr key={brain.id}>
                   <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none">
                     <div className="hidden items-center sm:flex">
@@ -103,7 +117,7 @@ export default function BrainsTable() {
                       <dt className="sr-only">Brain</dt>
                       <dd className="mt-1 truncate text-gray-700">{brain.name}</dd>
                       <dt className="sr-only sm:hidden">Size</dt>
-                      <dd className="mt-1 truncate text-gray-500 sm:hidden">{brain.size}</dd>
+                      <dd className="mt-1 truncate text-gray-500 sm:hidden">{brainSizes[index]}</dd>
                     </dl>
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
@@ -112,11 +126,11 @@ export default function BrainsTable() {
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                      {brain.size}
+                      {brainSizes[index]}
                     </span>
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                    {brain.size}
+                    {brainSizes[index]}
                   </td>
                   <td className="py-4 pl-3 pr-4 text-right text-sm font-medium">
                     <a

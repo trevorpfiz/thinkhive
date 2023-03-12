@@ -32,6 +32,18 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
   const [indeterminate, setIndeterminate] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileMetadata[]>([]);
 
+  const [totalSize, setTotalSize] = useState(0);
+
+  useEffect(() => {
+    if (brainData?.files) {
+      let sum = 0;
+      for (let i = 0; i < brainData?.files.length; i++) {
+        sum += brainData?.files[i]?.wordCount || 0;
+      }
+      setTotalSize(sum);
+    }
+  }, [brainData?.files]);
+
   useEffect(() => {
     if (brainData?.files && checkbox.current) {
       const isIndeterminate =
@@ -69,7 +81,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold leading-6 text-gray-900">
-            Brain contains {brainData?.size} words
+            Brain contains {totalSize} words
           </h2>
         </div>
       </div>
