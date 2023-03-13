@@ -11,6 +11,7 @@ import type { NextPageWithLayout } from '../../_app';
 import { useRouter } from 'next/router';
 import BrainFiles from '@/components/dashboard/BrainFiles';
 import AvailableFiles from '@/components/dashboard/AvailableFiles';
+import BrainHeader from '@/components/dashboard/BrainHeader';
 
 const BrainPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -27,9 +28,12 @@ const BrainPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div className="flex flex-wrap gap-8">
-        <BrainFiles brainId={brainId} />
-        <AvailableFiles brainId={brainId} />
+      <div className="flex flex-col gap-16">
+        <BrainHeader brainId={brainId} />
+        <div className="flex flex-wrap gap-8">
+          <BrainFiles brainId={brainId} />
+          <AvailableFiles brainId={brainId} />
+        </div>
       </div>
     </>
   );

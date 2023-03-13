@@ -28,7 +28,6 @@ export default function BrainsTable() {
   useEffect(() => {
     if (brains) {
       const [sizes, total] = calculateBrainSizes(brains);
-      console.log(sizes);
       setBrainSizes(sizes);
       setTotalSize(total);
     }

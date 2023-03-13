@@ -33,7 +33,6 @@ export default function ExpertsTable() {
   useEffect(() => {
     if (experts) {
       const [sizes, total] = calculateExpertsSizes(experts);
-      console.log(sizes);
       setBrainSizes(sizes);
       setTotalSize(total);
     }

@@ -37,7 +37,6 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
   useEffect(() => {
     if (brains) {
       const [sizes, total] = calculateBrainSizes(brains);
-      console.log(sizes);
       setBrainSizes(sizes);
       setTotalSize(total);
     }

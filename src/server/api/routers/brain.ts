@@ -96,6 +96,27 @@ export const brainRouter = createTRPCRouter({
 
       return createdBrain;
     }),
+  renameBrain: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, name } = input;
+
+      const updatedBrain = await ctx.prisma.brain.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+        },
+      });
+
+      return updatedBrain;
+    }),
   deleteBrain: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

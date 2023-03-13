@@ -11,6 +11,7 @@ import type { NextPageWithLayout } from '../../_app';
 import { useRouter } from 'next/router';
 import ExpertBrains from '@/components/dashboard/ExpertBrains';
 import AvailableBrains from '@/components/dashboard/AvailableBrains';
+import ExpertHeader from '@/components/dashboard/ExpertHeader';
 
 const ExpertPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -27,9 +28,12 @@ const ExpertPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div className="flex flex-row gap-8">
-        <ExpertBrains expertId={expertId} />
-        <AvailableBrains expertId={expertId} />
+      <div className="flex flex-col gap-16">
+        <ExpertHeader expertId={expertId} />
+        <div className="flex flex-row gap-8">
+          <ExpertBrains expertId={expertId} />
+          <AvailableBrains expertId={expertId} />
+        </div>
       </div>
     </>
   );

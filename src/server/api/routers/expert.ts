@@ -99,6 +99,27 @@ export const expertRouter = createTRPCRouter({
 
       return createdExpert;
     }),
+  renameExpert: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, name } = input;
+
+      const updatedExpert = await ctx.prisma.expert.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+        },
+      });
+
+      return updatedExpert;
+    }),
   deleteExpert: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
