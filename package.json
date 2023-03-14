@@ -7,6 +7,8 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
+    "studio": "npx prisma studio",
+    "db-push": "npx prisma db push",
     "type-check": "tsc --noEmit",
     "lint": "next lint",
     "format": "prettier --ignore-path .gitignore \"**/*.+(ts|js|tsx)\" --write",

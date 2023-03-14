@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps, AppType } from 'next/app';
+import { Provider } from 'jotai';
 
 import { Inter, Lexend } from 'next/font/google';
 
@@ -36,13 +37,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session}>
-      <style jsx global>{`
-        :root {
-          --font-inter: ${inter.style.fontFamily};
-          --font-lexend: ${lexend.style.fontFamily};
-        }
-      `}</style>
-      {getLayout(<Component {...pageProps} />)}
+      <Provider>
+        <style jsx global>{`
+          :root {
+            --font-inter: ${inter.style.fontFamily};
+            --font-lexend: ${lexend.style.fontFamily};
+          }
+        `}</style>
+        {getLayout(<Component {...pageProps} />)}
+      </Provider>
     </SessionProvider>
   );
 };

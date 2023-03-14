@@ -112,6 +112,7 @@ model Expert {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   size      Int? //word count
+  domains   String? //comma separated list of domains
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   brains    Brain[]

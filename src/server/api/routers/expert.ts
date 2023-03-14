@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 
 export const expertRouter = createTRPCRouter({
   // queries
@@ -76,6 +76,27 @@ export const expertRouter = createTRPCRouter({
           files: true,
         },
       });
+    }),
+  getWidgetExpert: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+
+      const expert = await ctx.prisma.expert.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!expert) {
+        throw new Error('Expert not found');
+      }
+
+      return expert;
     }),
 
   // mutations ----------------------------------------
