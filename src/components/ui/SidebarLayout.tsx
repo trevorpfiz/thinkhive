@@ -36,7 +36,7 @@ function classNames(...classes: string[]) {
 export default function SidebarLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
-  const currentRoute = router.pathname;
+  const currentRoute = router.pathname.split('/').slice(0, 3).join('/');
 
   return (
     <>
@@ -73,7 +73,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-indigo-700">
+                <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white">
                   <Transition.Child
                     as={Fragment}
                     enter="ease-in-out duration-300"
@@ -90,7 +90,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                         onClick={() => setSidebarOpen(false)}
                       >
                         <span className="sr-only">Close sidebar</span>
-                        <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                        <XMarkIcon className="h-6 w-6 " aria-hidden="true" />
                       </button>
                     </div>
                   </Transition.Child>
@@ -107,13 +107,13 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                           href={item.href}
                           className={classNames(
                             item.href === currentRoute
-                              ? 'bg-indigo-800 text-white'
-                              : 'text-white hover:bg-indigo-600 hover:bg-opacity-75',
+                              ? 'bg-gray-200 '
+                              : ' hover:bg-gray-100 hover:bg-opacity-75',
                             'group flex items-center rounded-md px-2 py-2 text-base font-medium'
                           )}
                         >
                           <item.icon
-                            className="mr-4 h-6 w-6 flex-shrink-0 text-indigo-300"
+                            className="mr-4 h-6 w-6 flex-shrink-0 text-gray-400"
                             aria-hidden="true"
                           />
                           {item.name}
@@ -134,7 +134,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex min-h-0 flex-1 flex-col bg-indigo-700">
+          <div className="flex min-h-0 flex-1 flex-col bg-white">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
               <div className="flex flex-shrink-0 items-center px-4">
                 <Link href="/">
@@ -148,13 +148,13 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                     href={item.href}
                     className={classNames(
                       item.href === currentRoute
-                        ? 'bg-indigo-800 text-white'
-                        : 'text-white hover:bg-indigo-600 hover:bg-opacity-75',
+                        ? 'bg-gray-200'
+                        : 'hover:bg-gray-100 hover:bg-opacity-75',
                       'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
                     )}
                   >
                     <item.icon
-                      className="mr-3 h-6 w-6 flex-shrink-0 text-indigo-300"
+                      className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400"
                       aria-hidden="true"
                     />
                     {item.name}
