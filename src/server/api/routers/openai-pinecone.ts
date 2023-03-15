@@ -33,7 +33,7 @@ export const openAiPinecone = createTRPCRouter({
         query: sanitizedQuestion,
       });
 
-      // Metadata filtering
+      // FIXME - Metadata filtering
       const filter = {
         metadataId: { $in: metadataIds },
       };
@@ -42,10 +42,8 @@ export const openAiPinecone = createTRPCRouter({
       const queryResponse = await index.query({
         queryRequest: {
           namespace: PINECONE_NAME_SPACE,
-          topK: 3,
+          topK: 1000,
           filter: filter,
-          includeValues: true,
-          includeMetadata: true,
         },
       });
 

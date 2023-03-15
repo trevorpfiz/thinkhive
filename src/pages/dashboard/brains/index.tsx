@@ -33,7 +33,17 @@ const BrainsPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <BrainsTable />
+      <div className="flex flex-col gap-16">
+        <div className="border-b border-gray-200 pb-5">
+          <h3 className="text-base font-semibold leading-6 text-gray-900">
+            <span role="img" aria-label="brain">
+              🧠
+            </span>
+            Brains
+          </h3>
+        </div>
+        <BrainsTable />
+      </div>
     </>
   );
 };

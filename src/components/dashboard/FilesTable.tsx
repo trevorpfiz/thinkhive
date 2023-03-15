@@ -51,12 +51,20 @@ export default function FilesTable() {
     }
   }
 
-  function handleDelete() {
+  function handleBulkDelete() {
     // Extract the ids of the selected files
     const ids = selectedFiles.map((file) => file.metadataId);
 
     // Call the mutation to delete the selected files
     mutate({ ids });
+
+    // Reset the selected files state
+    setSelectedFiles([]);
+  }
+
+  function handleDelete(metadataIds: string[]) {
+    // Call the mutation to delete the selected files
+    mutate({ ids: metadataIds });
 
     // Reset the selected files state
     setSelectedFiles([]);
@@ -93,7 +101,7 @@ export default function FilesTable() {
                 {selectedFiles.length > 0 && (
                   <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
                     <button
-                      onClick={handleDelete}
+                      onClick={handleBulkDelete}
                       type="button"
                       className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                     >
@@ -124,13 +132,13 @@ export default function FilesTable() {
                         scope="col"
                         className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
                       >
-                        Updated
+                        Uploaded
                       </th>
                       <th
                         scope="col"
-                        className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell"
+                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                       >
-                        Size
+                        Words
                       </th>
                       <th
                         scope="col"
@@ -142,7 +150,7 @@ export default function FilesTable() {
                         scope="col"
                         className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
                       >
-                        <span className="sr-only">Edit</span>
+                        <span className="sr-only">Delete</span>
                       </th>
                     </tr>
                   </thead>
@@ -172,25 +180,29 @@ export default function FilesTable() {
                         </td>
                         <td
                           className={classNames(
-                            'whitespace-nowrap py-4 pr-3 text-sm font-medium',
+                            'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 lg:pl-8',
                             selectedFiles.includes(file) ? 'text-indigo-600' : 'text-gray-900'
                           )}
                         >
                           {file.fileName}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {file.uploadDate.toString()}
+                        <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                          {file.uploadDate.toDateString()}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {file.wordCount}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
                           {file.contentType}
                         </td>
                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                          <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                            Edit<span className="sr-only">, {file.fileName}</span>
-                          </a>
+                          <button
+                            onClick={() => handleDelete([file.metadataId])}
+                            type="button"
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            Delete<span className="sr-only">, {file.fileName}</span>
+                          </button>
                         </td>
                       </tr>
                     ))}

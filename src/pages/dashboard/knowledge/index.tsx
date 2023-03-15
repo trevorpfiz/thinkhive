@@ -34,9 +34,12 @@ const KnowledgePage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <div className="flex flex-row-reverse flex-wrap gap-8">
-        <FileDropzone />
-        <FilesTable />
+      <div className="flex flex-col gap-8">
+        <h1 className="text-2xl font-semibold leading-6">Knowledge Base</h1>
+        <div className="flex flex-col gap-8">
+          <FileDropzone />
+          <FilesTable />
+        </div>
       </div>
     </>
   );
