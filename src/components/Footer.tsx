@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
 import Logo from '@/components/ui/Logo';
-import { Container } from '@/components/Container';
-import { NavLink } from '@/components/NavLink';
+import { Container } from '@/components/ui/Container';
+import { NavLink } from '@/components/ui/NavLink';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
 
 export function Footer() {

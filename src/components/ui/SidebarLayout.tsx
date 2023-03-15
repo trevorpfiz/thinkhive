@@ -3,22 +3,22 @@ import { Dialog, Transition } from '@headlessui/react';
 import {
   AcademicCapIcon,
   Bars3Icon,
-  BeakerIcon,
   ChartBarIcon,
+  CpuChipIcon,
   DocumentDuplicateIcon,
   InformationCircleIcon,
-  Square2StackIcon,
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import Logo from './Logo';
-import UserButton from '@/components/UserButton';
+import UserButton from '@/components/dashboard/UserButton';
 import Link from 'next/link';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: Square2StackIcon },
+  // { name: 'Dashboard', href: '/dashboard', icon: Square2StackIcon },
   { name: 'AI Experts', href: '/dashboard/experts', icon: UsersIcon },
+  { name: 'Brains', href: '/dashboard/brains', icon: CpuChipIcon },
   {
     name: 'Knowledge Base',
     href: '/dashboard/knowledge',
@@ -27,7 +27,6 @@ const navigation = [
   { name: 'Billing and Usage', href: '/dashboard/billing', icon: ChartBarIcon },
   { name: 'Tutorials', href: '/dashboard/tutorials', icon: AcademicCapIcon },
   { name: 'Help Center', href: '/dashboard/help', icon: InformationCircleIcon },
-  { name: 'Test', href: '/dashboard/test', icon: BeakerIcon },
 ];
 
 function classNames(...classes: string[]) {
@@ -167,7 +166,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
           </div>
         </div>
         <div className="flex flex-1 flex-col lg:pl-64">
-          <div className="sticky top-0 z-10 bg-gray-100 pl-1 pt-1 sm:pl-3 sm:pt-3 lg:hidden">
+          <div className="sticky top-0 z-10 bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 lg:hidden">
             <button
               type="button"
               className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
@@ -177,11 +176,8 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <main className="min-h-screen flex-1 bg-gray-100">
-            <div className="py-6">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-              </div>
+          <main className="min-h-screen flex-1 bg-white">
+            <div className="py-12 sm:py-24">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
             </div>
           </main>

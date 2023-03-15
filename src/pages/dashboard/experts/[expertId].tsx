@@ -7,13 +7,20 @@ import Meta from '@/components/seo/Meta';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../../_app';
+import { useRouter } from 'next/router';
+import ExpertBrains from '@/components/dashboard/ExpertBrains';
+import AvailableBrains from '@/components/dashboard/AvailableBrains';
+import ExpertHeader from '@/components/dashboard/ExpertHeader';
 
-const DashboardPage: NextPageWithLayout = () => {
+const ExpertPage: NextPageWithLayout = () => {
+  const router = useRouter();
+  const expertId = router.query.expertId as string;
+
   return (
     <>
       <Head>
-        <title>Dashboard - ThinkHive</title>
+        <title>Expert - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -21,12 +28,18 @@ const DashboardPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Coming soon!</h1>
+      <div className="flex flex-col gap-16">
+        <ExpertHeader expertId={expertId} />
+        <div className="flex flex-row gap-8">
+          <ExpertBrains expertId={expertId} />
+          <AvailableBrains expertId={expertId} />
+        </div>
+      </div>
     </>
   );
 };
 
-DashboardPage.getLayout = function getLayout(page: ReactElement) {
+ExpertPage.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout>{page}</SidebarLayout>;
 };
 
@@ -49,4 +62,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default DashboardPage;
+export default ExpertPage;

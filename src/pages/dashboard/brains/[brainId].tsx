@@ -7,13 +7,20 @@ import Meta from '@/components/seo/Meta';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../../_app';
+import { useRouter } from 'next/router';
+import BrainFiles from '@/components/dashboard/BrainFiles';
+import AvailableFiles from '@/components/dashboard/AvailableFiles';
+import BrainHeader from '@/components/dashboard/BrainHeader';
 
-const DashboardPage: NextPageWithLayout = () => {
+const BrainPage: NextPageWithLayout = () => {
+  const router = useRouter();
+  const brainId = router.query.brainId as string;
+
   return (
     <>
       <Head>
-        <title>Dashboard - ThinkHive</title>
+        <title>Brain - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -21,12 +28,18 @@ const DashboardPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Coming soon!</h1>
+      <div className="flex flex-col gap-16">
+        <BrainHeader brainId={brainId} />
+        <div className="flex flex-wrap gap-8">
+          <BrainFiles brainId={brainId} />
+          <AvailableFiles brainId={brainId} />
+        </div>
+      </div>
     </>
   );
 };
 
-DashboardPage.getLayout = function getLayout(page: ReactElement) {
+BrainPage.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout>{page}</SidebarLayout>;
 };
 
@@ -49,4 +62,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default DashboardPage;
+export default BrainPage;

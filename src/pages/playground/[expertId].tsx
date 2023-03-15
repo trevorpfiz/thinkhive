@@ -1,20 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { useRef, useState, useEffect } from 'react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-import type { ReactElement } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 
+import { getServerSession } from 'next-auth';
+import { useRouter } from 'next/router';
+
+import { authOptions } from '@/server/auth';
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/server/auth';
-import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
 import { api } from '@/utils/api';
 
-const TestPage: NextPageWithLayout = () => {
+const ExpertPlayground = () => {
+  const router = useRouter();
+  const expertId = router.query.expertId as string;
+
+  const {
+    isLoading: isExpertLoading,
+    isError,
+    data: expert,
+    error,
+  } = api.expert.getWidgetExpert.useQuery({ id: expertId }, { enabled: !!expertId });
+
   const { mutateAsync, data, isLoading } = api.chat.getAnswer.useMutation();
 
   const [query, setQuery] = useState<string>('');
@@ -48,10 +54,14 @@ const TestPage: NextPageWithLayout = () => {
     }
   };
 
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <>
       <Head>
-        <title>Test - ThinkHive</title>
+        <title>Playground - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -62,7 +72,7 @@ const TestPage: NextPageWithLayout = () => {
       <section className="container mx-auto max-w-xl pt-4 pb-6 md:pt-8 md:pb-10 lg:pt-10 lg:pb-16">
         <div className="mx-auto flex flex-col gap-4">
           <h1 className="mb-3 text-center text-2xl font-bold leading-[1.1] tracking-tighter">
-            Chat With Your Notion Docs
+            Chat With our ThinkHive Expert
           </h1>
           <div className="flex w-full max-w-xl items-center space-x-2">
             <input
@@ -95,7 +105,7 @@ const TestPage: NextPageWithLayout = () => {
               </>
             </div>
           )}
-          {!isLoading && data?.response.text.length > 0 && (
+          {!isLoading && data?.response?.text?.length > 0 && (
             <>
               <div className="mt-4 rounded-md border border-neutral-300 p-5">
                 <h2 className="text-center text-xl font-bold leading-[1.1] tracking-tighter">
@@ -113,27 +123,23 @@ const TestPage: NextPageWithLayout = () => {
   );
 };
 
-TestPage.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout>{page}</SidebarLayout>;
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const session = await getServerSession(context.req, context.res, authOptions);
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: '/login',
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// };
 
-  return {
-    props: {
-      session,
-    },
-  };
-};
-
-export default TestPage;
+export default ExpertPlayground;

@@ -1,5 +1,6 @@
-import Button from '@/components/Button';
-import { Container } from '@/components/Container';
+import Button from '@/components/ui/Button';
+import { Container } from '@/components/ui/Container';
+import { signIn } from 'next-auth/react';
 
 export function Hero() {
   return (
@@ -23,7 +24,7 @@ export function Hero() {
         knowledge base, providing answers to your company-specific inquiries anytime, anywhere!
       </p>
       <div className="mt-10 flex justify-center gap-x-6">
-        <Button href="/login" intent="solidSlate" size="xl">
+        <Button onClick={() => signIn()} intent="solidSlate" size="xl">
           Build Your Expert
         </Button>
       </div>

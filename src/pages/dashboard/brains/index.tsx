@@ -4,12 +4,12 @@ import type { ReactElement } from 'react';
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
 import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
-import FileDropzone from '@/components/FileDropzone';
+import type { NextPageWithLayout } from '../../_app';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import BrainsTable from '@/components/dashboard/BrainsTable';
 
-const KnowledgePage: NextPageWithLayout = () => {
+const BrainsPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { status } = useSession({
     required: true,
@@ -25,7 +25,7 @@ const KnowledgePage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Knowledge - ThinkHive</title>
+        <title>Brains - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -33,13 +33,13 @@ const KnowledgePage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <FileDropzone />
+      <BrainsTable />
     </>
   );
 };
 
-KnowledgePage.getLayout = function getLayout(page: ReactElement) {
+BrainsPage.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout>{page}</SidebarLayout>;
 };
 
-export default KnowledgePage;
+export default BrainsPage;

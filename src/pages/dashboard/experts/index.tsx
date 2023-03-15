@@ -7,7 +7,8 @@ import Meta from '@/components/seo/Meta';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../../_app';
+import ExpertsTable from '@/components/dashboard/ExpertsTable';
 
 const ExpertsPage: NextPageWithLayout = () => {
   return (
@@ -21,7 +22,7 @@ const ExpertsPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Test</h1>
+      <ExpertsTable />
     </>
   );
 };

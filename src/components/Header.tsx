@@ -3,10 +3,11 @@ import Link from 'next/link';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
-import Button from '@/components/Button';
-import { Container } from '@/components/Container';
-import { NavLink } from '@/components/NavLink';
+import Button from '@/components/ui/Button';
+import { Container } from '@/components/ui/Container';
+import { NavLink } from '@/components/ui/NavLink';
 import Logo from '@/components/ui/Logo';
+import { signIn } from 'next-auth/react';
 
 function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -74,7 +75,9 @@ function MobileNavigation() {
             <MobileNavLink href="/#features">Features</MobileNavLink>
             <MobileNavLink href="/pricing">Pricing</MobileNavLink>
             <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/login">Log in</MobileNavLink>
+            <Popover.Button onClick={() => signIn()} className="block w-full p-2">
+              Log in
+            </Popover.Button>
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -98,9 +101,14 @@ export function Header() {
           </div>
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
-              <NavLink href="/login">Log in</NavLink>
+              <button
+                onClick={() => signIn()}
+                className="inline-block rounded-lg py-1 px-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+              >
+                Log in
+              </button>
             </div>
-            <Button href="/login" intent="solidBlue">
+            <Button onClick={() => signIn()} intent="solidBlue">
               <span>Get Started</span>
             </Button>
             <div className="-mr-1 md:hidden">

@@ -1,6 +1,10 @@
 import { createTRPCRouter } from '@/server/api/trpc';
 import { openAiPinecone } from '@/server/api/routers/openai-pinecone';
 import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
+import { metadataRouter } from './routers/metadata';
+import { expertRouter } from './routers/expert';
+import { brainRouter } from './routers/brain';
+import { apiCallRouter } from './routers/api-call';
 
 /**
  * This is the primary router for your server.
@@ -10,6 +14,10 @@ import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
 export const appRouter = createTRPCRouter({
   chat: openAiPinecone,
   upload: uploadPinecone,
+  metadata: metadataRouter,
+  expert: expertRouter,
+  brain: brainRouter,
+  apiCall: apiCallRouter,
 });
 
 // export type definition of API
