@@ -1,6 +1,7 @@
 import { api } from '@/utils/api';
 import { calculateExpertsSizes } from '@/utils/word-count';
 import { useEffect, useState } from 'react';
+import StatusBadge from '../ui/StatusBadge';
 
 export default function ExpertsTable() {
   const {
@@ -129,9 +130,7 @@ export default function ExpertsTable() {
                     <div className="text-gray-500">{experts[index]?.brains.length}</div>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
-                    <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                      {`Active`}
-                    </span>
+                    <StatusBadge status={expert.status} />
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                     {`Discord`}

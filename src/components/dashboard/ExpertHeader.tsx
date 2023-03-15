@@ -6,6 +6,8 @@ import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
 import RenameModal from './RenameModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
+import StatusBadge from '../ui/StatusBadge';
+import Button from '../ui/Button';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -53,6 +55,16 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
     },
   });
 
+  const { mutate: toggleStatus } = api.expert.toggleStatus.useMutation({
+    onSuccess() {
+      // Refetch the query after changing status
+      void utils.expert.getExpert.invalidate();
+    },
+    onError: () => {
+      console.error('Error!');
+    },
+  });
+
   const { mutate: deleteExpert } = api.expert.deleteExpert.useMutation({
     onSuccess() {
       // Refetch the query after a successful unassign
@@ -67,6 +79,14 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
     e.preventDefault();
     if (expert?.id) {
       mutate({ id: expert?.id, name: inputValue });
+    }
+
+    setIsModalOpen(false);
+  }
+
+  function handleStatusChange() {
+    if (expert?.status) {
+      toggleStatus({ id: expert?.id });
     }
 
     setIsModalOpen(false);
@@ -114,9 +134,15 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
           </div>
 
           <div className="mt-4 flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
-            <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-0.5 text-sm font-medium text-green-800">
-              Active
-            </span>
+            <StatusBadge status={expert?.status} />
+            <Button
+              href={`/playground/${expertId}`}
+              target="_blank"
+              intent="solidSlate"
+              className="ml-6 rounded-md"
+            >
+              Playground
+            </Button>
             <Menu as="div" className="relative ml-3 inline-block text-left">
               <div>
                 <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -153,13 +179,14 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
                     <Menu.Item>
                       {({ active }) => (
                         <button
+                          onClick={handleStatusChange}
                           type="button"
                           className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                             'flex w-full justify-between px-4 py-2 text-sm'
                           )}
                         >
-                          <span>Deactivate</span>
+                          <span>{expert?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</span>
                         </button>
                       )}
                     </Menu.Item>

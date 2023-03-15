@@ -113,6 +113,7 @@ model Expert {
   updatedAt DateTime @updatedAt
   size      Int? //word count
   domains   String? //comma separated list of domains
+  status    Status   @default(INACTIVE)
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   brains    Brain[]
@@ -138,4 +139,9 @@ model ApiCall {
   userId String
 
   @@index([userId])
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
 }

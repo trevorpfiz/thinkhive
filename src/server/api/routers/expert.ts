@@ -141,6 +141,36 @@ export const expertRouter = createTRPCRouter({
 
       return updatedExpert;
     }),
+  toggleStatus: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      const expert = await ctx.prisma.expert.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!expert) {
+        throw new Error('Expert not found');
+      }
+
+      const updatedExpert = await ctx.prisma.expert.update({
+        where: {
+          id,
+        },
+        data: {
+          status: expert.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE',
+        },
+      });
+
+      return updatedExpert;
+    }),
   deleteExpert: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
