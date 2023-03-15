@@ -55,6 +55,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
   fileMetadata  FileMetadata[]
+
+  brains   Brain[]
+  experts  Expert[]
+  apiCalls ApiCall[]
 }
 
 model VerificationToken {
@@ -81,6 +85,58 @@ model FileMetadata {
   tokenCount   Int?
   wordCount    Int
   uploadDate   DateTime
+  brains       Brain[]
 
   @@index([userId])
 }
+
+model Brain {
+  id        String         @id @default(cuid())
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  size      Int //words
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String
+  files     FileMetadata[]
+  experts   Expert[]
+}
+
+model Expert {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  size      Int //words
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  brains    Brain[]
+  //channels  Channel[] //will need to add platforms/channels to help manage where experts are deployed
+}
+
+model ApiCall {
+  id               String   @id @default(cuid())
+  userId           String
+  timestamp        DateTime
+  endpoint         String //URL of API call, "https://api.openai.com/v1/chat/completions"
+  model            String //ID of the model used, "gpt-3.5-turbo"
+  tokensUsed       Int
+  responseCode     Int //HTTP status code
+  responseTimeMs   Int
+  billingPeriod    String //"2022-01-01/2022-01-30"
+  subscriptionType String //"monthly" or "annual"
+
+  requestBody  String //input text sent to the model??? data storage?
+  responseBody String //response of the model???        data size?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// model Channel {
+// 	id               String   @id @default(cuid())
+//   userId           String
+// 	name      String
+// 	token     String //access token
+// 	createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
