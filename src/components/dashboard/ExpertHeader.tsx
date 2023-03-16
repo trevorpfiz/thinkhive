@@ -117,7 +117,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
         modal={[isDeleteModalOpen, setIsDeleteModalOpen]}
         onSubmit={handleDelete}
       />
-      <div className="rounded-t-lg border-b border-gray-200 py-4 px-2">
+      <div className="border-b border-gray-200 py-4 px-2">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div className="mr-4 inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
           <div className="sm:w-0 sm:flex-1">
@@ -145,7 +145,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
             </Button>
             <Menu as="div" className="relative ml-6 inline-block text-left">
               <div>
-                <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 shadow hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <span className="sr-only">Open options</span>
                   <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
                 </Menu.Button>

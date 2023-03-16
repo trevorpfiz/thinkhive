@@ -32,7 +32,7 @@ export const brainRouter = createTRPCRouter({
         },
       });
     }),
-  getAttachedFiles: protectedProcedure
+  getLearnedFiles: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -52,7 +52,7 @@ export const brainRouter = createTRPCRouter({
         },
       });
     }),
-  getDetachedFiles: protectedProcedure
+  getUnlearnedFiles: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -130,7 +130,7 @@ export const brainRouter = createTRPCRouter({
         },
       });
     }),
-  attachFiles: protectedProcedure
+  learnFiles: protectedProcedure
     .input(
       z.object({
         brainId: z.string(),
@@ -151,7 +151,7 @@ export const brainRouter = createTRPCRouter({
         },
       });
 
-      // FIXME - Calculate the total size of files being attached
+      // FIXME - Calculate the total size of files being learned
       // const totalSize = (await ctx.prisma.fileMetadata.aggregate({
       //   where: {
       //     id: {
@@ -186,7 +186,7 @@ export const brainRouter = createTRPCRouter({
       // Return the updated brains
       return updatedBrains;
     }),
-  detachFiles: protectedProcedure
+  unlearnFiles: protectedProcedure
     .input(
       z.object({
         brainId: z.string(),
@@ -207,7 +207,7 @@ export const brainRouter = createTRPCRouter({
         },
       });
 
-      // FIXME - Calculate the total size of files being detached
+      // FIXME - Calculate the total size of files being unlearned
       // const totalSize = (await ctx.prisma.fileMetadata.aggregate({
       //   where: {
       //     id: {

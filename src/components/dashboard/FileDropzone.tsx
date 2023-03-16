@@ -8,6 +8,7 @@ import convertPdfToText from '@/utils/pdf/convert-pdf';
 import { getPdfMetadata, type PdfMetadata } from '@/utils/pdf/metadata';
 import Button from '../ui/Button';
 import clsx from 'clsx';
+import { IconPdf } from '@tabler/icons-react';
 
 const baseStyle: CSS.Properties = {
   width: '100%',
@@ -171,8 +172,8 @@ export default function FileDropzone() {
 
   return (
     <section className="flex-grow">
-      <div className="overflow-hidden rounded-md border border-solid border-gray-200 bg-white">
-        <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+      <div className="overflow-hidden rounded-md bg-white shadow">
+        <div className="bg-white px-4 pt-5 pb-1 sm:px-6">
           <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
             <div className="ml-4 mt-2">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
@@ -204,8 +205,15 @@ export default function FileDropzone() {
                   <li key={file.name} className="py-4 px-4">
                     <div className="flex items-center space-x-4">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-gray-900">{file.name}</p>
-                        <p className="truncate text-sm text-gray-500">{file.size} bytes</p>
+                        <div className="flex items-center space-x-2">
+                          <IconPdf color="red" size={24} />
+                          <div>
+                            <p className="truncate text-sm font-medium text-gray-900">
+                              {file.name}
+                            </p>
+                            <p className="truncate text-sm text-gray-500">{file.size} bytes</p>
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <button

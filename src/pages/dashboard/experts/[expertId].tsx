@@ -30,7 +30,7 @@ const ExpertPage: NextPageWithLayout = () => {
 
       <div className="flex flex-col gap-16">
         <ExpertHeader expertId={expertId} />
-        <div className="flex flex-row flex-wrap gap-8">
+        <div className="flex flex-wrap gap-8">
           <ExpertBrains expertId={expertId} />
           <AvailableBrains expertId={expertId} />
         </div>

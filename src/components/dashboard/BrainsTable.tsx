@@ -39,9 +39,9 @@ export default function BrainsTable() {
 
   return (
     <div>
-      <div className="sm:flex sm:items-center">
+      <div className="border-b border-gray-200 pb-4 sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">Brains</h1>
+          <h1 className="text-2xl font-semibold leading-6">Brains</h1>
           <p className="mt-2 text-sm text-gray-700">A list of all the brains in your account.</p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">

@@ -1,6 +1,7 @@
 import { api } from '@/utils/api';
 import type { FileMetadata } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
+import Button from '../ui/Button';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -12,15 +13,15 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
     isError,
     data: files,
     error,
-  } = api.brain.getDetachedFiles.useQuery({ id: brainId });
+  } = api.brain.getUnlearnedFiles.useQuery({ id: brainId });
 
   const utils = api.useContext();
 
-  const { mutate: attachMutate } = api.brain.attachFiles.useMutation({
+  const { mutate: learnMutate } = api.brain.learnFiles.useMutation({
     onSuccess() {
-      // Refetch the query after a successful detach
+      // Refetch the query after a successful unlearn
       void utils.brain.getBrain.invalidate();
-      void utils.brain.getDetachedFiles.invalidate();
+      void utils.brain.getUnlearnedFiles.invalidate();
     },
     onError: () => {
       console.error('Error!');
@@ -49,13 +50,13 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
     }
   }
 
-  function handleAttach(metadataIds: string[]) {
-    attachMutate({ brainId, ids: metadataIds });
+  function handleLearn(metadataIds: string[]) {
+    learnMutate({ brainId, ids: metadataIds });
     setSelectedFiles([]);
   }
 
-  function handleBulkAttach() {
-    attachMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
+  function handleBulkLearn() {
+    learnMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
     setSelectedFiles([]);
   }
 
@@ -64,14 +65,14 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
   }
 
   return (
-    <div className="flex-grow px-4 sm:px-6 lg:px-8">
+    <div className="flex-grow rounded-lg bg-white p-4 shadow sm:p-6 lg:p-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold leading-6 text-gray-900">Available knowledge</h2>
         </div>
       </div>
       <div className="mt-8 flow-root">
-        <div className="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
           {isLoading ? (
             <div className="mt-3">
               <>
@@ -84,17 +85,24 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                 </div>
               </>
             </div>
+          ) : files && files.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-4 py-6">
+              <p>Add some files!</p>
+              <Button href="/dashboard/knowledge" intent="solidIndigo">
+                Upload
+              </Button>
+            </div>
           ) : (
             <div className="inline-block min-w-full py-2 align-middle">
               <div className="relative">
                 {selectedFiles.length > 0 && (
                   <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
                     <button
-                      onClick={handleBulkAttach}
+                      onClick={handleBulkLearn}
                       type="button"
                       className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                     >
-                      Bulk attach
+                      Bulk learn
                     </button>
                   </div>
                 )}
@@ -112,7 +120,7 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                       </th>
                       <th
                         scope="col"
-                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                       >
                         Name
                       </th>
@@ -164,7 +172,7 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                           <td
                             className={classNames(
                               fileIdx !== files.length - 1 ? 'border-b border-gray-200' : '',
-                              'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
+                              'whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900'
                             )}
                           >
                             {file.fileName}
@@ -192,11 +200,11 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                             )}
                           >
                             <button
-                              onClick={() => handleAttach([file.id])}
+                              onClick={() => handleLearn([file.id])}
                               type="button"
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Attach<span className="sr-only">, {file.fileName}</span>
+                              Learn<span className="sr-only">, {file.fileName}</span>
                             </button>
                           </td>
                         </tr>

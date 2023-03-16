@@ -16,11 +16,11 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
 
   const utils = api.useContext();
 
-  const { mutate: detachMutate } = api.brain.detachFiles.useMutation({
+  const { mutate: unlearnMutate } = api.brain.unlearnFiles.useMutation({
     onSuccess() {
-      // Refetch the query after a successful detach
+      // Refetch the query after a successful unlearn
       void utils.brain.getBrain.invalidate();
-      void utils.brain.getDetachedFiles.invalidate();
+      void utils.brain.getUnlearnedFiles.invalidate();
     },
     onError: () => {
       console.error('Error!');
@@ -62,13 +62,13 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
     }
   }
 
-  function handleDetach(metadataIds: string[]) {
-    detachMutate({ brainId, ids: metadataIds });
+  function handleUnlearn(metadataIds: string[]) {
+    unlearnMutate({ brainId, ids: metadataIds });
     setSelectedFiles([]);
   }
 
-  function handleBulkDetach() {
-    detachMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
+  function handleBulkUnlearn() {
+    unlearnMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
     setSelectedFiles([]);
   }
 
@@ -77,16 +77,14 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
   }
 
   return (
-    <div className="flex-grow px-4 sm:px-6 lg:px-8">
+    <div className="flex-grow rounded-lg bg-white p-4 shadow sm:p-6 lg:p-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h2 className="text-base font-semibold leading-6 text-gray-900">
-            Brain contains {totalSize} words
-          </h2>
+          <h2 className="text-base font-semibold leading-6">Brain contains {totalSize} words</h2>
         </div>
       </div>
       <div className="mt-8 flow-root">
-        <div className="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
           {isBrainLoading ? (
             <div className="mt-3">
               <>
@@ -105,11 +103,11 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                 {selectedFiles.length > 0 && (
                   <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
                     <button
-                      onClick={handleBulkDetach}
+                      onClick={handleBulkUnlearn}
                       type="button"
                       className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                     >
-                      Bulk attach
+                      Bulk unlearn
                     </button>
                   </div>
                 )}
@@ -127,7 +125,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                       </th>
                       <th
                         scope="col"
-                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                       >
                         Brain
                       </th>
@@ -147,7 +145,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                         scope="col"
                         className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
                       >
-                        <span className="sr-only">Detach</span>
+                        <span className="sr-only">Unlearn</span>
                       </th>
                     </tr>
                   </thead>
@@ -182,7 +180,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                               fileIdx !== brainData.files.length - 1
                                 ? 'border-b border-gray-200'
                                 : '',
-                              'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
+                              'whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900'
                             )}
                           >
                             {file.fileName}
@@ -216,11 +214,11 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                             )}
                           >
                             <button
-                              onClick={() => handleDetach([file.id])}
+                              onClick={() => handleUnlearn([file.id])}
                               type="button"
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Detach<span className="sr-only">, {file.fileName}</span>
+                              Unlearn<span className="sr-only">, {file.fileName}</span>
                             </button>
                           </td>
                         </tr>

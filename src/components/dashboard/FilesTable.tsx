@@ -75,14 +75,14 @@ export default function FilesTable() {
   }
 
   return (
-    <div className="flex-grow px-4 sm:px-6 lg:px-8">
+    <div className="flex-grow rounded-lg bg-white p-4 shadow sm:p-6 lg:p-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h2 className="text-base font-semibold leading-6 text-gray-900">Files</h2>
+          <h2 className="text-base font-semibold leading-6">Files</h2>
         </div>
       </div>
       <div className="mt-8 flow-root">
-        <div className="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
           {metadataLoading ? (
             <div className="mt-3">
               <>
@@ -97,23 +97,14 @@ export default function FilesTable() {
             </div>
           ) : (
             <div className="inline-block min-w-full py-2 align-middle">
-              <div className="relative">
-                {selectedFiles.length > 0 && (
-                  <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
-                    <button
-                      onClick={handleBulkDelete}
-                      type="button"
-                      className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
-                    >
-                      Bulk delete
-                    </button>
-                  </div>
-                )}
-
+              <div className="relative max-h-96 overflow-auto">
                 <table className="min-w-full border-separate border-spacing-0">
                   <thead>
                     <tr>
-                      <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
+                      <th
+                        scope="col"
+                        className="sticky top-0 z-20 bg-white bg-opacity-75 py-3.5 pr-3 backdrop-blur backdrop-filter"
+                      >
                         <input
                           type="checkbox"
                           className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
@@ -121,10 +112,19 @@ export default function FilesTable() {
                           checked={checked}
                           onChange={toggleAll}
                         />
+                        {selectedFiles.length > 0 && (
+                          <button
+                            onClick={handleBulkDelete}
+                            type="button"
+                            className="absolute left-12 top-2.5 z-20 inline-flex min-w-[92px] items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
+                          >
+                            Bulk delete
+                          </button>
+                        )}
                       </th>
                       <th
                         scope="col"
-                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                        className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                       >
                         Name
                       </th>
@@ -180,19 +180,19 @@ export default function FilesTable() {
                         </td>
                         <td
                           className={classNames(
-                            'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 lg:pl-8',
+                            'whitespace-nowrap py-4 pr-3 text-sm font-medium',
                             selectedFiles.includes(file) ? 'text-indigo-600' : 'text-gray-900'
                           )}
                         >
                           {file.fileName}
                         </td>
-                        <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                        <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
                           {file.uploadDate.toDateString()}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {file.wordCount}
                         </td>
-                        <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                        <td className="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell">
                           {file.contentType}
                         </td>
                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">

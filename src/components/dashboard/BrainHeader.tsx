@@ -6,6 +6,7 @@ import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
 import RenameModal from './RenameModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
+import Button from '../ui/Button';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -50,7 +51,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
 
   const { mutate: deleteBrain } = api.brain.deleteBrain.useMutation({
     onSuccess() {
-      // Refetch the query after a successful detach
+      // Refetch the query after a successful unlearn
       void utils.brain.getBrains.invalidate();
     },
     onError: () => {
@@ -92,7 +93,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
         modal={[isDeleteModalOpen, setIsDeleteModalOpen]}
         onSubmit={handleDelete}
       />
-      <div className="border-b border-gray-200 pb-5">
+      <div className="border-b border-gray-200 py-4 px-2">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div className="mr-4 inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
           <div className="sm:w-0 sm:flex-1">
@@ -111,12 +112,17 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
           </div>
 
           <div className="mt-4 flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
-            <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-0.5 text-sm font-medium text-green-800">
-              Active
-            </span>
-            <Menu as="div" className="relative ml-3 inline-block text-left">
+            <Button
+              href={`/dashboard/experts`}
+              target="_blank"
+              intent="solidSlate"
+              className="ml-6 rounded-md"
+            >
+              Attach
+            </Button>
+            <Menu as="div" className="relative ml-6 inline-block text-left">
               <div>
-                <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 shadow hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <span className="sr-only">Open options</span>
                   <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
                 </Menu.Button>
@@ -144,19 +150,6 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
                           )}
                         >
                           <span>Rename</span>
-                        </button>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          type="button"
-                          className={classNames(
-                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                            'flex w-full justify-between px-4 py-2 text-sm'
-                          )}
-                        >
-                          <span>Deactivate</span>
                         </button>
                       )}
                     </Menu.Item>
