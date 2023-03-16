@@ -21,7 +21,7 @@ const BillingPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Test</h1>
+      <h1>Billing</h1>
     </>
   );
 };

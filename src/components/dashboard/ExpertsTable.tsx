@@ -1,6 +1,8 @@
 import { api } from '@/utils/api';
 import { calculateExpertsSizes } from '@/utils/word-count';
 import { useEffect, useState } from 'react';
+import LoadingBars from '../ui/LoadingBars';
+import LoadingDots from '../ui/LoadingDots';
 import StatusBadge from '../ui/StatusBadge';
 
 export default function ExpertsTable() {
@@ -48,7 +50,7 @@ export default function ExpertsTable() {
       <div className="border-b border-gray-200 pb-4 sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold leading-6">Experts</h1>
-          <p className="mt-2 text-sm text-gray-700">A list of all the experts in your account.</p>
+          <p className="mt-2 text-sm text-gray-700">A list of all the experts in your account</p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
@@ -62,17 +64,7 @@ export default function ExpertsTable() {
       </div>
       <div className="-mx-4 mt-8 sm:-mx-0">
         {expertsLoading ? (
-          <div className="mt-3">
-            <>
-              <div className="mt-2 animate-pulse">
-                <div className="h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-              </div>
-            </>
-          </div>
+          <LoadingBars />
         ) : (
           <table className="min-w-full divide-y divide-gray-300">
             <thead className="px-2">
@@ -87,19 +79,19 @@ export default function ExpertsTable() {
                   scope="col"
                   className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
                 >
-                  Knowledge
+                  Brains
                 </th>
                 <th
                   scope="col"
                   className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
                 >
-                  Status
+                  Knowledge
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Platform
+                  Status
                 </th>
                 <th scope="col" className="relative py-3.5 pl-3 pr-4">
                   <span className="sr-only">Edit</span>
@@ -110,7 +102,7 @@ export default function ExpertsTable() {
               {experts.map((expert, index) => (
                 <tr key={expert.id}>
                   <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none">
-                    <div className="hidden items-center sm:flex">
+                    <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0">
                         <div className="inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
                       </div>
@@ -118,22 +110,24 @@ export default function ExpertsTable() {
                         <div className="font-medium text-gray-900">{expert.name}</div>
                       </div>
                     </div>
-                    <dl className="font-normal sm:hidden">
+                    {/* <dl className="font-normal sm:hidden">
                       <dt className="sr-only">Expert</dt>
                       <dd className="mt-1 truncate text-gray-700">{expert.name}</dd>
-                      <dt className="sr-only sm:hidden">Platforms</dt>
-                      <dd className="mt-1 truncate text-gray-500 sm:hidden">{`Discord`}</dd>
-                    </dl>
+                      <dt className="sr-only sm:hidden">Status</dt>
+                      <dd className="mt-1 truncate text-gray-500 sm:hidden">
+                        <StatusBadge status={expert.status} />
+                      </dd>
+                    </dl> */}
+                  </td>
+                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                    {experts[index]?.brains.length}
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                     <div className="text-gray-900">{brainSizes[index]}</div>
-                    <div className="text-gray-500">{experts[index]?.brains.length}</div>
+                    <div className="text-gray-500">words</div>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     <StatusBadge status={expert.status} />
-                  </td>
-                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                    {`Discord`}
                   </td>
                   <td className="py-4 pl-3 pr-4 text-right text-sm font-medium">
                     <a

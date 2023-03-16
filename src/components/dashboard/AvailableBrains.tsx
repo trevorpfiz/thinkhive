@@ -1,6 +1,7 @@
 import { api } from '@/utils/api';
 import { calculateBrainSizes } from '@/utils/word-count';
 import { useEffect, useState } from 'react';
+import LoadingBars from '../ui/LoadingBars';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -56,17 +57,7 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
       <div className="mt-8 flow-root">
         <div className="-my-2">
           {isLoading ? (
-            <div className="mt-3">
-              <>
-                <div className="mt-2 animate-pulse">
-                  <div className="h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                </div>
-              </>
-            </div>
+            <LoadingBars />
           ) : (
             <div className="inline-block min-w-full py-2 align-middle">
               <table className="min-w-full border-separate border-spacing-0">

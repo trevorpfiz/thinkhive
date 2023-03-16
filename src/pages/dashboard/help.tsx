@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-attachment */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useRef, useState, useEffect } from 'react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -13,6 +13,7 @@ import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
 import { api } from '@/utils/api';
+import LoadingBars from '@/components/ui/LoadingBars';
 
 const HelpPage: NextPageWithLayout = () => {
   const { mutateAsync, data, isLoading } = api.chat.getAnswer.useMutation();
@@ -82,19 +83,7 @@ const HelpPage: NextPageWithLayout = () => {
               Search
             </button>
           </div>
-          {isLoading && (
-            <div className="mt-3">
-              <>
-                <div className="mt-2 animate-pulse">
-                  <div className="h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                </div>
-              </>
-            </div>
-          )}
+          {isLoading && <LoadingBars />}
           {!isLoading && data?.response.text.length > 0 && (
             <>
               <div className="mt-4 rounded-md border border-neutral-300 p-5">

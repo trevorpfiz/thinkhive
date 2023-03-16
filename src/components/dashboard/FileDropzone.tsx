@@ -46,9 +46,18 @@ const hoveredStyle: CSS.Properties = {
   borderColor: '#2196f3',
 };
 
+const maxFileSize = 4 * 1024 * 1024; // 4 MB
 const maxLength = 20;
 
-function nameLengthValidator(file: File) {
+function fileValidator(file: File) {
+  // check file size under 4MB
+  if (file.size > maxFileSize) {
+    return {
+      code: 'file-too-large',
+      message: `File size is larger than ${maxFileSize / (1024 * 1024)} MB`,
+    };
+  }
+  // check file name length under 20 characters
   if (file.name.length > maxLength) {
     return {
       code: 'name-too-large',
@@ -115,7 +124,7 @@ export default function FileDropzone() {
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject, inputRef } =
     useDropzone({
-      validator: nameLengthValidator,
+      validator: fileValidator,
       accept: {
         'application/pdf': ['.pdf'],
       },

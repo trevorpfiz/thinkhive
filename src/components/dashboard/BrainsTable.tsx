@@ -1,6 +1,7 @@
 import { api } from '@/utils/api';
 import { calculateBrainSizes } from '@/utils/word-count';
 import { useEffect, useState } from 'react';
+import LoadingBars from '../ui/LoadingBars';
 
 export default function BrainsTable() {
   const { isLoading: brainsLoading, isError, data: brains, error } = api.brain.getBrains.useQuery();
@@ -56,17 +57,7 @@ export default function BrainsTable() {
       </div>
       <div className="-mx-4 mt-8 sm:-mx-0">
         {brainsLoading ? (
-          <div className="mt-3">
-            <>
-              <div className="mt-2 animate-pulse">
-                <div className="h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                <div className="mt-2 h-4 rounded bg-gray-300"></div>
-              </div>
-            </>
-          </div>
+          <LoadingBars />
         ) : (
           <table className="min-w-full divide-y divide-gray-300">
             <thead className="px-2">
@@ -85,16 +76,16 @@ export default function BrainsTable() {
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
                   Size
                 </th>
-                <th
+                {/* <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
                   Attachments
-                </th>
+                </th> */}
                 <th scope="col" className="relative py-3.5 pl-3 pr-4">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -104,7 +95,7 @@ export default function BrainsTable() {
               {brains.map((brain, index) => (
                 <tr key={brain.id}>
                   <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none">
-                    <div className="hidden items-center sm:flex">
+                    <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0">
                         <div className="inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
                       </div>
@@ -112,24 +103,19 @@ export default function BrainsTable() {
                         <div className="font-medium text-gray-900">{brain.name}</div>
                       </div>
                     </div>
-                    <dl className="font-normal sm:hidden">
+                    {/* <dl className="font-normal sm:hidden">
                       <dt className="sr-only">Brain</dt>
                       <dd className="mt-1 truncate text-gray-700">{brain.name}</dd>
                       <dt className="sr-only sm:hidden">Size</dt>
                       <dd className="mt-1 truncate text-gray-500 sm:hidden">{brainSizes[index]}</dd>
-                    </dl>
+                    </dl> */}
                   </td>
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                     <div className="text-gray-900">{brain.updatedAt.toDateString()}</div>
-                    <div className="text-gray-500">{brain.createdAt.toDateString()}</div>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
-                    <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                      {brainSizes[index]}
-                    </span>
-                  </td>
-                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                    {brainSizes[index]}
+                    <div className="text-gray-900">{brainSizes[index]}</div>
+                    <div className="text-gray-500">words</div>
                   </td>
                   <td className="py-4 pl-3 pr-4 text-right text-sm font-medium">
                     <a

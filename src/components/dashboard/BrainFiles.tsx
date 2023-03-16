@@ -1,6 +1,7 @@
 import { api } from '@/utils/api';
 import type { FileMetadata } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
+import LoadingBars from '../ui/LoadingBars';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -86,35 +87,17 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
       <div className="mt-8 flow-root">
         <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
           {isBrainLoading ? (
-            <div className="mt-3">
-              <>
-                <div className="mt-2 animate-pulse">
-                  <div className="h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                </div>
-              </>
-            </div>
+            <LoadingBars />
           ) : (
             <div className="inline-block min-w-full py-2 align-middle">
-              <div className="relative">
-                {selectedFiles.length > 0 && (
-                  <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
-                    <button
-                      onClick={handleBulkUnlearn}
-                      type="button"
-                      className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
-                    >
-                      Bulk unlearn
-                    </button>
-                  </div>
-                )}
+              <div className="relative max-h-[100px] overflow-auto">
                 <table className="min-w-full border-separate border-spacing-0">
                   <thead>
                     <tr>
-                      <th scope="col" className="relative px-7 sm:w-12 sm:px-6">
+                      <th
+                        scope="col"
+                        className="sticky top-0 z-20 bg-white bg-opacity-75 py-3.5 pr-3 backdrop-blur backdrop-filter"
+                      >
                         <input
                           type="checkbox"
                           className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
@@ -122,6 +105,17 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                           checked={checked}
                           onChange={toggleAll}
                         />
+                        {selectedFiles.length > 0 && (
+                          <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
+                            <button
+                              onClick={handleBulkUnlearn}
+                              type="button"
+                              className="absolute left-0 top-2.5 z-20 inline-flex min-w-[100px] items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
+                            >
+                              Bulk unlearn
+                            </button>
+                          </div>
+                        )}
                       </th>
                       <th
                         scope="col"
@@ -157,7 +151,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                           key={file.id}
                           className={selectedFiles.includes(file) ? 'bg-gray-50' : undefined}
                         >
-                          <td className="relative px-7 sm:w-12 sm:px-6">
+                          <td className="relative px-4 sm:w-12 sm:px-6">
                             {selectedFiles.includes(file) && (
                               <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
                             )}

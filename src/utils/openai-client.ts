@@ -4,7 +4,7 @@ if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OpenAI Credentials');
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-attachment, @typescript-eslint/no-unsafe-call
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 export const openai = new OpenAI({
   temperature: 0,
   maxTokens: 150,
