@@ -24,6 +24,9 @@ const navigation = [
     href: '/dashboard/knowledge',
     icon: DocumentDuplicateIcon,
   },
+];
+
+const navigationTwo = [
   { name: 'Billing and Usage', href: '/dashboard/billing', icon: ChartBarIcon },
   { name: 'Tutorials', href: '/dashboard/tutorials', icon: AcademicCapIcon },
   { name: 'Help Center', href: '/dashboard/help', icon: InformationCircleIcon },
@@ -95,12 +98,12 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                     </div>
                   </Transition.Child>
                   <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
-                    <div className="flex flex-shrink-0 items-center px-4">
+                    <div className="flex flex-shrink-0 items-center px-6">
                       <Link href="/">
                         <Logo height={28} />
                       </Link>
                     </div>
-                    <nav className="mt-5 space-y-1 px-2">
+                    <nav className="mt-10 space-y-1 px-4">
                       {navigation.map((item) => (
                         <a
                           key={item.name}
@@ -114,6 +117,25 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                         >
                           <item.icon
                             className="mr-4 h-6 w-6 flex-shrink-0 text-gray-400"
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </a>
+                      ))}
+                      <hr className="my-3 h-0 w-full border-b border-gray-200" />
+                      {navigationTwo.map((item) => (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className={classNames(
+                            item.href === currentRoute
+                              ? 'bg-gray-200'
+                              : 'hover:bg-gray-100 hover:bg-opacity-75',
+                            'group flex items-center rounded-md px-2 py-2 text-base font-medium'
+                          )}
+                        >
+                          <item.icon
+                            className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400"
                             aria-hidden="true"
                           />
                           {item.name}
@@ -136,12 +158,12 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex min-h-0 flex-1 flex-col bg-white">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-              <div className="flex flex-shrink-0 items-center px-4">
+              <div className="flex flex-shrink-0 items-center px-6">
                 <Link href="/">
                   <Logo height={28} />
                 </Link>
               </div>
-              <nav className="mt-5 flex-1 space-y-1 px-2">
+              <nav className="mt-8 flex-1 space-y-1 px-4">
                 {navigation.map((item) => (
                   <a
                     key={item.name}
@@ -150,7 +172,26 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                       item.href === currentRoute
                         ? 'bg-gray-200'
                         : 'hover:bg-gray-100 hover:bg-opacity-75',
-                      'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
+                      'group flex items-center rounded-md px-2 py-2 text-base font-medium'
+                    )}
+                  >
+                    <item.icon
+                      className="mr-3 h-6 w-6 flex-shrink-0 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </a>
+                ))}
+                <hr className="my-3 h-0 w-full border-b border-gray-200" />
+                {navigationTwo.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className={classNames(
+                      item.href === currentRoute
+                        ? 'bg-gray-200'
+                        : 'hover:bg-gray-100 hover:bg-opacity-75',
+                      'group flex items-center rounded-md px-2 py-2 text-base font-medium'
                     )}
                   >
                     <item.icon

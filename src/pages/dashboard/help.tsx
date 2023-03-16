@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-attachment */
 import { useRef, useState, useEffect } from 'react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';

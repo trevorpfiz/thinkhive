@@ -16,11 +16,11 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
 
   const utils = api.useContext();
 
-  const { mutate: unassignMutate } = api.brain.unassignFiles.useMutation({
+  const { mutate: detachMutate } = api.brain.detachFiles.useMutation({
     onSuccess() {
-      // Refetch the query after a successful unassign
+      // Refetch the query after a successful detach
       void utils.brain.getBrain.invalidate();
-      void utils.brain.getUnassignedFiles.invalidate();
+      void utils.brain.getDetachedFiles.invalidate();
     },
     onError: () => {
       console.error('Error!');
@@ -62,13 +62,13 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
     }
   }
 
-  function handleUnassign(metadataIds: string[]) {
-    unassignMutate({ brainId, ids: metadataIds });
+  function handleDetach(metadataIds: string[]) {
+    detachMutate({ brainId, ids: metadataIds });
     setSelectedFiles([]);
   }
 
-  function handleBulkUnassign() {
-    unassignMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
+  function handleBulkDetach() {
+    detachMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
     setSelectedFiles([]);
   }
 
@@ -105,11 +105,11 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                 {selectedFiles.length > 0 && (
                   <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
                     <button
-                      onClick={handleBulkUnassign}
+                      onClick={handleBulkDetach}
                       type="button"
                       className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                     >
-                      Bulk assign
+                      Bulk attach
                     </button>
                   </div>
                 )}
@@ -147,7 +147,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                         scope="col"
                         className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
                       >
-                        <span className="sr-only">Unassign</span>
+                        <span className="sr-only">Detach</span>
                       </th>
                     </tr>
                   </thead>
@@ -216,11 +216,11 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
                             )}
                           >
                             <button
-                              onClick={() => handleUnassign([file.id])}
+                              onClick={() => handleDetach([file.id])}
                               type="button"
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Unassign<span className="sr-only">, {file.fileName}</span>
+                              Detach<span className="sr-only">, {file.fileName}</span>
                             </button>
                           </td>
                         </tr>

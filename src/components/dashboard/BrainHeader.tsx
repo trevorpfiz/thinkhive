@@ -50,7 +50,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
 
   const { mutate: deleteBrain } = api.brain.deleteBrain.useMutation({
     onSuccess() {
-      // Refetch the query after a successful unassign
+      // Refetch the query after a successful detach
       void utils.brain.getBrains.invalidate();
     },
     onError: () => {

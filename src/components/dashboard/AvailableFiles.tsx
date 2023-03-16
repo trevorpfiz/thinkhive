@@ -12,15 +12,15 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
     isError,
     data: files,
     error,
-  } = api.brain.getUnassignedFiles.useQuery({ id: brainId });
+  } = api.brain.getDetachedFiles.useQuery({ id: brainId });
 
   const utils = api.useContext();
 
-  const { mutate: assignMutate } = api.brain.assignFiles.useMutation({
+  const { mutate: attachMutate } = api.brain.attachFiles.useMutation({
     onSuccess() {
-      // Refetch the query after a successful unassign
+      // Refetch the query after a successful detach
       void utils.brain.getBrain.invalidate();
-      void utils.brain.getUnassignedFiles.invalidate();
+      void utils.brain.getDetachedFiles.invalidate();
     },
     onError: () => {
       console.error('Error!');
@@ -49,13 +49,13 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
     }
   }
 
-  function handleAssign(metadataIds: string[]) {
-    assignMutate({ brainId, ids: metadataIds });
+  function handleAttach(metadataIds: string[]) {
+    attachMutate({ brainId, ids: metadataIds });
     setSelectedFiles([]);
   }
 
-  function handleBulkAssign() {
-    assignMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
+  function handleBulkAttach() {
+    attachMutate({ brainId, ids: selectedFiles.map((file) => file.id) });
     setSelectedFiles([]);
   }
 
@@ -90,11 +90,11 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                 {selectedFiles.length > 0 && (
                   <div className="absolute top-0 left-14 flex h-12 items-center space-x-3 bg-white sm:left-12">
                     <button
-                      onClick={handleBulkAssign}
+                      onClick={handleBulkAttach}
                       type="button"
                       className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
                     >
-                      Bulk assign
+                      Bulk attach
                     </button>
                   </div>
                 )}
@@ -192,11 +192,11 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                             )}
                           >
                             <button
-                              onClick={() => handleAssign([file.id])}
+                              onClick={() => handleAttach([file.id])}
                               type="button"
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Assign<span className="sr-only">, {file.fileName}</span>
+                              Attach<span className="sr-only">, {file.fileName}</span>
                             </button>
                           </td>
                         </tr>

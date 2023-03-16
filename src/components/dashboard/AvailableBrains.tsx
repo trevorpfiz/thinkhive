@@ -12,22 +12,22 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
     isError,
     data: brains,
     error,
-  } = api.expert.getUnassignedBrains.useQuery({ id: expertId });
+  } = api.expert.getDetachedBrains.useQuery({ id: expertId });
 
   const utils = api.useContext();
 
-  const { mutate } = api.expert.assignBrain.useMutation({
+  const { mutate } = api.expert.attachBrain.useMutation({
     onSuccess() {
-      // Refetch the query after a successful assign
+      // Refetch the query after a successful attach
       void utils.expert.getExpert.invalidate();
-      void utils.expert.getUnassignedBrains.invalidate();
+      void utils.expert.getDetachedBrains.invalidate();
     },
     onError: () => {
       console.error('Error!');
     },
   });
 
-  function handleAssign(brainId: string) {
+  function handleAttach(brainId: string) {
     mutate({ expertId, brainId });
   }
 
@@ -47,14 +47,14 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
   }
 
   return (
-    <div className="flex-grow px-4 sm:px-6 lg:px-8">
+    <div className="flex-grow rounded-lg bg-white p-4 sm:p-6 lg:p-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold leading-6 text-gray-900">Available Brains</h2>
         </div>
       </div>
       <div className="mt-8 flow-root">
-        <div className="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="-my-2">
           {isLoading ? (
             <div className="mt-3">
               <>
@@ -74,21 +74,21 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                   <tr>
                     <th
                       scope="col"
-                      className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                      className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                     >
                       Name
                     </th>
                     <th
                       scope="col"
-                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell"
                     >
                       Updated
                     </th>
                     <th
                       scope="col"
-                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell"
+                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
                     >
-                      Size
+                      Words
                     </th>
                     <th
                       scope="col"
@@ -104,7 +104,7 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                       <td
                         className={classNames(
                           brainIdx !== brains.length - 1 ? 'border-b border-gray-200' : '',
-                          'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8'
+                          'whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900'
                         )}
                       >
                         {brain.name}
@@ -112,7 +112,7 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                       <td
                         className={classNames(
                           brainIdx !== brains.length - 1 ? 'border-b border-gray-200' : '',
-                          'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell'
+                          'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 xl:table-cell'
                         )}
                       >
                         {brain.updatedAt.toDateString()}
@@ -120,7 +120,7 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                       <td
                         className={classNames(
                           brainIdx !== brains.length - 1 ? 'border-b border-gray-200' : '',
-                          'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell'
+                          'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell'
                         )}
                       >
                         {brainSizes[brainIdx]}
@@ -132,11 +132,11 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                         )}
                       >
                         <button
-                          onClick={() => handleAssign(brain.id)}
+                          onClick={() => handleAttach(brain.id)}
                           type="button"
                           className="text-indigo-600 hover:text-indigo-900"
                         >
-                          Assign<span className="sr-only">, {brain.name}</span>
+                          Attach<span className="sr-only">, {brain.name}</span>
                         </button>
                       </td>
                     </tr>

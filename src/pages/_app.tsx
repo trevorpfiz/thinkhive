@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-attachment */
 import 'focus-visible';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
