@@ -2,11 +2,14 @@
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
+
+import { api } from '@/utils/api';
 import RenameModal from './RenameModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import Button from '../ui/Button';
+import Notification from '../ui/Notification';
+import useNotification from '@/hooks/useNotification';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -39,6 +42,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
       return { prevData };
     },
     onError(err, newPost, ctx) {
+      showErrorNotification('Error Renaming Brain', err.message);
       // If the mutation fails, use the context-value from onMutate
       // @ts-ignore
       utils.brain.getBrain.setData(undefined, ctx?.prevData);
@@ -54,11 +58,15 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
       // Refetch the query after a successful unlearn
       void utils.brain.getBrains.invalidate();
     },
-    onError: () => {
-      console.error('Error!');
+    onError: (errorDelete) => {
+      showErrorNotification('Error Deleting Brain', errorDelete.message);
     },
   });
 
+  // notifications
+  const { notification, showErrorNotification } = useNotification();
+
+  // handlers
   function handleRename(e: React.FormEvent<HTMLFormElement>, inputValue: string) {
     e.preventDefault();
     if (brain?.id) {
@@ -84,6 +92,16 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
 
   return (
     <>
+      {notification.show && (
+        <Notification
+          intent={notification.intent}
+          message={notification.message}
+          description={notification.description}
+          show={notification.show}
+          onClose={notification.onClose}
+          timeout={notification.timeout}
+        />
+      )}
       <RenameModal
         modal={[isModalOpen, setIsModalOpen]}
         formData={[formData, setFormData]}

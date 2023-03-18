@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useCallback, useMemo, useState, RefObject, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { type FileRejection, useDropzone } from 'react-dropzone';
 import type * as CSS from 'csstype';
+import { IconPdf } from '@tabler/icons-react';
+import clsx from 'clsx';
 
 import { api } from '@/utils/api';
 import convertPdfToText from '@/utils/pdf/convert-pdf';
 import { getPdfMetadata, type PdfMetadata } from '@/utils/pdf/metadata';
 import Button from '../ui/Button';
-import clsx from 'clsx';
-import { IconPdf } from '@tabler/icons-react';
+import Notification from '../ui/Notification';
+import useNotification from '@/hooks/useNotification';
 
 const baseStyle: CSS.Properties = {
   width: '100%',
@@ -47,7 +49,7 @@ const hoveredStyle: CSS.Properties = {
 };
 
 const maxFileSize = 4 * 1024 * 1024; // 4 MB
-const maxLength = 20;
+const maxLength = 255;
 
 function fileValidator(file: File) {
   // check file size under 4MB
@@ -57,11 +59,11 @@ function fileValidator(file: File) {
       message: `File size is larger than ${maxFileSize / (1024 * 1024)} MB`,
     };
   }
-  // check file name length under 20 characters
+  // check file name length under 255 characters
   if (file.name.length > maxLength) {
     return {
       code: 'name-too-large',
-      message: `Name is larger than ${maxLength} characters`,
+      message: `File name is longer than ${maxLength} characters`,
     };
   }
 
@@ -75,11 +77,18 @@ export default function FileDropzone() {
     onSuccess() {
       // Refetch the query after a successful delete
       void utils.metadata.getMetadata.invalidate();
+      // show success notification
+      showSuccessNotification('Files uploaded successfully');
     },
-    onError: () => {
-      console.error('Error!');
+    onError: (error) => {
+      // show error notification
+      showErrorNotification('Failed to upload files', error.message);
     },
   });
+
+  // notifications
+  const { notification, showSuccessNotification, showErrorNotification, showLoadingNotification } =
+    useNotification();
 
   const [myFiles, setMyFiles] = useState<File[]>([]);
   const [isHovered, setIsHovered] = useState(false);
@@ -110,9 +119,15 @@ export default function FileDropzone() {
     }
   };
 
-  const onDropRejected = useCallback((rejectedFiles: FileRejection[]) => {
-    console.log(rejectedFiles);
-  }, []);
+  const onDropRejected = useCallback(
+    (fileRejections: FileRejection[]) => {
+      showErrorNotification(
+        'Error Attaching Brain',
+        fileRejections[0]?.errors[0]?.message || 'File rejected'
+      );
+    },
+    [showErrorNotification]
+  );
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -167,6 +182,7 @@ export default function FileDropzone() {
       return;
     }
 
+    showLoadingNotification('Uploading files...');
     setMyFiles([]);
 
     // TODO - is calling sendDataToBackend for each file, will need to convert to handling a page
@@ -180,92 +196,104 @@ export default function FileDropzone() {
   };
 
   return (
-    <section className="flex-grow">
-      <div className="overflow-hidden rounded-md bg-white shadow">
-        <div className="bg-white px-4 pt-5 pb-1 sm:px-6">
-          <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
-            <div className="ml-4 mt-2">
-              <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Add files to your knowledge base
-              </h3>
+    <>
+      {notification.show && (
+        <Notification
+          intent={notification.intent}
+          message={notification.message}
+          description={notification.description}
+          show={notification.show}
+          onClose={notification.onClose}
+          timeout={notification.timeout}
+        />
+      )}
+      <section className="flex-grow">
+        <div className="overflow-hidden rounded-md bg-white shadow">
+          <div className="bg-white px-4 pt-5 pb-1 sm:px-6">
+            <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
+              <div className="ml-4 mt-2">
+                <h3 className="text-base font-semibold leading-6 text-gray-900">
+                  Add files to your knowledge base
+                </h3>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="p-6 pb-0">
-          <div
-            {...getRootProps({
-              style,
-              onMouseEnter: handleMouseEnter,
-              onMouseLeave: handleMouseLeave,
-            })}
-            onDragOver={handleMouseEnter}
-            onDragLeave={handleMouseLeave}
-          >
-            <input {...getInputProps()} />
-            <p>Click to select files, or drag & drop</p>
-            <em>(Currently support PDF files under 4MBs; file names under 20 characters)</em>
+          <div className="p-6 pb-0">
+            <div
+              {...getRootProps({
+                style,
+                onMouseEnter: handleMouseEnter,
+                onMouseLeave: handleMouseLeave,
+              })}
+              onDragOver={handleMouseEnter}
+              onDragLeave={handleMouseLeave}
+            >
+              <input {...getInputProps()} />
+              <p>Click to select files, or drag & drop</p>
+              <em>(Currently support PDF files under 4MBs)</em>
+            </div>
           </div>
-        </div>
-        <aside>
-          <div className="p-6 pt-0">
-            <div className="my-6 flow-root">
-              <ul role="list" className="max-h-52 divide-y divide-gray-200 overflow-auto">
-                {myFiles.map((file) => (
-                  <li key={file.name} className="py-4 px-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center space-x-2">
-                          <IconPdf color="red" size={24} />
-                          <div>
-                            <p className="truncate text-sm font-medium text-gray-900">
-                              {file.name}
-                            </p>
-                            <p className="truncate text-sm text-gray-500">{file.size} bytes</p>
+          <aside>
+            <div className="p-6 pt-0">
+              <div className="my-6 flow-root">
+                <ul role="list" className="max-h-52 divide-y divide-gray-200 overflow-auto">
+                  {myFiles.map((file) => (
+                    <li key={file.name} className="py-4 px-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center space-x-2">
+                            <IconPdf color="red" size={24} />
+                            <div>
+                              <p className="max-w-[140px] truncate text-sm font-medium text-gray-900 sm:max-w-xs ">
+                                {file.name}
+                              </p>
+                              <p className="truncate text-sm text-gray-500">{file.size} bytes</p>
+                            </div>
                           </div>
                         </div>
+                        <div>
+                          <button
+                            onClick={removeFile(file)}
+                            type="button"
+                            className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <button
-                          onClick={removeFile(file)}
-                          type="button"
-                          className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={removeAll}
-                type="button"
-                className={clsx(
-                  'flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0',
-                  {
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={removeAll}
+                  type="button"
+                  className={clsx(
+                    'flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0',
+                    {
+                      'cursor-not-allowed opacity-50': isLoading || myFiles.length === 0,
+                    }
+                  )}
+                  disabled={isLoading || myFiles.length === 0}
+                >
+                  Remove all
+                </button>
+                <Button
+                  intent="solidIndigo"
+                  className={clsx('rounded-md', {
                     'cursor-not-allowed opacity-50': isLoading || myFiles.length === 0,
-                  }
-                )}
-                disabled={isLoading || myFiles.length === 0}
-              >
-                Remove all
-              </button>
-              <Button
-                intent="solidIndigo"
-                className={clsx('rounded-md', {
-                  'cursor-not-allowed opacity-50': isLoading || myFiles.length === 0,
-                })}
-                onClick={handleSubmit}
-                disabled={isLoading || myFiles.length === 0}
-              >
-                Upload
-              </Button>
+                  })}
+                  onClick={handleSubmit}
+                  disabled={isLoading || myFiles.length === 0}
+                >
+                  Upload
+                </Button>
+              </div>
             </div>
-          </div>
-        </aside>
-      </div>
-    </section>
+          </aside>
+        </div>
+      </section>
+    </>
   );
 }

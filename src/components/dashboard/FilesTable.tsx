@@ -1,7 +1,10 @@
-import { api } from '@/utils/api';
-import type { FileMetadata } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
+import type { FileMetadata } from '@prisma/client';
+
+import useNotification from '@/hooks/useNotification';
+import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
+import Notification from '../ui/Notification';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 function classNames(...classes: string[]) {
@@ -20,15 +23,20 @@ export default function FilesTable() {
 
   const { mutate } = api.metadata.deleteMetadata.useMutation({
     onSuccess() {
+      showSuccessNotification('Files deleted');
       // Reset the selected files state
       setSelectedFiles([]);
       // Refetch the query after a successful delete
       void utils.metadata.getMetadata.invalidate();
     },
-    onError: () => {
-      console.error('Error!');
+    onError: (errorDelete) => {
+      showErrorNotification('Error Deleting Files', errorDelete.message);
     },
   });
+
+  // notifications
+  const { notification, showSuccessNotification, showErrorNotification, showLoadingNotification } =
+    useNotification();
 
   const checkbox = useRef<HTMLInputElement>(null);
   const [checked, setChecked] = useState(false);
@@ -56,6 +64,7 @@ export default function FilesTable() {
 
   function handleBulkDelete(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    showLoadingNotification('Deleting files...');
     // Extract the ids of the selected files
     const ids = selectedFiles.map((file) => file.metadataId);
 
@@ -68,6 +77,7 @@ export default function FilesTable() {
   }
 
   function handleDelete(metadataIds: string[]) {
+    showLoadingNotification('Deleting files...');
     // Call the mutation to delete the selected files
     mutate({ ids: metadataIds });
 
@@ -81,6 +91,16 @@ export default function FilesTable() {
 
   return (
     <>
+      {notification.show && (
+        <Notification
+          intent={notification.intent}
+          message={notification.message}
+          description={notification.description}
+          show={notification.show}
+          onClose={notification.onClose}
+          timeout={notification.timeout}
+        />
+      )}
       <ConfirmDeleteModal
         modal={[isDeleteModalOpen, setIsDeleteModalOpen]}
         onSubmit={handleBulkDelete}
@@ -180,7 +200,7 @@ export default function FilesTable() {
                           </td>
                           <td
                             className={classNames(
-                              'whitespace-nowrap py-4 pr-3 text-sm font-medium',
+                              'max-w-[140px] truncate whitespace-nowrap py-4 pr-3 text-sm font-medium',
                               selectedFiles.includes(file) ? 'text-indigo-600' : 'text-gray-900'
                             )}
                           >
@@ -201,7 +221,7 @@ export default function FilesTable() {
                               type="button"
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Delete<span className="sr-only">, {file.fileName}</span>
+                              Delete<span className="sr-only truncate">, {file.fileName}</span>
                             </button>
                           </td>
                         </tr>
