@@ -76,10 +76,10 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
           </div>
         </div>
         <div className="mt-8 flow-root">
-          <div className="-my-2">
-            {isLoading ? (
-              <LoadingBars />
-            ) : (
+          {isLoading ? (
+            <LoadingBars />
+          ) : (
+            <div className="-my-2">
               <div className="inline-block min-w-full py-2 align-middle">
                 <table className="min-w-full border-separate border-spacing-0">
                   <thead>
@@ -156,8 +156,8 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
                   </tbody>
                 </table>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>

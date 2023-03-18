@@ -21,7 +21,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [formData, setFormData] = useState('');
 
-  const { isLoading, isError, data: brain, error } = api.brain.getBrain.useQuery({ id: brainId });
+  const { isError, data: brain, error } = api.brain.getBrain.useQuery({ id: brainId });
 
   const utils = api.useContext();
   const { mutate } = api.brain.renameBrain.useMutation({

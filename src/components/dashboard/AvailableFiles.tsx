@@ -94,17 +94,17 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
           </div>
         </div>
         <div className="mt-8 flow-root">
-          <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
-            {isLoading ? (
-              <LoadingBars />
-            ) : files && files.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-4 py-6">
-                <p>Add some files!</p>
-                <Button href="/dashboard/knowledge" intent="solidIndigo">
-                  Upload
-                </Button>
-              </div>
-            ) : (
+          {isLoading ? (
+            <LoadingBars />
+          ) : files && files.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-4 py-6">
+              <p>Add some files!</p>
+              <Button href="/dashboard/knowledge" intent="solidIndigo">
+                Upload
+              </Button>
+            </div>
+          ) : (
+            <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
               <div className="inline-block min-w-full py-2 align-middle">
                 <div className="relative max-h-96 overflow-auto">
                   <table className="min-w-full border-separate border-spacing-0">
@@ -228,8 +228,8 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
                   </table>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>

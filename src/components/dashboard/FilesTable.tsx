@@ -112,10 +112,10 @@ export default function FilesTable() {
           </div>
         </div>
         <div className="mt-8 flow-root">
-          <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
-            {metadataLoading ? (
-              <LoadingBars />
-            ) : (
+          {metadataLoading ? (
+            <LoadingBars />
+          ) : (
+            <div className="-my-2 -ml-4 sm:-ml-6 lg:-ml-8">
               <div className="inline-block min-w-full py-2 align-middle">
                 <div className="relative max-h-96 overflow-auto">
                   <table className="min-w-full border-separate border-spacing-0">
@@ -230,8 +230,8 @@ export default function FilesTable() {
                   </table>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>

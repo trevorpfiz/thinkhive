@@ -9,6 +9,7 @@ import FileDropzone from '@/components/dashboard/FileDropzone';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import FilesTable from '@/components/dashboard/FilesTable';
+import LoadingBars from '@/components/ui/LoadingBars';
 
 const KnowledgePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const KnowledgePage: NextPageWithLayout = () => {
   });
 
   if (status === 'loading') {
-    return <div>Loading or not authenticated...</div>;
+    return <LoadingBars />;
   }
 
   return (
