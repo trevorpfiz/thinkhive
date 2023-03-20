@@ -5,13 +5,16 @@ import { metadataRouter } from './routers/metadata';
 import { expertRouter } from './routers/expert';
 import { brainRouter } from './routers/brain';
 import { apiCallRouter } from './routers/api-call';
-
+import { stripeRouter } from './routers/stripe';
+import { userRouter } from './routers/user';
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  user: userRouter,
+  stripe: stripeRouter,
   chat: openAiPinecone,
   upload: uploadPinecone,
   metadata: metadataRouter,

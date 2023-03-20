@@ -24,8 +24,12 @@ const config = {
       },
     ],
     '@typescript-eslint/no-misused-promises': [
-      'error',
-      { checksVoidReturn: { attributes: false } },
+      2,
+      {
+        checksVoidReturn: {
+          attributes: false,
+        },
+      },
     ],
   },
 };

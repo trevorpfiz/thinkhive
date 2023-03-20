@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["clientExtensions"]
 }
 
 datasource db {
@@ -50,17 +51,20 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  fileMetadata  FileMetadata[]
-  brains        Brain[]
-  experts       Expert[]
-  apiCalls      ApiCall[]
+  id                       String                    @id @default(cuid())
+  name                     String?
+  email                    String?                   @unique
+  emailVerified            DateTime?
+  image                    String?
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
+  stripeSubscriptionStatus StripeSubscriptionStatus?
+  accounts                 Account[]
+  sessions                 Session[]
+  fileMetadata             FileMetadata[]
+  brains                   Brain[]
+  experts                  Expert[]
+  apiCalls                 ApiCall[]
 }
 
 model VerificationToken {
@@ -139,6 +143,30 @@ model ApiCall {
   userId String
 
   @@index([userId])
+}
+
+model StripeEvent {
+  id               String   @id @unique
+  api_version      String?
+  data             Json
+  request          Json?
+  type             String
+  object           String
+  account          String?
+  created          DateTime
+  livemode         Boolean
+  pending_webhooks Int
+}
+
+enum StripeSubscriptionStatus {
+  incomplete
+  incomplete_expired
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
+  paused
 }
 
 enum Status {
