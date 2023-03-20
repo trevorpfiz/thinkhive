@@ -2,12 +2,15 @@
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
+
+import { api } from '@/utils/api';
 import RenameModal from './RenameModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import StatusBadge from '../ui/StatusBadge';
 import Button from '../ui/Button';
+import useNotification from '@/hooks/useNotification';
+import Notification from '../ui/Notification';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -19,12 +22,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [formData, setFormData] = useState('');
 
-  const {
-    isLoading,
-    isError,
-    data: expert,
-    error,
-  } = api.expert.getExpert.useQuery({ id: expertId });
+  const { isError, data: expert, error } = api.expert.getExpert.useQuery({ id: expertId });
 
   const utils = api.useContext();
   const { mutate } = api.expert.renameExpert.useMutation({
@@ -45,6 +43,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
       return { prevData };
     },
     onError(err, newPost, ctx) {
+      showErrorNotification('Error Renaming Expert', err.message);
       // If the mutation fails, use the context-value from onMutate
       // @ts-ignore
       utils.expert.getExpert.setData(undefined, ctx?.prevData);
@@ -60,21 +59,25 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
       // Refetch the query after changing status
       void utils.expert.getExpert.invalidate();
     },
-    onError: () => {
-      console.error('Error!');
+    onError: (errorStatus) => {
+      showErrorNotification('Error Changing Status', errorStatus.message);
     },
   });
 
   const { mutate: deleteExpert } = api.expert.deleteExpert.useMutation({
     onSuccess() {
-      // Refetch the query after a successful unassign
+      // Refetch the query after a successful detach
       void utils.expert.getExperts.invalidate();
     },
-    onError: () => {
-      console.error('Error!');
+    onError: (errorDelete) => {
+      showErrorNotification('Error Deleting Expert', errorDelete.message);
     },
   });
 
+  // notifications
+  const { notification, showErrorNotification } = useNotification();
+
+  // handlers
   function handleRename(e: React.FormEvent<HTMLFormElement>, inputValue: string) {
     e.preventDefault();
     if (expert?.id) {
@@ -108,6 +111,16 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
 
   return (
     <>
+      {notification.show && (
+        <Notification
+          intent={notification.intent}
+          message={notification.message}
+          description={notification.description}
+          show={notification.show}
+          onClose={notification.onClose}
+          timeout={notification.timeout}
+        />
+      )}
       <RenameModal
         modal={[isModalOpen, setIsModalOpen]}
         formData={[formData, setFormData]}
@@ -117,7 +130,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
         modal={[isDeleteModalOpen, setIsDeleteModalOpen]}
         onSubmit={handleDelete}
       />
-      <div className="border-b border-gray-200 pb-5">
+      <div className="border-b border-gray-200 py-4 px-2">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div className="mr-4 inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
           <div className="sm:w-0 sm:flex-1">
@@ -143,9 +156,9 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
             >
               Playground
             </Button>
-            <Menu as="div" className="relative ml-3 inline-block text-left">
+            <Menu as="div" className="relative ml-6 inline-block text-left">
               <div>
-                <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 shadow hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <span className="sr-only">Open options</span>
                   <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
                 </Menu.Button>

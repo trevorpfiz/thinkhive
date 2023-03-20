@@ -13,6 +13,7 @@ import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
 import { api } from '@/utils/api';
+import LoadingBars from '@/components/ui/LoadingBars';
 
 const HelpPage: NextPageWithLayout = () => {
   const { mutateAsync, data, isLoading } = api.chat.getAnswer.useMutation();
@@ -82,19 +83,7 @@ const HelpPage: NextPageWithLayout = () => {
               Search
             </button>
           </div>
-          {isLoading && (
-            <div className="mt-3">
-              <>
-                <div className="mt-2 animate-pulse">
-                  <div className="h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                  <div className="mt-2 h-4 rounded bg-gray-300"></div>
-                </div>
-              </>
-            </div>
-          )}
+          {isLoading && <LoadingBars />}
           {!isLoading && data?.response.text.length > 0 && (
             <>
               <div className="mt-4 rounded-md border border-neutral-300 p-5">

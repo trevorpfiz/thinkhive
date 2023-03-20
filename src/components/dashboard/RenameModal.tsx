@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationTriangleIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ModalProps {
   modal: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
@@ -78,6 +78,7 @@ export default function RenameModal({ modal, formData, onSubmit }: ModalProps) {
                       value={data}
                       onChange={(e) => setData(e.target.value)}
                       placeholder="New name"
+                      maxLength={30}
                     />
                   </div>
                   <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">

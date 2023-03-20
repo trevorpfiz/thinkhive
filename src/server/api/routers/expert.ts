@@ -32,7 +32,7 @@ export const expertRouter = createTRPCRouter({
         },
       });
     }),
-  getAssignedBrains: protectedProcedure
+  getAttachedBrains: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -52,7 +52,7 @@ export const expertRouter = createTRPCRouter({
         },
       });
     }),
-  getUnassignedBrains: protectedProcedure
+  getDetachedBrains: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -184,7 +184,7 @@ export const expertRouter = createTRPCRouter({
         },
       });
     }),
-  assignBrain: protectedProcedure
+  attachBrain: protectedProcedure
     .input(
       z.object({
         expertId: z.string(),
@@ -207,7 +207,7 @@ export const expertRouter = createTRPCRouter({
         },
       });
     }),
-  unassignBrain: protectedProcedure
+  detachBrain: protectedProcedure
     .input(
       z.object({
         expertId: z.string(),

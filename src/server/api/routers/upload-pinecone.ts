@@ -16,8 +16,6 @@ const MetadataInput = z.object({
   modifiedDate: z.string().optional(),
   userId: z.string().optional(),
   tokenCount: z.number().optional(),
-  wordCount: z.number(),
-  uploadDate: z.date(),
 });
 
 export const uploadPinecone = createTRPCRouter({
@@ -31,7 +29,7 @@ export const uploadPinecone = createTRPCRouter({
 
       const cleanedText = text.trim().replaceAll('\n', ' ');
 
-      // token count
+      // TODO - token count - can use TokenTextSplitter from langchain
       const encoding = get_encoding('cl100k_base');
       const tokenCount = encoding.encode(cleanedText).length;
 

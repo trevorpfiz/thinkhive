@@ -6,6 +6,7 @@ import { z } from 'zod';
  */
 const server = z.object({
   DATABASE_URL: z.string().url(),
+  ACCELERATE_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === 'production' ? z.string().min(1) : z.string().min(1).optional(),
@@ -30,6 +31,15 @@ const server = z.object({
   OPENAI_API_KEY: z.string().min(1),
   PINECONE_API_KEY: z.string().min(1),
   PINECONE_ENVIRONMENT: z.string().min(1),
+  STRIPE_PK: z.string(),
+  STRIPE_SK: z.string(),
+  STRIPE_HANGOUT_MONTHLY_PRICE_ID: z.string(),
+  STRIPE_HANGOUT_ANNUAL_PRICE_ID: z.string(),
+  STRIPE_COMMUNITY_MONTHLY_PRICE_ID: z.string(),
+  STRIPE_COMMUNITY_ANNUAL_PRICE_ID: z.string(),
+  STRIPE_ENTERPRISE_MONTHLY_PRICE_ID: z.string(),
+  STRIPE_ENTERPRISE_ANNUAL_PRICE_ID: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 /**
@@ -48,6 +58,7 @@ const client = z.object({
  */
 const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
+  ACCELERATE_URL: process.env.ACCELERATE_URL,
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -64,6 +75,15 @@ const processEnv = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   PINECONE_API_KEY: process.env.PINECONE_API_KEY,
   PINECONE_ENVIRONMENT: process.env.PINECONE_ENVIRONMENT,
+  STRIPE_PK: process.env.STRIPE_PK,
+  STRIPE_SK: process.env.STRIPE_SK,
+  STRIPE_HANGOUT_MONTHLY_PRICE_ID: process.env.STRIPE_HANGOUT_MONTHLY_PRICE_ID,
+  STRIPE_HANGOUT_ANNUAL_PRICE_ID: process.env.STRIPE_HANGOUT_ANNUAL_PRICE_ID,
+  STRIPE_COMMUNITY_MONTHLY_PRICE_ID: process.env.STRIPE_COMMUNITY_MONTHLY_PRICE_ID,
+  STRIPE_COMMUNITY_ANNUAL_PRICE_ID: process.env.STRIPE_COMMUNITY_ANNUAL_PRICE_ID,
+  STRIPE_ENTERPRISE_MONTHLY_PRICE_ID: process.env.STRIPE_ENTERPRISE_MONTHLY_PRICE_ID,
+  STRIPE_ENTERPRISE_ANNUAL_PRICE_ID: process.env.STRIPE_ENTERPRISE_ANNUAL_PRICE_ID,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

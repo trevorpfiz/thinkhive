@@ -8,8 +8,15 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
+import { api } from '@/utils/api';
+import { ManageBilling } from '@/components/payment/ManageBilling';
+import Plans from '@/components/payment/Plans';
 
 const BillingPage: NextPageWithLayout = () => {
+  const { data: subscriptionStatus, isLoading } = api.user.subscriptionStatus.useQuery();
+
+  console.log(subscriptionStatus);
+
   return (
     <>
       <Head>
@@ -21,7 +28,21 @@ const BillingPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Test</h1>
+      <h1>Billing</h1>
+      <div className="mt-3 flex flex-col items-center justify-center gap-4">
+        {!isLoading && subscriptionStatus !== null && (
+          <>
+            <p className="text-xl text-gray-700">Your subscription is {subscriptionStatus}.</p>
+            <ManageBilling />
+          </>
+        )}
+        {!isLoading && subscriptionStatus === null && (
+          <>
+            <p className="text-xl text-gray-700">You are not subscribed!!!</p>
+          </>
+        )}
+      </div>
+      <Plans />
     </>
   );
 };
