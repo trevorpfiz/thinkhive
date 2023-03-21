@@ -150,7 +150,7 @@ export default function Plans() {
                   {frequency?.priceSuffix}
                 </span>
               </p>
-              <UpgradeButton plan={tier.id} subscriptionType={frequency?.value} />
+              <UpgradeButton plan={tier.id} subscriptionInterval={frequency?.value} />
               <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-x-3">

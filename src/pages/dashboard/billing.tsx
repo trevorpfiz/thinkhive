@@ -13,9 +13,11 @@ import { ManageBilling } from '@/components/payment/ManageBilling';
 import Plans from '@/components/payment/Plans';
 
 const BillingPage: NextPageWithLayout = () => {
-  const { data: subscriptionStatus, isLoading } = api.user.subscriptionStatus.useQuery();
+  const { data, isLoading } = api.user.subscriptionStatus.useQuery();
 
-  console.log(subscriptionStatus);
+  console.log(data?.subscriptionStatus);
+  console.log(data?.prices);
+  console.log(data?.customer);
 
   return (
     <>
@@ -30,13 +32,15 @@ const BillingPage: NextPageWithLayout = () => {
 
       <h1>Billing</h1>
       <div className="mt-3 flex flex-col items-center justify-center gap-4">
-        {!isLoading && subscriptionStatus !== null && (
+        {!isLoading && data?.subscriptionStatus !== null && (
           <>
-            <p className="text-xl text-gray-700">Your subscription is {subscriptionStatus}.</p>
+            <p className="text-xl text-gray-700">
+              Your subscription is {data?.subscriptionStatus}.
+            </p>
             <ManageBilling />
           </>
         )}
-        {!isLoading && subscriptionStatus === null && (
+        {!isLoading && data?.subscriptionStatus === null && (
           <>
             <p className="text-xl text-gray-700">You are not subscribed!!!</p>
           </>

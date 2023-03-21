@@ -5,10 +5,10 @@ import { z } from 'zod';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
-    .input(z.object({ plan: z.string(), subscriptionType: z.string() }))
+    .input(z.object({ plan: z.string(), subscriptionInterval: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { stripe, session, prisma, req } = ctx;
-      const { plan, subscriptionType } = input;
+      const { plan, subscriptionInterval } = input;
 
       const customerId = await getOrCreateStripeCustomerIdForUser({
         prisma,
@@ -28,46 +28,46 @@ export const stripeRouter = createTRPCRouter({
       const lineItems = [];
 
       if (plan === 'hangout') {
-        if (subscriptionType === 'monthly') {
+        if (subscriptionInterval === 'monthly') {
           lineItems.push({
             price: env.STRIPE_HANGOUT_MONTHLY_PRICE_ID,
             quantity: 1,
           });
-        } else if (subscriptionType === 'annual') {
+        } else if (subscriptionInterval === 'annual') {
           lineItems.push({
             price: env.STRIPE_HANGOUT_ANNUAL_PRICE_ID,
             quantity: 1,
           });
         } else {
-          throw new Error('Invalid subscription type');
+          throw new Error('Invalid subscription interval');
         }
       } else if (plan === 'community') {
-        if (subscriptionType === 'monthly') {
+        if (subscriptionInterval === 'monthly') {
           lineItems.push({
             price: env.STRIPE_COMMUNITY_MONTHLY_PRICE_ID,
             quantity: 1,
           });
-        } else if (subscriptionType === 'annual') {
+        } else if (subscriptionInterval === 'annual') {
           lineItems.push({
             price: env.STRIPE_COMMUNITY_ANNUAL_PRICE_ID,
             quantity: 1,
           });
         } else {
-          throw new Error('Invalid subscription type');
+          throw new Error('Invalid subscription interval');
         }
       } else if (plan === 'enterprise') {
-        if (subscriptionType === 'monthly') {
+        if (subscriptionInterval === 'monthly') {
           lineItems.push({
             price: env.STRIPE_ENTERPRISE_MONTHLY_PRICE_ID,
             quantity: 1,
           });
-        } else if (subscriptionType === 'annual') {
+        } else if (subscriptionInterval === 'annual') {
           lineItems.push({
             price: env.STRIPE_ENTERPRISE_ANNUAL_PRICE_ID,
             quantity: 1,
           });
         } else {
-          throw new Error('Invalid subscription type');
+          throw new Error('Invalid subscription interval');
         }
       } else {
         throw new Error('Invalid plan');
@@ -84,7 +84,8 @@ export const stripeRouter = createTRPCRouter({
         subscription_data: {
           metadata: {
             userId: session.user?.id,
-            subscriptionType: subscriptionType,
+            plan: plan,
+            subscriptionInterval: subscriptionInterval,
           },
         },
       });
