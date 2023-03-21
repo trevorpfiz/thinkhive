@@ -5,38 +5,14 @@ import { SubscribeButton } from './SubscribeButton';
 import type { Product, Price, Prisma } from '@prisma/client';
 import { api } from '@/utils/api';
 
-const frequencies: Frequency[] = [
+const frequencies = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
   { value: 'annual', label: 'Annually', priceSuffix: '/year' },
 ];
 
-interface Frequency {
-  value: string;
-  label: string;
-  priceSuffix: string;
-}
-
 interface Interval {
   monthly: string;
   annual: string;
-}
-
-interface Tier {
-  name: string;
-  id: string;
-  price: {
-    monthly: {
-      amount: number;
-      priceId: string;
-    };
-    annual: {
-      amount: number;
-      priceId: string;
-    };
-  };
-  description: string;
-  features: string[];
-  isSubscribed: boolean;
 }
 
 interface ProductWithPrice extends Product {
@@ -51,66 +27,48 @@ interface Metadata extends Prisma.JsonObject {
   feature_4?: string;
 }
 
-function sortProductsByIndex(products: ProductWithPrice[]): ProductWithPrice[] {
-  return products.sort((a, b) => {
-    const aIndex = parseInt((a?.metadata as Metadata).index || '0', 10);
-    const bIndex = parseInt((b?.metadata as Metadata).index || '0', 10);
+function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) {
+  // Sort products by index
+  return products
+    .sort(
+      (a, b) =>
+        parseInt((a?.metadata as Metadata).index || '0', 10) -
+        parseInt((b?.metadata as Metadata).index || '0', 10)
+    )
+    .map((product) => {
+      const monthlyPrice = product.Price.find((price) => price.interval === 'month');
+      const annualPrice = product.Price.find((price) => price.interval === 'year');
 
-    return aIndex - bIndex;
-  });
-}
+      // Create features from product metadata
+      const features = [];
+      let i = 1;
+      const metadata = product?.metadata as Metadata;
+      while (metadata?.[`feature_${i}`]) {
+        features.push(metadata[`feature_${i}`] as string);
+        i++;
+      }
 
-function createFeaturesFromProduct(product: ProductWithPrice): string[] {
-  const featureValues = [];
-  let i = 1;
-  const metadata = product?.metadata as Metadata;
-  while (metadata?.[`feature_${i}`]) {
-    featureValues.push(metadata?.[`feature_${i}`] as string);
-    i++;
-  }
-  return featureValues;
-}
-
-function createTiersFromProducts(
-  products: ProductWithPrice[],
-  subscriptionPriceId: string
-): Tier[] {
-  return products.map((product) => {
-    const monthlyPrice = product.Price?.find((price) => price.interval === 'month');
-    const annualPrice = product.Price?.find((price) => price.interval === 'year');
-
-    const tier: Tier = {
-      name: product?.name || '',
-      id: product.id,
-      price: {
-        monthly: monthlyPrice
-          ? {
-              amount: monthlyPrice.unit_amount ?? 0,
-              priceId: monthlyPrice.id,
-            }
-          : {
-              amount: 0,
-              priceId: '',
-            },
-        annual: annualPrice
-          ? {
-              amount: annualPrice.unit_amount ?? 0,
-              priceId: annualPrice.id,
-            }
-          : {
-              amount: 0,
-              priceId: '',
-            },
-      },
-      description: product.description || '',
-      features: createFeaturesFromProduct(product) || [],
-      isSubscribed:
-        !!subscriptionPriceId &&
-        (subscriptionPriceId === monthlyPrice?.id || subscriptionPriceId === annualPrice?.id),
-    };
-
-    return tier;
-  });
+      // Create tiers from products and prices
+      return {
+        name: product.name || '',
+        id: product.id,
+        price: {
+          monthly: {
+            amount: monthlyPrice?.unit_amount ?? 0,
+            priceId: monthlyPrice?.id,
+          },
+          annual: {
+            amount: annualPrice?.unit_amount ?? 0,
+            priceId: annualPrice?.id,
+          },
+        },
+        description: product.description || '',
+        features,
+        isSubscribed:
+          !!subscriptionPriceId &&
+          (subscriptionPriceId === monthlyPrice?.id || subscriptionPriceId === annualPrice?.id),
+      };
+    });
 }
 
 function classNames(...classes: string[]) {
@@ -118,23 +76,20 @@ function classNames(...classes: string[]) {
 }
 
 export default function Plans() {
-  // Get products and subscription
   const { data: products, isLoading: isLoadingProducts } =
     api.stripe.getActiveProductsWithPrices.useQuery();
   const { data: stripeSubscription, isLoading: isLoadingSubscription } =
     api.user.getSubscription.useQuery();
 
-  // Set frequency
   const [frequency, setFrequency] = useState(frequencies[0]);
 
-  // Create tiers from products
   const tiers = useMemo(() => {
     if (isLoadingProducts || isLoadingSubscription || !products) {
       return [];
     }
 
     const subscriptionPriceId = stripeSubscription?.[0]?.price_id;
-    return createTiersFromProducts(sortProductsByIndex(products), subscriptionPriceId ?? '');
+    return createTiers(products, subscriptionPriceId ?? '');
   }, [isLoadingProducts, isLoadingSubscription, products, stripeSubscription]);
 
   return (
