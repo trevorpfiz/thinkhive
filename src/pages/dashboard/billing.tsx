@@ -13,11 +13,9 @@ import { ManageBilling } from '@/components/payment/ManageBilling';
 import Plans from '@/components/payment/Plans';
 
 const BillingPage: NextPageWithLayout = () => {
-  const { data, isLoading } = api.user.subscriptionStatus.useQuery();
-
-  console.log(data?.subscriptionStatus);
-  console.log(data?.prices);
-  console.log(data?.customer);
+  const { data: stripeSubscription, isLoading } = api.user.getSubscription.useQuery();
+  const subscriptionStatus = stripeSubscription?.[0]?.status;
+  console.log(stripeSubscription);
 
   return (
     <>
@@ -32,15 +30,13 @@ const BillingPage: NextPageWithLayout = () => {
 
       <h1>Billing</h1>
       <div className="mt-3 flex flex-col items-center justify-center gap-4">
-        {!isLoading && data?.subscriptionStatus !== null && (
+        {!isLoading && subscriptionStatus && (
           <>
-            <p className="text-xl text-gray-700">
-              Your subscription is {data?.subscriptionStatus}.
-            </p>
+            <p className="text-xl text-gray-700">Your subscription is {subscriptionStatus}.</p>
             <ManageBilling />
           </>
         )}
-        {!isLoading && data?.subscriptionStatus === null && (
+        {!isLoading && !subscriptionStatus && (
           <>
             <p className="text-xl text-gray-700">You are not subscribed!!!</p>
           </>

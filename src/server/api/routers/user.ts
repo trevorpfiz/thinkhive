@@ -1,8 +1,8 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
-  subscriptionStatus: protectedProcedure.query(async ({ ctx }) => {
-    const { session, prisma, stripe } = ctx;
+  getSubscription: protectedProcedure.query(async ({ ctx }) => {
+    const { session, prisma } = ctx;
 
     if (!session.user?.id) {
       throw new Error('Not authenticated');
@@ -13,8 +13,7 @@ export const userRouter = createTRPCRouter({
         id: session.user?.id,
       },
       select: {
-        stripeCustomerId: true,
-        stripeSubscriptionStatus: true,
+        stripeSubscription: true,
       },
     });
 
@@ -22,16 +21,6 @@ export const userRouter = createTRPCRouter({
       throw new Error('Could not find user');
     }
 
-    const { data: prices } = await stripe.prices.list();
-
-    const customer = await stripe.customers.retrieve(data.stripeCustomerId, {
-      expand: ['subscriptions'],
-    });
-
-    return {
-      subscriptionStatus: data.stripeSubscriptionStatus,
-      prices,
-      customer,
-    };
+    return data.stripeSubscription;
   }),
 });
