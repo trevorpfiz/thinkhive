@@ -37,7 +37,7 @@
     "focus-visible": "^5.2.0",
     "glob": "^9.2.1",
     "jotai": "^2.0.3",
-    "langchain": "^0.0.35",
+    "langchain": "^0.0.38",
     "micro": "^10.0.1",
     "next": "^13.2.1",
     "next-auth": "^4.19.0",
