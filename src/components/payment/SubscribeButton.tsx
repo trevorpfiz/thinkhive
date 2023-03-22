@@ -1,15 +1,32 @@
 import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
 
-export const SubscribeButton = ({
-  priceId,
-  isSubscribed,
-}: {
+interface SubscribeButtonProps {
   priceId: string;
-  isSubscribed: boolean;
+  isSubscribedPrice: boolean;
+  isSubscribedProduct: boolean;
+  frequency: string;
+}
+
+export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
+  priceId,
+  isSubscribedPrice,
+  isSubscribedProduct,
+  frequency,
 }) => {
   const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
   const { push } = useRouter();
+
+  const buttonText = () => {
+    if (isSubscribedProduct) {
+      if (isSubscribedPrice) {
+        return 'Current plan';
+      } else {
+        return frequency === 'monthly' ? 'Change to Monthly' : 'Change to Annual';
+      }
+    }
+    return 'Subscribe';
+  };
 
   return (
     <button
@@ -20,9 +37,9 @@ export const SubscribeButton = ({
           void push(checkoutUrl);
         }
       }}
-      disabled={isSubscribed}
+      disabled={isSubscribedPrice}
     >
-      {isSubscribed ? 'Current Plan' : 'Subscribe'}
+      {buttonText()}
     </button>
   );
 };
