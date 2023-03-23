@@ -8,7 +8,7 @@ const faqs = [
     {
       question: 'What counts as one message?',
       answer:
-        'Each time a user asks a question to an expert and receives a response, it counts as one message.',
+        'Each time a user asks a question to an Expert and receives a response, it counts as one message.',
     },
     {
       question: 'What is the word count of the files that I wish to upload?',
@@ -18,7 +18,7 @@ const faqs = [
     {
       question: 'How can I determine if I need more usage?',
       answer:
-        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your expert and uploading new information will not be possible.',
+        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your Experts and uploading new information will not be possible.',
     },
   ],
   [

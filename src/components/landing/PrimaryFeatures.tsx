@@ -13,23 +13,23 @@ import screenshotVatReturns from '@/images/screenshots/vat-returns.png';
 const features = [
   {
     title: 'Instant access to product information',
-    description: 'Accurately answers customer questions within seconds.',
+    description: 'Accurately answer customer questions within seconds.',
     image: screenshotPayroll,
   },
   {
     title: 'Personalized product recommendations',
-    description: "Recommends products based on  your customers' needs and wants.",
+    description: "Recommend products based on your customers' needs and wants.",
     image: screenshotExpenses,
   },
   {
     title: 'Hassle-free navigation assistance',
-    description: "Helps customers quickly and easily find what they're looking for.",
+    description: "Help customers quickly and easily find what they're looking for.",
     image: screenshotVatReturns,
   },
   {
     title: 'Expert product troubleshooting',
     description:
-      'Offers expert-level support to resolve any issues customers may have with your products.',
+      'Offer expert-level support to resolve any issues customers may have with your products.',
     image: screenshotReporting,
   },
 ];
