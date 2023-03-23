@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';

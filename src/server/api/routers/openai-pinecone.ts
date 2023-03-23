@@ -4,7 +4,7 @@ import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import { openai } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
-import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
+import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
@@ -25,7 +25,7 @@ export const openAiPinecone = createTRPCRouter({
       const vectorStore = await PineconeStore.fromExistingIndex(
         new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' }),
         {
-          namespace: PINECONE_NAME_SPACE,
+          namespace: ctx.session.user.id,
           pineconeIndex: index,
           textKey: 'text',
           filter: filter,

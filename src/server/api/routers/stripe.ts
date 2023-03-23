@@ -54,6 +54,7 @@ export const stripeRouter = createTRPCRouter({
 
         return { checkoutUrl: checkoutSession.url };
       } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         console.error('Error creating checkout session:', error.message);
         throw new Error('Could not create checkout session');
       }

@@ -130,12 +130,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
           </div>
 
           <div className="mt-4 flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
-            <Button
-              href={`/dashboard/experts`}
-              target="_blank"
-              intent="solidSlate"
-              className="ml-6 rounded-md"
-            >
+            <Button href={`/dashboard/experts`} intent="solidSlate" className="ml-6 rounded-md">
               Attach
             </Button>
             <Menu as="div" className="relative ml-6 inline-block text-left">
