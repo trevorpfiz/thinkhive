@@ -1,12 +1,13 @@
 import { z } from 'zod';
 import { ulid } from 'ulid';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { pinecone } from '@/utils/pinecone';
-import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { PineconeStore } from 'langchain/vectorstores';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { get_encoding } from '@dqbd/tiktoken';
+
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { pinecone } from '@/utils/pinecone';
+import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 
 const MetadataInput = z.object({
   fileName: z.string(),
@@ -63,6 +64,18 @@ export const uploadPinecone = createTRPCRouter({
           wordCount,
           tokenCount,
           userId,
+        },
+      });
+
+      // add to user's upload tokens
+      await ctx.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          uploadTokens: {
+            increment: tokenCount,
+          },
         },
       });
 

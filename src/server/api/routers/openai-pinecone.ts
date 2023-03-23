@@ -2,10 +2,11 @@ import { z } from 'zod';
 import { VectorDBQAChain } from 'langchain/chains';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
+import { get_encoding } from '@dqbd/tiktoken';
+
 import { openai } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
-
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const openAiPinecone = createTRPCRouter({
@@ -14,6 +15,9 @@ export const openAiPinecone = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { question, metadataIds } = input;
       const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
+
+      const encoding = get_encoding('cl100k_base');
+      const questionTokens = encoding.encode(sanitizedQuestion).length;
 
       // metadata filtering
       const filter = {
@@ -42,6 +46,21 @@ export const openAiPinecone = createTRPCRouter({
       });
 
       console.log('response', response);
+
+      // add to user's question and message tokens
+      await ctx.prisma.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          questionTokens: {
+            increment: questionTokens,
+          },
+          // messageTokens: {
+          //   increment: messageTokens,
+          // },
+        },
+      });
 
       return {
         response,
