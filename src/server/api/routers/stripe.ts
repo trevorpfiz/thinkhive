@@ -88,7 +88,6 @@ export const stripeRouter = createTRPCRouter({
 
     return { billingPortalUrl: stripeBillingPortalSession.url };
   }),
-
   getActiveProductsWithPrices: protectedProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
 
