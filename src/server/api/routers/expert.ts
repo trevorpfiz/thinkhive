@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
+import { getMaxExpertsForTier, getSubscriptionProductId } from '@/utils/permissions';
 
 export const expertRouter = createTRPCRouter({
   // queries
@@ -112,6 +113,27 @@ export const expertRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { name, size } = input;
+      const userId = ctx.session.user.id;
+
+      // Get the user's subscription tier
+      const productId = await getSubscriptionProductId(userId);
+
+      // Determine the maximum number of experts the user is allowed to create based on their tier
+      const maxExperts = getMaxExpertsForTier(productId);
+
+      // Count the number of experts the user has created
+      const expertCount = await ctx.prisma.expert.count({
+        where: {
+          userId,
+        },
+      });
+
+      // If the user has reached the maximum number of experts, throw an error
+      if (expertCount >= maxExperts) {
+        throw new Error(
+          `You have reached the maximum number of experts allowed for your plan (${maxExperts}).`
+        );
+      }
 
       const createdExpert = await ctx.prisma.expert.create({
         data: {

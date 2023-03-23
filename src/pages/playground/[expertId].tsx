@@ -11,6 +11,7 @@ import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
 import { api } from '@/utils/api';
 import LoadingBars from '@/components/ui/LoadingBars';
+import { prisma } from '@/server/db';
 
 const ExpertPlayground = () => {
   const router = useRouter();
@@ -115,23 +116,47 @@ const ExpertPlayground = () => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const session = await getServerSession(context.req, context.res, authOptions);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const expertId = context.params?.expertId as string;
 
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false,
-//       },
-//     };
-//   }
+  const expert = await prisma.expert.findUnique({
+    where: { id: expertId },
+    select: { availability: true, userId: true, status: true },
+  });
 
-//   return {
-//     props: {
-//       session,
-//     },
-//   };
-// };
+  if (!expert) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const isPublic = expert.availability === 'PUBLIC';
+  const isOwner = session?.user.id === expert.userId;
+
+  if (!isPublic && !isOwner) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  if (expert.status === 'INACTIVE' && !isOwner) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
 
 export default ExpertPlayground;
