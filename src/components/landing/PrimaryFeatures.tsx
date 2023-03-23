@@ -12,24 +12,24 @@ import screenshotVatReturns from '@/images/screenshots/vat-returns.png';
 
 const features = [
   {
-    title: 'Upload your knowledge base',
-    description: 'Easily upload your documents and know that they are secure.',
+    title: 'Instant access to product information',
+    description: 'Accurately answers customer questions within seconds.',
     image: screenshotPayroll,
   },
   {
-    title: 'Train your own experts',
-    description: 'Customize your experts according to your knowledge base.',
+    title: 'Personalized product recommendations',
+    description: "Recommends products based on  your customers' needs and wants.",
     image: screenshotExpenses,
   },
   {
-    title: 'Deploy your custom-built expert',
-    description: 'Quickly make your expert accessible to your users and team members.',
+    title: 'Hassle-free navigation assistance',
+    description: "Helps customers quickly and easily find what they're looking for.",
     image: screenshotVatReturns,
   },
   {
-    title: 'See them in action',
+    title: 'Expert product troubleshooting',
     description:
-      'Your expert will provide intelligent answers to any questions asked by your users or team members.',
+      'Offers expert-level support to resolve any issues customers may have with your products.',
     image: screenshotReporting,
   },
 ];
@@ -69,7 +69,7 @@ export function PrimaryFeatures() {
       <Container className="relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
-            Everything you need to build your expert.
+            Experts provide many benefits to your customers.
           </h2>
         </div>
         <Tab.Group

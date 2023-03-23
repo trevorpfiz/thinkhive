@@ -2,21 +2,21 @@ import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/2
 
 const features = [
   {
-    name: 'Push to deploy.',
+    name: 'Upload your knowledge base',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Easily upload your documents and know that they are secure.',
     icon: CloudArrowUpIcon,
   },
   {
-    name: 'SSL certificates.',
+    name: 'Train your own Experts',
     description:
-      'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
+      'Customize your Experts according to your knowledge base.',
     icon: LockClosedIcon,
   },
   {
-    name: 'Database backups.',
+    name: 'Deploy your custom-built Expert',
     description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
+      'Quickly make your Expert accessible to your users and team members.',
     icon: ServerIcon,
   },
 ];

@@ -20,11 +20,11 @@ export function Hero() {
         </span>
       </h1>
       <p className="mx-auto mt-12 max-w-2xl text-xl tracking-tight text-slate-700">
-        {`Utilize your company's knowledge base to create Experts that provide quick and accurate answers to your customers' inquiries, increasing customer satisfaction and loyalty.`}
+        {`Utilize your knowledge base to create intelligent chatbots called Experts that provide quick and accurate answers to your customers' inquiries, increasing customer satisfaction and loyalty.`}
       </p>
       <div className="mt-10 flex justify-center gap-x-6">
         <Button onClick={() => signIn()} intent="solidSlate" size="xl">
-          Build Your Experts
+          Build your Experts
         </Button>
       </div>
     </Container>
