@@ -4,26 +4,31 @@ import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import { openai } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
-import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
+import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const openAiPinecone = createTRPCRouter({
   getAnswer: protectedProcedure
-    .input(z.object({ question: z.string() }))
-    // .input(z.object({ question: z.string(), metadataIds: z.array(z.string()), userId: z.string() }))
+    .input(z.object({ question: z.string(), metadataIds: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
-      const { question } = input;
+      const { question, metadataIds } = input;
       const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
+
+      // metadata filtering
+      const filter = {
+        metadataId: { $in: metadataIds },
+      };
 
       const index = pinecone.Index(PINECONE_INDEX_NAME);
       /* create vectorstore*/
       const vectorStore = await PineconeStore.fromExistingIndex(
         new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' }),
         {
-          namespace: PINECONE_NAME_SPACE,
+          namespace: ctx.session.user.id,
           pineconeIndex: index,
           textKey: 'text',
+          filter: filter,
         }
       );
 
@@ -35,23 +40,6 @@ export const openAiPinecone = createTRPCRouter({
       const response = await chain.call({
         query: sanitizedQuestion,
       });
-
-      // FIXME - Metadata filtering
-      // const filter = {
-      //   metadataId: { $in: metadataIds },
-      // };
-
-      // Query Pinecone with metadata filtering
-      // const queryResponse = await index.query({
-      //   queryRequest: {
-      //     namespace: PINECONE_NAME_SPACE,
-      //     topK: 1000,
-      //     filter: filter,
-      //   },
-      // });
-
-      // Process the query response and get the answer
-      // const matches = queryResponse.matches;
 
       console.log('response', response);
 

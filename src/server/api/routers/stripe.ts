@@ -5,10 +5,10 @@ import { z } from 'zod';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
-    .input(z.object({ plan: z.string(), subscriptionType: z.string() }))
+    .input(z.object({ priceId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { stripe, session, prisma, req } = ctx;
-      const { plan, subscriptionType } = input;
+      const { priceId } = input;
 
       const customerId = await getOrCreateStripeCustomerIdForUser({
         prisma,
@@ -25,75 +25,39 @@ export const stripeRouter = createTRPCRouter({
           ? `http://${req.headers.host ?? 'localhost:3000'}`
           : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
 
-      const lineItems = [];
-
-      if (plan === 'hangout') {
-        if (subscriptionType === 'monthly') {
-          lineItems.push({
-            price: env.STRIPE_HANGOUT_MONTHLY_PRICE_ID,
-            quantity: 1,
-          });
-        } else if (subscriptionType === 'annual') {
-          lineItems.push({
-            price: env.STRIPE_HANGOUT_ANNUAL_PRICE_ID,
-            quantity: 1,
-          });
-        } else {
-          throw new Error('Invalid subscription type');
-        }
-      } else if (plan === 'community') {
-        if (subscriptionType === 'monthly') {
-          lineItems.push({
-            price: env.STRIPE_COMMUNITY_MONTHLY_PRICE_ID,
-            quantity: 1,
-          });
-        } else if (subscriptionType === 'annual') {
-          lineItems.push({
-            price: env.STRIPE_COMMUNITY_ANNUAL_PRICE_ID,
-            quantity: 1,
-          });
-        } else {
-          throw new Error('Invalid subscription type');
-        }
-      } else if (plan === 'enterprise') {
-        if (subscriptionType === 'monthly') {
-          lineItems.push({
-            price: env.STRIPE_ENTERPRISE_MONTHLY_PRICE_ID,
-            quantity: 1,
-          });
-        } else if (subscriptionType === 'annual') {
-          lineItems.push({
-            price: env.STRIPE_ENTERPRISE_ANNUAL_PRICE_ID,
-            quantity: 1,
-          });
-        } else {
-          throw new Error('Invalid subscription type');
-        }
-      } else {
-        throw new Error('Invalid plan');
-      }
-
-      const checkoutSession = await stripe.checkout.sessions.create({
-        customer: customerId,
-        client_reference_id: session.user?.id,
-        payment_method_types: ['card'],
-        mode: 'subscription',
-        line_items: lineItems,
-        success_url: `${baseUrl}/dashboard/billing/?checkoutSuccess=true`,
-        cancel_url: `${baseUrl}/dashboard/billing/?checkoutCanceled=true`,
-        subscription_data: {
-          metadata: {
-            userId: session.user?.id,
-            subscriptionType: subscriptionType,
-          },
+      const lineItems = [
+        {
+          price: priceId,
+          quantity: 1,
         },
-      });
+      ];
 
-      if (!checkoutSession) {
+      try {
+        const checkoutSession = await stripe.checkout.sessions.create({
+          customer: customerId,
+          client_reference_id: session.user?.id,
+          payment_method_types: ['card'],
+          mode: 'subscription',
+          line_items: lineItems,
+          success_url: `${baseUrl}/dashboard/billing/?checkoutSuccess=true`,
+          cancel_url: `${baseUrl}/dashboard/billing/?checkoutCanceled=true`,
+          subscription_data: {
+            metadata: {
+              userId: session.user?.id,
+            },
+          },
+        });
+
+        if (!checkoutSession) {
+          throw new Error('Could not create checkout session');
+        }
+
+        return { checkoutUrl: checkoutSession.url };
+      } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        console.error('Error creating checkout session:', error.message);
         throw new Error('Could not create checkout session');
       }
-
-      return { checkoutUrl: checkoutSession.url };
     }),
   createBillingPortalSession: protectedProcedure.mutation(async ({ ctx }) => {
     const { stripe, session, prisma, req } = ctx;
@@ -123,5 +87,35 @@ export const stripeRouter = createTRPCRouter({
     }
 
     return { billingPortalUrl: stripeBillingPortalSession.url };
+  }),
+
+  getActiveProductsWithPrices: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+
+    const products = await prisma.product.findMany({
+      where: {
+        active: true,
+        Price: {
+          some: {
+            active: true,
+          },
+        },
+      },
+      orderBy: {
+        metadata: 'asc',
+      },
+      include: {
+        Price: {
+          where: {
+            active: true,
+          },
+          orderBy: {
+            unit_amount: 'asc',
+          },
+        },
+      },
+    });
+
+    return products;
   }),
 });

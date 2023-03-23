@@ -90,6 +90,9 @@ export const expertRouter = createTRPCRouter({
         where: {
           id,
         },
+        include: {
+          brains: { include: { files: true } },
+        },
       });
 
       if (!expert) {

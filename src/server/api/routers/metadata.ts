@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { PINECONE_INDEX_NAME } from '@/config/pinecone';
+import { pinecone } from '@/utils/pinecone';
 
 export const metadataRouter = createTRPCRouter({
   getMetadata: protectedProcedure.query(({ ctx }) => {
@@ -14,6 +16,22 @@ export const metadataRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { ids } = input;
       console.log(ids);
+
+      // metadata filtering
+      const filter = {
+        metadataId: { $in: ids },
+      };
+
+      const index = pinecone.Index(PINECONE_INDEX_NAME);
+      const deletedFilesPinecone = await index._delete({
+        deleteRequest: {
+          filter: filter,
+          namespace: ctx.session.user.id,
+        },
+      });
+
+      console.log('deletedFilesPinecone', deletedFilesPinecone);
+
       // Delete all files that match the user id and the selected file metadataIds
       const deletedFiles = await ctx.prisma.fileMetadata.deleteMany({
         where: {

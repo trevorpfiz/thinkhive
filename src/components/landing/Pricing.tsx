@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -42,7 +44,7 @@ const tiers: Tier[] = [
       '5 Experts',
       'Deploy your own Discord bot',
     ],
-    mostPopular: true,
+    mostPopular: false,
   },
   {
     name: 'Enterprise',
@@ -86,7 +88,19 @@ function classNames(...classes: string[]) {
 }
 
 export default function Pricing() {
+  const router = useRouter();
+  const { status } = useSession();
   const [frequency, setFrequency] = useState(frequencies[0]);
+
+  const handleButtonClick = () => {
+    if (status === 'authenticated') {
+      // Redirect to the dashboard if the user is logged in
+      void router.push('/dashboard/billing');
+    } else {
+      // Redirect to the sign-in page if the user is not logged in
+      void signIn();
+    }
+  };
 
   return (
     <div className="bg-white py-24 sm:py-32">
@@ -151,18 +165,18 @@ export default function Pricing() {
                   {frequency?.priceSuffix}
                 </span>
               </p>
-              <a
-                href={tier.href}
+              <button
+                onClick={handleButtonClick}
                 aria-describedby={tier.id}
                 className={classNames(
-                  tier.mostPopular
-                    ? 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'
-                    : 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300',
-                  'mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                  tier.name === 'Trial'
+                    ? 'text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300'
+                    : 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500',
+                  'mt-6 block w-full rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 )}
               >
-                Buy plan
-              </a>
+                {tier.name === 'Trial' ? 'Get started' : 'Subscribe'}
+              </button>
               <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-x-3">

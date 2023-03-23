@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ulid } from 'ulid';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { pinecone } from '@/utils/pinecone';
-import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
+import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { PineconeStore } from 'langchain/vectorstores';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -50,7 +50,7 @@ export const uploadPinecone = createTRPCRouter({
       const vectorStore = await PineconeStore.fromTexts(texts, metadataIds, embeddings, {
         pineconeClient: index,
         textKey: 'text',
-        namespace: PINECONE_NAME_SPACE,
+        namespace: userId,
       });
 
       console.log('vectorStore', vectorStore);

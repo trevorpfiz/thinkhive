@@ -7,6 +7,7 @@ import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps, AppType } from 'next/app';
 import { Provider } from 'jotai';
+import { Analytics } from '@vercel/analytics/react';
 
 import { Inter, Lexend } from 'next/font/google';
 
@@ -45,6 +46,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           }
         `}</style>
         {getLayout(<Component {...pageProps} />)}
+        <Analytics />
       </Provider>
     </SessionProvider>
   );
