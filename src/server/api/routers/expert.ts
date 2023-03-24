@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
-import { getMaxExpertsForTier, getSubscriptionProductId } from '@/utils/permissions';
+import { getMaxExpertsForTier, getSubscriptionProductId } from '@/server/helpers/permissions';
 
 export const expertRouter = createTRPCRouter({
   // queries

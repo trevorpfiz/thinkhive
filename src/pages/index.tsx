@@ -10,7 +10,6 @@ import Demo from '@/components/landing/Demo';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
 import FeatureList from '@/components/landing/FeatureList';
-import CTA from '@/components/landing/CTA';
 import { CallToAction } from '@/components/landing/CallToAction';
 
 const HomePage: NextPage = () => {
