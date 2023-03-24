@@ -40,7 +40,7 @@ const faqs = [
     },
     {
       question: 'What platforms does the chatbot support?',
-      answer: `The chatbot currently supports deployment as a Discord bot. Support for Slack, Microsoft Teams, and integration with website chat widgets are coming soon!`,
+      answer: `The chatbot currently supports deployment as a website chatbot. Support for other platforms are coming soon!`,
     },
   ],
   [
@@ -84,7 +84,7 @@ export function Faqs() {
             Frequently asked questions
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, talk to our Expert in the ThinkHive{' '}
+            If you can’t find what you’re looking for, talk to our Expert using the chat widget. Give us feedback by joining the ThinkHive{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
               target="_blank"
@@ -92,7 +92,7 @@ export function Faqs() {
             >
               Discord community
             </a>
-            .
+            !
           </p>
         </div>
         <ul

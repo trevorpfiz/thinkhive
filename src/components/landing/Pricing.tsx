@@ -108,12 +108,12 @@ export default function Pricing() {
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-base font-semibold leading-7 text-indigo-600">Pricing</h2>
           <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-            Pricing plans for teams of&nbsp;all&nbsp;sizes
+            Pricing plans for all sizes
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-          Choose an affordable plan that’s packed with the best features for engaging your audience,
-          creating customer loyalty, and driving sales.
+          Choose an affordable plan that’s packed with the best features for enhancing user satisfaction,
+          fostering customer loyalty, and driving sales.
         </p>
         <div className="mt-16 flex justify-center">
           <RadioGroup

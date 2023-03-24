@@ -2,23 +2,23 @@ import { InboxIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 const features = [
   {
-    name: 'Unlimited inboxes',
+    name: 'Upload your knowledge base',
     description:
-      'Non quo aperiam repellendus quas est est. Eos aut dolore aut ut sit nesciunt. Ex tempora quia. Sit nobis consequatur dolores incidunt.',
+      'Easily upload your documents and know they are secure.',
     href: '#',
     icon: InboxIcon,
   },
   {
-    name: 'Manage team members',
+    name: 'Train your own Experts',
     description:
-      'Vero eum voluptatem aliquid nostrum voluptatem. Vitae esse natus. Earum nihil deserunt eos quasi cupiditate. A inventore et molestiae natus.',
+      'Customize your Experts according to your knowledge base.',
     href: '#',
     icon: UsersIcon,
   },
   {
-    name: 'Spam report',
+    name: 'Deploy your custom-built Experts',
     description:
-      'Et quod quaerat dolorem quaerat architecto aliquam accusantium. Ex adipisci et doloremque autem quia quam. Quis eos molestiae at iure impedit.',
+      'Quickly make your Experts accessible to your customers.',
     href: '#',
     icon: TrashIcon,
   },
@@ -30,12 +30,12 @@ export default function FeatureList() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Stay on top of customer support
+          We have everything you need to build your team.
           </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          {/* <p className="mt-6 text-lg leading-8 text-gray-600">
             Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum
             cupiditate veritatis in accusamus quisquam.
-          </p>
+          </p> */}
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
@@ -50,12 +50,12 @@ export default function FeatureList() {
                 <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
                   <p className="flex-auto">{feature.description}</p>
                   <p className="mt-6">
-                    <a
+                    {/* <a
                       href={feature.href}
                       className="text-sm font-semibold leading-6 text-indigo-600"
                     >
                       Learn more <span aria-hidden="true">→</span>
-                    </a>
+                    </a> */}
                   </p>
                 </dd>
               </div>
