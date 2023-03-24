@@ -1,4 +1,4 @@
-import { InboxIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { ArrowUpOnSquareStackIcon, UserGroupIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 
 const features = [
   {
@@ -6,21 +6,21 @@ const features = [
     description:
       'Easily upload your documents and know they are secure.',
     href: '#',
-    icon: InboxIcon,
+    icon: ArrowUpOnSquareStackIcon,
   },
   {
     name: 'Train your own Experts',
     description:
       'Customize your Experts according to your knowledge base.',
     href: '#',
-    icon: UsersIcon,
+    icon: UserGroupIcon,
   },
   {
     name: 'Deploy your custom-built Experts',
     description:
       'Quickly make your Experts accessible to your customers.',
     href: '#',
-    icon: TrashIcon,
+    icon: ChatBubbleLeftRightIcon,
   },
 ];
 
