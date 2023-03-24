@@ -10,11 +10,12 @@ export const stripeRouter = createTRPCRouter({
       const { stripe, session, prisma, req } = ctx;
       const { priceId } = input;
 
-      const customerId = await getOrCreateStripeCustomerIdForUser({
+      const customer = await getOrCreateStripeCustomerIdForUser({
         prisma,
         stripe,
         userId: session.user?.id,
       });
+      const customerId = customer?.customerId;
 
       if (!customerId) {
         throw new Error('Could not create customer');
@@ -62,11 +63,12 @@ export const stripeRouter = createTRPCRouter({
   createBillingPortalSession: protectedProcedure.mutation(async ({ ctx }) => {
     const { stripe, session, prisma, req } = ctx;
 
-    const customerId = await getOrCreateStripeCustomerIdForUser({
+    const customer = await getOrCreateStripeCustomerIdForUser({
       prisma,
       stripe,
       userId: session.user?.id,
     });
+    const customerId = customer?.customerId;
 
     if (!customerId) {
       throw new Error('Could not create customer');
@@ -116,5 +118,72 @@ export const stripeRouter = createTRPCRouter({
     });
 
     return products;
+  }),
+  upgradeOrDowngradeSubscription: protectedProcedure
+    .input(z.object({ priceId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { stripe, session, prisma } = ctx;
+      const { priceId } = input;
+
+      const customer = await getOrCreateStripeCustomerIdForUser({
+        prisma,
+        stripe,
+        userId: session.user?.id,
+      });
+      const customerId = customer?.customerId;
+      const subscriptionId = customer?.activeSubscription?.id;
+
+      if (!customerId || !subscriptionId) {
+        throw new Error('Could not find subscription');
+      }
+
+      const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+      if (!stripeSubscription) {
+        throw new Error('Could not find subscription');
+      }
+
+      const subscriptionItemId = stripeSubscription?.items?.data?.[0]?.id;
+
+      const stripeSubscriptionUpdated = await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: false,
+        proration_behavior: 'none',
+        billing_cycle_anchor: 'now',
+        items: [
+          {
+            id: subscriptionItemId,
+            price: priceId,
+          },
+        ],
+      });
+
+      if (!stripeSubscriptionUpdated) {
+        throw new Error('Could not update subscription');
+      }
+
+      return stripeSubscriptionUpdated;
+    }),
+  cancelSubscription: protectedProcedure.mutation(async ({ ctx }) => {
+    const { stripe, session, prisma } = ctx;
+
+    const customer = await getOrCreateStripeCustomerIdForUser({
+      prisma,
+      stripe,
+      userId: session.user?.id,
+    });
+    const customerId = customer?.customerId;
+    const subscriptionId = customer?.activeSubscription?.id;
+
+    if (!customerId || !subscriptionId) {
+      throw new Error('Could not find subscription');
+    }
+
+    const stripeSubscriptionCanceled = await stripe.subscriptions.del(subscriptionId);
+
+    if (!stripeSubscriptionCanceled) {
+      throw new Error('Could not cancel subscription');
+    }
+
+    return stripeSubscriptionCanceled;
   }),
 });

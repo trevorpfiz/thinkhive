@@ -123,9 +123,10 @@ function classNames(...classes: string[]) {
 export default function Plans() {
   const { data: products, isLoading: isLoadingProducts } =
     api.stripe.getActiveProductsWithPrices.useQuery();
-  const { data: stripeSubscription, isLoading: isLoadingSubscription } =
-    api.user.getSubscription.useQuery();
-  const subscriptionStatus = stripeSubscription?.[0]?.status;
+  const { data: activeSubscription, isLoading: isLoadingSubscription } =
+    api.user.getActiveSubscription.useQuery();
+  const subscriptionStatus = activeSubscription?.[0]?.status;
+  const subscriptionPriceId = activeSubscription?.[0]?.price_id;
 
   const [frequency, setFrequency] = useState<Frequency>(
     frequencies[0] || {
@@ -140,13 +141,12 @@ export default function Plans() {
       return [];
     }
 
-    const subscriptionPriceId = stripeSubscription?.[0]?.price_id;
     return createTiers(products, subscriptionPriceId ?? '');
-  }, [isLoadingProducts, isLoadingSubscription, products, stripeSubscription]);
+  }, [isLoadingProducts, isLoadingSubscription, products, subscriptionPriceId]);
 
   const subscribedProductName = useMemo(() => {
-    return getSubscribedProductName(tiers, stripeSubscription?.[0]?.price_id ?? '');
-  }, [tiers, stripeSubscription]);
+    return getSubscribedProductName(tiers, subscriptionPriceId ?? '');
+  }, [tiers, subscriptionPriceId]);
 
   return (
     <>
@@ -225,6 +225,7 @@ export default function Plans() {
                     }
                     isSubscribedProduct={tier.isSubscribedProduct}
                     frequency={frequency?.value}
+                    hasActiveSubscription={!!subscriptionStatus}
                   />
                   <ul
                     role="list"

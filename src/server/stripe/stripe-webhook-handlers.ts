@@ -16,12 +16,22 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     where: {
       id: userId,
     },
+    include: {
+      stripeSubscription: {
+        where: {
+          status: 'active',
+        },
+      },
+    },
   });
 
   if (!user) throw new Error('User not found');
 
   if (user.stripeCustomerId) {
-    return user.stripeCustomerId;
+    return {
+      customerId: user.stripeCustomerId,
+      activeSubscription: user.stripeSubscription[0],
+    };
   }
 
   // create a new customer
@@ -42,10 +52,21 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     data: {
       stripeCustomerId: customer.id,
     },
+    select: {
+      stripeCustomerId: true,
+      stripeSubscription: {
+        where: {
+          status: 'active',
+        },
+      },
+    },
   });
 
   if (updatedUser.stripeCustomerId) {
-    return updatedUser.stripeCustomerId;
+    return {
+      customerId: updatedUser.stripeCustomerId,
+      subscription: updatedUser.stripeSubscription,
+    };
   }
 };
 
