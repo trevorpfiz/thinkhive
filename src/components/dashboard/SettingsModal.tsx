@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, type ChangeEvent } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import type { Availability } from '@prisma/client';
@@ -30,7 +30,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
     }
   };
 
-  const handleInitialMessagesChange = (event, index) => {
+  const handleInitialMessagesChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
     const newInitialMessagesArray = initialMessagesArray.map((message, i) =>
       i === index ? event.target.value : message
     );
