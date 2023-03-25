@@ -8,17 +8,23 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../../_app';
-import { useRouter } from 'next/router';
 import ExpertBrains from '@/components/dashboard/ExpertBrains';
 import AvailableBrains from '@/components/dashboard/AvailableBrains';
 import ExpertHeader from '@/components/dashboard/ExpertHeader';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
-const ExpertPage: NextPageWithLayout = () => {
-  const router = useRouter();
-  const expertId = router.query.expertId as string;
+interface ExpertPageProps {
+  expertId: string;
+}
 
+const ExpertPage: NextPageWithLayout<ExpertPageProps> = ({ expertId }) => {
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>Expert - ThinkHive</title>
         <Meta />
@@ -45,6 +51,7 @@ ExpertPage.getLayout = function getLayout(page: ReactElement) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
+  const expertId = context.params?.expertId as string;
 
   if (!session) {
     return {
@@ -58,6 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       session,
+      expertId,
     },
   };
 };

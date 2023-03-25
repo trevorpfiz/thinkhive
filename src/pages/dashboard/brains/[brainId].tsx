@@ -12,6 +12,8 @@ import { useRouter } from 'next/router';
 import BrainFiles from '@/components/dashboard/BrainFiles';
 import AvailableFiles from '@/components/dashboard/AvailableFiles';
 import BrainHeader from '@/components/dashboard/BrainHeader';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
 const BrainPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -19,6 +21,10 @@ const BrainPage: NextPageWithLayout = () => {
 
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>Brain - ThinkHive</title>
         <Meta />

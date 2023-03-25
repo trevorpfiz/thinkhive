@@ -51,6 +51,7 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_EXPERT_ID: z.string(),
 });
 
 /**
@@ -91,6 +92,7 @@ const processEnv = {
   STRIPE_COMMUNITY_PRODUCT_ID: process.env.STRIPE_COMMUNITY_PRODUCT_ID,
   STRIPE_ENTERPRISE_PRODUCT_ID: process.env.STRIPE_ENTERPRISE_PRODUCT_ID,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  NEXT_PUBLIC_EXPERT_ID: process.env.NEXT_PUBLIC_EXPERT_ID,
 };
 
 // Don't touch the part below

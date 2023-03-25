@@ -9,10 +9,16 @@ import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '@/pages/_app';
 import BrainsTable from '@/components/dashboard/BrainsTable';
 import { authOptions } from '@/server/auth';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
 const BrainsPage: NextPageWithLayout = () => {
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>Brains - ThinkHive</title>
         <Meta />

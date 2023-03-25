@@ -7,10 +7,16 @@ import Pricing from '@/components/landing/Pricing';
 import { PricingFaqs } from '@/components/landing/PricingFaqs';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
 const PricingPage: NextPage = () => {
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>Pricing - ThinkHive</title>
         <Meta />

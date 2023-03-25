@@ -5,15 +5,16 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
 
 import { api } from '@/utils/api';
-import RenameModal from './RenameModal';
-import ConfirmDeleteModal from './ConfirmDeleteModal';
+import RenameModal from './modals/RenameModal';
+import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 import StatusBadge from '../ui/StatusBadge';
 import Button from '../ui/Button';
 import useNotification from '@/hooks/useNotification';
 import Notification from '../ui/Notification';
 import AvailabilityBadge from '../ui/AvailabilityBadge';
-import SettingsModal, { type SettingsData } from './SettingsModal';
+import SettingsModal, { type SettingsData } from './modals/SettingsModal';
 import { Availability } from '@prisma/client';
+import EmbedModal from './modals/EmbedModal';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -21,6 +22,7 @@ function classNames(...classes: string[]) {
 
 export default function ExpertHeader({ expertId }: { expertId: string }) {
   const router = useRouter();
+  const [isEmbedOpen, setIsEmbedOpen] = useState(false);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -30,8 +32,8 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
     domains: 'thinkhive.ai',
     availability: Availability.PRIVATE,
   });
-  const { isError, data: expert, error } = api.expert.getExpert.useQuery({ id: expertId });
 
+  const { isError, data: expert, error } = api.expert.getExpert.useQuery({ id: expertId });
   const utils = api.useContext();
   const { mutate } = api.expert.renameExpert.useMutation({
     // FIXME - optimistic update is not working
@@ -167,6 +169,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
           timeout={notification.timeout}
         />
       )}
+      <EmbedModal modal={[isEmbedOpen, setIsEmbedOpen]} />
       <RenameModal
         modal={[isRenameOpen, setIsRenameOpen]}
         formData={[renameData, setRenameData]}
@@ -184,31 +187,52 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
       />
       <div className="border-b border-gray-200 py-4 px-2">
         <div className="sm:flex sm:items-center sm:justify-between">
-          <div className="mr-4 inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-          <div className="sm:w-0 sm:flex-1">
-            <h1 id="message-heading" className="text-base font-semibold leading-6 text-gray-900">
-              {expert?.name}
-            </h1>
-            {expert?.brains && expert?.brains.length > 0 ? (
-              <p className="mt-1 truncate text-sm text-gray-500">
-                Expert has {expert?.brains.length} brains
-              </p>
-            ) : (
-              <p className="mt-1 truncate text-sm text-gray-500">Expert is looking for its brain</p>
-            )}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-6 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
+            <div className="flex flex-wrap items-center">
+              <div className="mr-4 inline-block h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+              <div>
+                <h1
+                  id="message-heading"
+                  className="text-base font-semibold leading-6 text-gray-900"
+                >
+                  {expert?.name}
+                </h1>
+                {expert?.brains && expert?.brains.length > 0 ? (
+                  <p className="mt-1 truncate text-sm text-gray-500">
+                    Expert has {expert?.brains.length} brains
+                  </p>
+                ) : (
+                  <p className="mt-1 truncate text-sm text-gray-500">
+                    Expert is looking for its brain
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <AvailabilityBadge availability={expert?.availability} />
+              <StatusBadge status={expert?.status} />
+            </div>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-6 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
-            <AvailabilityBadge availability={expert?.availability} />
-            <StatusBadge status={expert?.status} />
-            <Button
-              href={`/playground/${expertId}`}
-              target="_blank"
-              intent="solidSlate"
-              className="rounded-md"
-            >
-              Playground
-            </Button>
+            <div className="flex gap-4">
+              <Button
+                onClick={() => setIsEmbedOpen(true)}
+                target="_blank"
+                intent="solidSlate"
+                className="rounded-md"
+              >
+                Add to site
+              </Button>
+              <Button
+                href={`/playground/${expertId}`}
+                target="_blank"
+                intent="solidSlate"
+                className="rounded-md"
+              >
+                Playground
+              </Button>
+            </div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 shadow hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">

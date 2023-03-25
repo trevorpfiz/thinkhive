@@ -5,7 +5,7 @@ import useNotification from '@/hooks/useNotification';
 import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
 import Notification from '../ui/Notification';
-import ConfirmDeleteModal from './ConfirmDeleteModal';
+import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');

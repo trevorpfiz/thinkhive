@@ -8,10 +8,16 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
 const DashboardPage: NextPageWithLayout = () => {
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>Dashboard - ThinkHive</title>
         <Meta />

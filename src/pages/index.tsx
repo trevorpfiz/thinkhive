@@ -11,10 +11,16 @@ import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
 import FeatureList from '@/components/landing/FeatureList';
 import { CallToAction } from '@/components/landing/CallToAction';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
 const HomePage: NextPage = () => {
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>ThinkHive</title>
         <Meta />

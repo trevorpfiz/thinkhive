@@ -43,8 +43,8 @@ export const uploadPinecone = createTRPCRouter({
 
       /* Split text into chunks */
       const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 512,
-        chunkOverlap: 256,
+        chunkSize: 1000,
+        chunkOverlap: 200,
       });
 
       const texts = await textSplitter.splitText(cleanedText);

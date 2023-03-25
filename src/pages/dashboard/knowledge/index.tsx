@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import FilesTable from '@/components/dashboard/FilesTable';
 import LoadingBars from '@/components/ui/LoadingBars';
+import Script from 'next/script';
+import { env } from '@/env.mjs';
 
 const KnowledgePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -26,6 +28,10 @@ const KnowledgePage: NextPageWithLayout = () => {
 
   return (
     <>
+      <Script
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+      />
       <Head>
         <title>Knowledge - ThinkHive</title>
         <Meta />

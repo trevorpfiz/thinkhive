@@ -5,8 +5,8 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
 
 import { api } from '@/utils/api';
-import RenameModal from './RenameModal';
-import ConfirmDeleteModal from './ConfirmDeleteModal';
+import RenameModal from './modals/RenameModal';
+import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 import Button from '../ui/Button';
 import Notification from '../ui/Notification';
 import useNotification from '@/hooks/useNotification';
