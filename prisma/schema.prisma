@@ -112,17 +112,18 @@ model Brain {
 }
 
 model Expert {
-  id           String       @id @default(cuid())
-  name         String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  size         Int? //word count
-  domains      String? //comma separated list of domains
-  status       Status       @default(INACTIVE)
-  availability Availability @default(PRIVATE)
-  user         User         @relation(fields: [userId], references: [id])
-  userId       String
-  brains       Brain[]
+  id              String       @id @default(cuid())
+  name            String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  size            Int? //word count
+  domains         String? //comma separated list of whitelisted domains
+  initialMessages String?      @default("Hello") //newline separated list of initial messages
+  status          Status       @default(INACTIVE)
+  availability    Availability @default(PRIVATE)
+  user            User         @relation(fields: [userId], references: [id])
+  userId          String
+  brains          Brain[]
 
   @@index([userId])
 }

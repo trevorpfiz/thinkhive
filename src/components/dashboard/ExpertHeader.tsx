@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
@@ -11,6 +11,9 @@ import StatusBadge from '../ui/StatusBadge';
 import Button from '../ui/Button';
 import useNotification from '@/hooks/useNotification';
 import Notification from '../ui/Notification';
+import AvailabilityBadge from '../ui/AvailabilityBadge';
+import SettingsModal, { type SettingsData } from './SettingsModal';
+import { Availability } from '@prisma/client';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -18,10 +21,15 @@ function classNames(...classes: string[]) {
 
 export default function ExpertHeader({ expertId }: { expertId: string }) {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [formData, setFormData] = useState('');
-
+  const [renameData, setRenameData] = useState('');
+  const [settingsData, setSettingsData] = useState<SettingsData>({
+    initialMessages: 'Hello!',
+    domains: 'thinkhive.ai',
+    availability: Availability.PRIVATE,
+  });
   const { isError, data: expert, error } = api.expert.getExpert.useQuery({ id: expertId });
 
   const utils = api.useContext();
@@ -64,6 +72,17 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
     },
   });
 
+  const { mutate: changeSettings } = api.expert.changeSettings.useMutation({
+    onSuccess() {
+      showSuccessNotification('Settings changed!');
+      // Refetch the query after a successful detach
+      void utils.expert.getExpert.invalidate();
+    },
+    onError: (errorSettings) => {
+      showErrorNotification('Error Changing Settings', errorSettings.message);
+    },
+  });
+
   const { mutate: deleteExpert } = api.expert.deleteExpert.useMutation({
     onSuccess() {
       // Refetch the query after a successful detach
@@ -75,24 +94,40 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
   });
 
   // notifications
-  const { notification, showErrorNotification } = useNotification();
+  const { notification, showErrorNotification, showSuccessNotification, showLoadingNotification } =
+    useNotification();
 
   // handlers
-  function handleRename(e: React.FormEvent<HTMLFormElement>, inputValue: string) {
+  function handleRename(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (expert?.id) {
-      mutate({ id: expert?.id, name: inputValue });
+      mutate({ id: expert?.id, name: renameData });
     }
 
-    setIsModalOpen(false);
+    setIsRenameOpen(false);
   }
 
   function handleStatusChange() {
     if (expert?.status) {
       toggleStatus({ id: expert?.id });
     }
+  }
 
-    setIsModalOpen(false);
+  function handleSettings(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    showLoadingNotification('Changing settings...');
+    if (expert?.id) {
+      changeSettings({ id: expert?.id, settings: settingsData });
+    }
+
+    setIsSettingsOpen(false);
+  }
+
+  function handleSettingsChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
+    const { name, value } = e.target;
+    setSettingsData((prevSettings) => ({ ...prevSettings, [name]: value }));
   }
 
   function handleDelete(e: React.FormEvent<HTMLFormElement>) {
@@ -104,6 +139,17 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
       void router.push('/dashboard/experts');
     }
   }
+
+  useEffect(() => {
+    if (expert) {
+      setRenameData(expert.name);
+      setSettingsData({
+        initialMessages: expert.initialMessages || 'Hello!',
+        domains: expert.domains || '',
+        availability: expert.availability || Availability.PRIVATE,
+      });
+    }
+  }, [expert]);
 
   if (isError) {
     return <span>Error: {error.message}</span>;
@@ -122,9 +168,15 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
         />
       )}
       <RenameModal
-        modal={[isModalOpen, setIsModalOpen]}
-        formData={[formData, setFormData]}
+        modal={[isRenameOpen, setIsRenameOpen]}
+        formData={[renameData, setRenameData]}
         onSubmit={handleRename}
+      />
+      <SettingsModal
+        modal={[isSettingsOpen, setIsSettingsOpen]}
+        formData={[settingsData, setSettingsData]}
+        onChange={handleSettingsChange}
+        onSubmit={handleSettings}
       />
       <ConfirmDeleteModal
         modal={[isDeleteModalOpen, setIsDeleteModalOpen]}
@@ -146,17 +198,18 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
             )}
           </div>
 
-          <div className="mt-4 flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-6 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
+            <AvailabilityBadge availability={expert?.availability} />
             <StatusBadge status={expert?.status} />
             <Button
               href={`/playground/${expertId}`}
               target="_blank"
               intent="solidSlate"
-              className="ml-6 rounded-md"
+              className="rounded-md"
             >
               Playground
             </Button>
-            <Menu as="div" className="relative ml-6 inline-block text-left">
+            <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 shadow hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <span className="sr-only">Open options</span>
@@ -178,7 +231,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          onClick={() => setIsModalOpen(true)}
+                          onClick={() => setIsRenameOpen(true)}
                           type="button"
                           className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -200,6 +253,20 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
                           )}
                         >
                           <span>{expert?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</span>
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          onClick={() => setIsSettingsOpen(true)}
+                          type="button"
+                          className={classNames(
+                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                            'flex w-full justify-between px-4 py-2 text-sm'
+                          )}
+                        >
+                          <span>Settings</span>
                         </button>
                       )}
                     </Menu.Item>

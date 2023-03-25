@@ -42,7 +42,9 @@ export default function FilesTable() {
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileMetadata[]>([]);
+  const [fileToDelete, setFileToDelete] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSingleDeleteOpen, setIsSingleDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (fileMetadata && checkbox.current) {
@@ -76,13 +78,15 @@ export default function FilesTable() {
     setIsDeleteModalOpen(false);
   }
 
-  function handleDelete(metadataIds: string[]) {
-    showLoadingNotification('Deleting files...');
+  function handleDelete(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    showLoadingNotification('Deleting file...');
     // Call the mutation to delete the selected files
-    mutate({ ids: metadataIds });
+    mutate({ ids: [fileToDelete] });
 
     // Reset the selected files state
     setSelectedFiles([]);
+    setIsSingleDeleteOpen(false);
   }
 
   if (isError) {
@@ -104,6 +108,10 @@ export default function FilesTable() {
       <ConfirmDeleteModal
         modal={[isDeleteModalOpen, setIsDeleteModalOpen]}
         onSubmit={handleBulkDelete}
+      />
+      <ConfirmDeleteModal
+        modal={[isSingleDeleteOpen, setIsSingleDeleteOpen]}
+        onSubmit={handleDelete}
       />
       <div className="flex-grow rounded-lg bg-white p-4 shadow sm:p-6 lg:p-8">
         <div className="sm:flex sm:items-center">
@@ -217,7 +225,10 @@ export default function FilesTable() {
                           </td>
                           <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
                             <button
-                              onClick={() => handleDelete([file.metadataId])}
+                              onClick={() => {
+                                setIsSingleDeleteOpen(true);
+                                setFileToDelete(file.metadataId);
+                              }}
                               type="button"
                               className="text-indigo-600 hover:text-indigo-900"
                             >

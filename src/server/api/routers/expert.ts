@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { getMaxExpertsForTier, getSubscriptionProductId } from '@/server/helpers/permissions';
+import { Availability } from '@prisma/client';
 
 export const expertRouter = createTRPCRouter({
   // queries
@@ -191,6 +192,33 @@ export const expertRouter = createTRPCRouter({
         },
         data: {
           status: expert.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE',
+        },
+      });
+
+      return updatedExpert;
+    }),
+  changeSettings: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        settings: z.object({
+          initialMessages: z.string(),
+          domains: z.string(),
+          availability: z.nativeEnum(Availability),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, settings } = input;
+
+      const updatedExpert = await ctx.prisma.expert.update({
+        where: {
+          id,
+        },
+        data: {
+          initialMessages: settings.initialMessages,
+          domains: settings.domains,
+          availability: settings.availability,
         },
       });
 

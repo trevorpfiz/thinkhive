@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
@@ -17,9 +17,9 @@ function classNames(...classes: string[]) {
 
 export default function BrainHeader({ brainId }: { brainId: string }) {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [formData, setFormData] = useState('');
+  const [renameData, setRenameData] = useState('');
 
   const { isError, data: brain, error } = api.brain.getBrain.useQuery({ id: brainId });
 
@@ -67,13 +67,13 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
   const { notification, showErrorNotification } = useNotification();
 
   // handlers
-  function handleRename(e: React.FormEvent<HTMLFormElement>, inputValue: string) {
+  function handleRename(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (brain?.id) {
-      mutate({ id: brain?.id, name: inputValue });
+      mutate({ id: brain?.id, name: renameData });
     }
 
-    setIsModalOpen(false);
+    setIsRenameOpen(false);
   }
 
   function handleDelete(e: React.FormEvent<HTMLFormElement>) {
@@ -85,6 +85,12 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
       void router.push('/dashboard/brains');
     }
   }
+
+  useEffect(() => {
+    if (brain) {
+      setRenameData(brain.name);
+    }
+  }, [brain]);
 
   if (isError) {
     return <span>Error: {error.message}</span>;
@@ -103,8 +109,8 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
         />
       )}
       <RenameModal
-        modal={[isModalOpen, setIsModalOpen]}
-        formData={[formData, setFormData]}
+        modal={[isRenameOpen, setIsRenameOpen]}
+        formData={[renameData, setRenameData]}
         onSubmit={handleRename}
       />
       <ConfirmDeleteModal
@@ -129,11 +135,11 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
             )}
           </div>
 
-          <div className="mt-4 flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
-            <Button href={`/dashboard/experts`} intent="solidSlate" className="ml-6 rounded-md">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-6 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
+            <Button href={`/dashboard/experts`} intent="solidSlate" className="rounded-md">
               Attach
             </Button>
-            <Menu as="div" className="relative ml-6 inline-block text-left">
+            <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button className="-my-2 flex items-center rounded-full bg-white p-2 text-gray-400 shadow hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                   <span className="sr-only">Open options</span>
@@ -155,7 +161,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
                     <Menu.Item>
                       {({ active }) => (
                         <button
-                          onClick={() => setIsModalOpen(true)}
+                          onClick={() => setIsRenameOpen(true)}
                           type="button"
                           className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',

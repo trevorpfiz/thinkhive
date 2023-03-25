@@ -1,16 +1,26 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import type { Availability } from '@prisma/client';
+
+export interface SettingsData {
+  initialMessages: string;
+  domains: string;
+  availability: Availability;
+}
 
 interface ModalProps {
   modal: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  formData: [string, React.Dispatch<React.SetStateAction<string>>];
+  formData: [SettingsData, React.Dispatch<React.SetStateAction<SettingsData>>];
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export default function RenameModal({ modal, formData, onSubmit }: ModalProps) {
+export default function SettingsModal({ modal, formData, onChange, onSubmit }: ModalProps) {
   const [open, setOpen] = modal;
-  const [data, setData] = formData;
+  const [{ initialMessages, domains, availability }, setData] = formData;
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -59,36 +69,79 @@ export default function RenameModal({ modal, formData, onSubmit }: ModalProps) {
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        Rename
+                        Settings
                       </Dialog.Title>
                       <div className="mt-1">
-                        <p className="text-sm text-gray-500">What would you like to call it?</p>
+                        <p className="text-sm text-gray-500">
+                          Which settings would you like to change?
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div className="mt-5 sm:mt-4">
-                    <label htmlFor="new-name" className="sr-only">
-                      New name
+                  {/* Settings */}
+                  <div className="mt-5">
+                    <label
+                      htmlFor="initial-messages"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Initial chat messages
                     </label>
-                    <input
-                      type="text"
-                      name="new-name"
-                      id="new-name"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      value={data}
-                      onChange={(e) => setData(e.target.value)}
-                      placeholder="New name"
-                      maxLength={30}
+                    <textarea
+                      id="initial-messages"
+                      name="initialMessages"
+                      className="mt-1 block w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={initialMessages}
+                      onChange={onChange}
+                      placeholder="Type your chat message"
+                      maxLength={300}
                       minLength={1}
                       required
                     />
                   </div>
+                  {/* Whitelisted domains input */}
+                  <div className="mt-5">
+                    <label
+                      htmlFor="whitelisted-domains"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Whitelisted domains
+                    </label>
+                    <input
+                      type="text"
+                      name="domains"
+                      id="whitelisted-domains"
+                      className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={domains}
+                      onChange={onChange}
+                      placeholder="example.com, example2.com"
+                    />
+                  </div>
+                  {/* Availability setting */}
+                  <div className="mt-5">
+                    <label
+                      htmlFor="availability"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Availability
+                    </label>
+                    <select
+                      id="availability"
+                      name="availability"
+                      className="mt-1 block w-full border-0 bg-white py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={availability}
+                      onChange={onChange}
+                    >
+                      <option value="PUBLIC">Public</option>
+                      <option value="PRIVATE">Private</option>
+                    </select>
+                  </div>
+                  {/* Save and Cancel buttons */}
                   <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                     <button
                       type="submit"
                       className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
                     >
-                      Rename
+                      Save
                     </button>
                     <button
                       type="button"
