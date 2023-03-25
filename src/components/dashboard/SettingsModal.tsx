@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import type { Availability } from '@prisma/client';
@@ -21,6 +21,29 @@ interface ModalProps {
 export default function SettingsModal({ modal, formData, onChange, onSubmit }: ModalProps) {
   const [open, setOpen] = modal;
   const [{ initialMessages, domains, availability }, setData] = formData;
+
+  const [initialMessagesArray, setInitialMessagesArray] = useState(initialMessages.split('\n'));
+
+  const addMessageInput = () => {
+    if (initialMessagesArray.length < 3) {
+      setInitialMessagesArray([...initialMessagesArray, '']);
+    }
+  };
+
+  const handleInitialMessagesChange = (event, index) => {
+    const newInitialMessagesArray = initialMessagesArray.map((message, i) =>
+      i === index ? event.target.value : message
+    );
+    setInitialMessagesArray(newInitialMessagesArray);
+    setData((prevState) => ({
+      ...prevState,
+      initialMessages: newInitialMessagesArray.join('\n'),
+    }));
+  };
+
+  useEffect(() => {
+    setInitialMessagesArray(initialMessages.split('\n'));
+  }, [initialMessages]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -84,19 +107,31 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       htmlFor="initial-messages"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Initial chat messages
+                      Initial chat messages (maximum 3 messages)
                     </label>
-                    <textarea
-                      id="initial-messages"
-                      name="initialMessages"
-                      className="mt-1 block w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      value={initialMessages}
-                      onChange={onChange}
-                      placeholder="Type your chat message"
-                      maxLength={300}
-                      minLength={1}
-                      required
-                    />
+                    {initialMessagesArray.map((message, index) => (
+                      <input
+                        key={index}
+                        type="text"
+                        name={`initialMessage${index}`}
+                        id={`initial-message-${index}`}
+                        className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        value={message}
+                        onChange={(event) => handleInitialMessagesChange(event, index)}
+                        placeholder={`Message ${index + 1}`}
+                        maxLength={300}
+                        minLength={1}
+                        required
+                      />
+                    ))}
+                    <button
+                      type="button"
+                      className="mt-2 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto"
+                      onClick={addMessageInput}
+                      disabled={initialMessagesArray.length >= 3}
+                    >
+                      Add
+                    </button>
                   </div>
                   {/* Whitelisted domains input */}
                   <div className="mt-5">
@@ -104,7 +139,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       htmlFor="whitelisted-domains"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Whitelisted domains
+                      Whitelisted domains (separate each domain with a comma)
                     </label>
                     <input
                       type="text"
@@ -113,7 +148,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       value={domains}
                       onChange={onChange}
-                      placeholder="example.com, example2.com"
+                      placeholder="example.com,example2.com"
                     />
                   </div>
                   {/* Availability setting */}
