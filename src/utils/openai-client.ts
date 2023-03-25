@@ -13,7 +13,7 @@ let tokenUsage = {
 };
 
 export const openai = new OpenAI({
-  temperature: 0,
+  temperature: 0.5,
   maxTokens: 150,
   modelName: 'gpt-3.5-turbo',
   callbackManager: CallbackManager.fromHandlers({

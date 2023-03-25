@@ -9,7 +9,6 @@ import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '@/pages/_app';
 import ExpertsTable from '@/components/dashboard/ExpertsTable';
-import { generateSSGHelper } from '@/server/helpers/ssgHelper';
 
 const ExpertsPage: NextPageWithLayout = () => {
   return (
