@@ -17,8 +17,8 @@ export function Footer() {
             <div className="-my-1 flex justify-center gap-x-6">
               <NavLink href="/#features">Features</NavLink>
               <NavLink href="/pricing">Pricing</NavLink>
-              <NavLink href="/legal/privacy-policy">Privacy</NavLink>
-              <NavLink href="/legal/terms-of-service">Terms</NavLink>
+              <NavLink href="https://app.termly.io/document/privacy-policy/f7b7ce7d-ed9b-4fc0-802c-1ae5fcbde7a1">Privacy</NavLink>
+              <NavLink href="https://app.termly.io/document/terms-and-conditions/183699fa-a057-4dfe-a345-75b22cd2b3bf">Terms</NavLink>
             </div>
           </nav>
         </div>
@@ -37,7 +37,7 @@ export function Footer() {
             </Link>
           </div>
           <p className="mt-6 text-sm text-slate-500 sm:mt-0">
-            Copyright &copy; {new Date().getFullYear()} ThinkHive. All rights reserved.
+            Copyright &copy; {new Date().getFullYear()} TwinZ LLC. All rights reserved.
           </p>
         </div>
       </Container>

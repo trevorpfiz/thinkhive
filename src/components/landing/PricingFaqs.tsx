@@ -66,7 +66,7 @@ export function PricingFaqs() {
             Pricing FAQs
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you have any confusion whatsoever, contact us through our{' '}
+            If you have any confusion whatsoever, talk to our Expert using the chat widget. Give us feedback through our{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
               target="_blank"
@@ -74,7 +74,7 @@ export function PricingFaqs() {
             >
               Discord server
             </a>
-            .
+            !
           </p>
         </div>
         <ul
