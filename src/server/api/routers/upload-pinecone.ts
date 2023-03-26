@@ -80,7 +80,7 @@ export const uploadPinecone = createTRPCRouter({
           id: userId,
         },
         data: {
-          uploadTokens: {
+          uploadUsage: {
             increment: tokenCount,
           },
         },

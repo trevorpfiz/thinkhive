@@ -28,6 +28,7 @@ const relevantEvents = new Set([
   'customer.subscription.created',
   'customer.subscription.updated',
   'customer.subscription.deleted',
+  'invoice.created', // usage query for monthly subscriptions
 ]);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

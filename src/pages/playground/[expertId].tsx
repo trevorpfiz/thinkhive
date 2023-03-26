@@ -12,8 +12,15 @@ import Meta from '@/components/seo/Meta';
 import { api } from '@/utils/api';
 import LoadingBars from '@/components/ui/LoadingBars';
 import { prisma } from '@/server/db';
+import Messages from '@/components/widget/Messages';
+import ChatInput from '@/components/widget/ChatInput';
+import { useAtom } from 'jotai';
+import { messagesAtom } from '../expert-iframe/[expertId]';
 
 const ExpertPlayground = () => {
+  const [initial, setInitial] = useAtom(messagesAtom);
+  const [initialMessagesSet, setInitialMessagesSet] = useState(false);
+
   const router = useRouter();
   const expertId = router.query.expertId as string;
 
@@ -59,6 +66,17 @@ const ExpertPlayground = () => {
     }
   };
 
+  useEffect(() => {
+    if (expert && expert.initialMessages && !initialMessagesSet) {
+      const initialMessages = expert.initialMessages.split('\n').map((msg) => ({
+        type: 'server',
+        content: msg,
+      }));
+      setInitial(initialMessages);
+      setInitialMessagesSet(true); // Set the flag to true after setting initial messages
+    }
+  }, [expert, setInitial, initialMessagesSet]);
+
   if (isError) {
     return <div>Error: {error.message}</div>;
   }
@@ -74,44 +92,10 @@ const ExpertPlayground = () => {
         />
       </Head>
 
-      <section className="container mx-auto max-w-xl pt-4 pb-6 md:pt-8 md:pb-10 lg:pt-10 lg:pb-16">
-        <div className="mx-auto flex flex-col gap-4">
-          <h1 className="mb-3 text-center text-2xl font-bold leading-[1.1] tracking-tighter">
-            Chat With our ThinkHive Expert
-          </h1>
-          <div className="flex w-full max-w-xl items-center space-x-2">
-            <input
-              ref={inputRef}
-              className="flex h-10 w-full rounded-md border border-slate-300 bg-transparent py-2 px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              type="text"
-              placeholder="What is ThinkHive?"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleEnter}
-            />
-            <button
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={handleSearch}
-              className="inline-flex h-10 items-center justify-center rounded-md bg-slate-900 py-2 px-4 text-sm font-medium text-white transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100"
-            >
-              Search
-            </button>
-          </div>
-          {isLoading && <LoadingBars />}
-          {!isLoading && data?.response?.text?.length > 0 && (
-            <>
-              <div className="mt-4 rounded-md border border-neutral-300 p-5">
-                <h2 className="text-center text-xl font-bold leading-[1.1] tracking-tighter">
-                  Answer
-                </h2>
-                <p className="mt-3 leading-normal text-slate-700 sm:leading-7">
-                  {data?.response.text}
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
+      <div className="flex min-h-screen flex-col justify-between overflow-y-auto overflow-x-hidden bg-white px-2 pt-2 lg:px-4 lg:pt-4">
+        <Messages />
+        <ChatInput />
+      </div>
     </>
   );
 };

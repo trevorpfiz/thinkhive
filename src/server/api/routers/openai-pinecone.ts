@@ -29,6 +29,7 @@ export const openAiPinecone = createTRPCRouter({
 
       const encoding = get_encoding('cl100k_base');
       const questionTokens = encoding.encode(sanitizedQuestion).length;
+      console.log('questionTokens', questionTokens);
 
       // metadata filtering
       const filter = {
@@ -55,21 +56,24 @@ export const openAiPinecone = createTRPCRouter({
       const response = await chain.call({
         query: sanitizedQuestion,
       });
-
       console.log('response', response);
 
-      // add to user's question and message tokens
+      // QCR tokens
+      const totalQuestionTokens = questionTokens / 5 + questionTokens;
+      const contextTokens = 1000;
+      const messageTokens =
+        totalQuestionTokens + contextTokens + encoding.encode(response.text as string).length;
+      console.log(messageTokens, 'messageTokens');
+
+      // subtract credits from user
       await ctx.prisma.user.update({
         where: {
           id: ctx.session.user.id,
         },
         data: {
-          questionTokens: {
-            increment: questionTokens,
+          credits: {
+            decrement: messageTokens / 1000,
           },
-          // messageTokens: {
-          //   increment: messageTokens,
-          // },
         },
       });
 
