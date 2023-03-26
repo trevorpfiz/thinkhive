@@ -119,7 +119,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                         value={message}
                         onChange={(event) => handleInitialMessagesChange(event, index)}
                         placeholder={`Message ${index + 1}`}
-                        maxLength={300}
+                        maxLength={1000}
                         minLength={1}
                         required
                       />

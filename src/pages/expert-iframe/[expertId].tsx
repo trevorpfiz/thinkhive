@@ -1,19 +1,14 @@
-import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/server/auth';
 import { useRouter } from 'next/router';
 import Messages from '@/components/widget/Messages';
 import ChatInput from '@/components/widget/ChatInput';
 import * as EventTypes from '@/types/eventTypes';
 import { api } from '@/utils/api';
 import { atom, useAtom } from 'jotai';
-import { Disclosure, Popover, Transition } from '@headlessui/react';
-import clsx from 'clsx';
 
 interface MessageEventProps extends MessageEvent {
   type: string;
@@ -24,10 +19,19 @@ interface MessageEventProps extends MessageEvent {
   };
 }
 
+export interface WidgetMessage {
+  type?: string;
+  content: string;
+}
+
 const widthAtom = atom(0);
+export const messagesAtom = atom<WidgetMessage[]>([]);
+export const loadingAtom = atom(false);
 
 const ExpertWidgetPage = () => {
   const [deviceWidth, setDeviceWidth] = useAtom(widthAtom);
+  const [initial, setInitial] = useAtom(messagesAtom);
+  const [initialMessagesSet, setInitialMessagesSet] = useState(false);
 
   const router = useRouter();
   const expertId = router.query.expertId as string;
@@ -89,13 +93,10 @@ const ExpertWidgetPage = () => {
         switch (event.data.type) {
           // INIT_IFRAME
           case EventTypes.INIT_IFRAME:
-            console.log(expert?.id, 'aksjld;g');
-            console.log(event.data.value.expertId, 'event.data.value.expertId');
-            console.log('next INIT_IFRAME');
             const isExpertIdValid = expert?.id === event.data.value.expertId;
             const hasValidDomain =
               !expert?.domains || expert?.domains.split(',').includes(event.data.value.topHost);
-
+            console.log(hasValidDomain, event.data.value.topHost, expert?.domains);
             if (isExpertIdValid && hasValidDomain) {
               // get whitelisted domains
 
@@ -152,6 +153,17 @@ const ExpertWidgetPage = () => {
     console.log(isOpen);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (expert && expert.initialMessages && !initialMessagesSet) {
+      const initialMessages = expert.initialMessages.split('\n').map((msg) => ({
+        type: 'server',
+        content: msg,
+      }));
+      setInitial(initialMessages);
+      setInitialMessagesSet(true); // Set the flag to true after setting initial messages
+    }
+  }, [expert, setInitial, initialMessagesSet]);
+
   if (isError) {
     return <div>Error: {error.message}</div>;
   }
@@ -167,31 +179,14 @@ const ExpertWidgetPage = () => {
         />
       </Head>
 
-      <div className="flex min-h-screen flex-col justify-between overflow-auto bg-white px-2 pt-2 lg:px-4 lg:pt-4">
-        <Messages />
-        <ChatInput />
-      </div>
+      {isReady && (
+        <div className="flex min-h-screen flex-col justify-between overflow-y-auto overflow-x-hidden bg-white px-2 pt-2 lg:px-4 lg:pt-4">
+          <Messages />
+          <ChatInput />
+        </div>
+      )}
     </>
   );
 };
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const session = await getServerSession(context.req, context.res, authOptions);
-
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {
-//       session,
-//     },
-//   };
-// };
 
 export default ExpertWidgetPage;

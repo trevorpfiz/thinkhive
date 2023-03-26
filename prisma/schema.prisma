@@ -82,7 +82,7 @@ model FileMetadata {
   metadataId   String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  fileName     String
+  fileName     String   @db.Text
   fileSize     Int
   contentType  String
   createdDate  String?
@@ -117,8 +117,8 @@ model Expert {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   size            Int? //word count
-  domains         String? //comma separated list of whitelisted domains
-  initialMessages String?      @default("Hello") //newline separated list of initial messages
+  domains         String?      @db.Text //comma separated list of whitelisted domains
+  initialMessages String?      @default("Hello") @db.Text //newline separated list of initial messages
   status          Status       @default(INACTIVE)
   availability    Availability @default(PRIVATE)
   user            User         @relation(fields: [userId], references: [id])
