@@ -57,10 +57,11 @@ model User {
   emailVerified      DateTime?
   image              String?
   stripeCustomerId   String?        @unique
-  credits            Float          @default(3.000000000000000) // 15 decimal
+  credits            Float          @default(30) // 15 decimal
+  additionalCredits  Float          @default(0) // 15 decimal
   uploadUsage        Int            @default(0)
   questionUsage      Int            @default(0)
-  contextUsage       Int            @default(0)
+  responseUsage      Int            @default(0)
   stripeSubscription Subscription[]
   accounts           Account[]
   sessions           Session[]

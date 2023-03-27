@@ -5,7 +5,7 @@ import { PineconeStore } from 'langchain/vectorstores';
 import { get_encoding } from '@dqbd/tiktoken';
 import { getClientIp } from 'request-ip';
 
-import { openai } from '@/utils/openai-client';
+import { openai, tokenUsage } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
@@ -52,17 +52,15 @@ export const openAiPinecone = createTRPCRouter({
       // create the chain
       const chain = VectorDBQAChain.fromLLM(model, vectorStore);
 
-      //Ask a question
+      // Ask a question
       const response = await chain.call({
         query: sanitizedQuestion,
       });
       console.log('response', response);
 
-      // QCR tokens
-      const totalQuestionTokens = questionTokens / 5 + questionTokens;
-      const contextTokens = 1000;
-      const messageTokens =
-        totalQuestionTokens + contextTokens + encoding.encode(response.text as string).length;
+      // Add ada question tokens to total tokens from openai callback
+      const adaQuestionTokens = questionTokens / 5;
+      const messageTokens = tokenUsage.totalTokens + adaQuestionTokens;
       console.log(messageTokens, 'messageTokens');
 
       // subtract credits from user
@@ -73,6 +71,12 @@ export const openAiPinecone = createTRPCRouter({
         data: {
           credits: {
             decrement: messageTokens / 1000,
+          },
+          questionUsage: {
+            increment: questionTokens,
+          },
+          responseUsage: {
+            increment: tokenUsage.totalTokens,
           },
         },
       });

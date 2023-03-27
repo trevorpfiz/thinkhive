@@ -1,18 +1,18 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { modalStageAtom } from './SubscribeButton';
 import { useAtom } from 'jotai';
+import { modalStageAtom } from './SubscribeButton';
 
 interface ModalProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export default function SubscribeModal({ onSubmit }: ModalProps) {
+export default function ProrationModal({ onSubmit }: ModalProps) {
   const [modalStage, setModalStage] = useAtom(modalStageAtom);
 
   return (
-    <Transition.Root show={modalStage === 2} as={Fragment}>
+    <Transition.Root show={modalStage === 3} as={Fragment}>
       <Dialog as="div" className="relative z-30" onClose={() => setModalStage(0)}>
         <Transition.Child
           as={Fragment}
@@ -58,7 +58,7 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        Subscribe
+                        Prorate
                       </Dialog.Title>
                       <div className="mt-1">
                         <p className="text-sm text-gray-500">Would you like to subscribe?</p>

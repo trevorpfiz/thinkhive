@@ -2,6 +2,7 @@ import { env } from '@/env.mjs';
 import { getOrCreateStripeCustomerIdForUser } from '@/server/stripe/stripe-webhook-handlers';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { z } from 'zod';
+import { monthlyToMonthlyUpdate } from '@/server/helpers/payments';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
@@ -120,10 +121,10 @@ export const stripeRouter = createTRPCRouter({
     return products;
   }),
   upgradeOrDowngradeSubscription: protectedProcedure
-    .input(z.object({ priceId: z.string() }))
+    .input(z.object({ priceId: z.string(), swapImmediately: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const { stripe, session, prisma } = ctx;
-      const { priceId } = input;
+      const { priceId, swapImmediately } = input;
 
       const customer = await getOrCreateStripeCustomerIdForUser({
         prisma,
@@ -143,25 +144,43 @@ export const stripeRouter = createTRPCRouter({
         throw new Error('Could not find subscription');
       }
 
-      const subscriptionItemId = stripeSubscription?.items?.data?.[0]?.id;
+      const currentPrice = await stripe.prices.retrieve(stripeSubscription.items.data[0].price.id);
+      const newPrice = await stripe.prices.retrieve(priceId);
 
-      const stripeSubscriptionUpdated = await stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: false,
-        proration_behavior: 'none',
-        billing_cycle_anchor: 'now',
-        items: [
-          {
-            id: subscriptionItemId,
-            price: priceId,
-          },
-        ],
-      });
-
-      if (!stripeSubscriptionUpdated) {
-        throw new Error('Could not update subscription');
+      if (!currentPrice || !newPrice) {
+        throw new Error('Could not find price details');
       }
 
-      return stripeSubscriptionUpdated;
+      const currentPriceType = currentPrice.recurring.interval;
+      const newPriceType = newPrice.recurring.interval;
+
+      const subscriptionChangeType = `${currentPriceType}To${newPriceType
+        .charAt(0)
+        .toUpperCase()}${newPriceType.slice(1)}`;
+
+      switch (subscriptionChangeType) {
+        case 'monthlyToMonthly':
+          const stripeSubscriptionUpdated = monthlyToMonthlyUpdate(
+            customerId,
+            subscriptionId,
+            priceId,
+            stripeSubscription,
+            swapImmediately
+          );
+          return stripeSubscriptionUpdated;
+          break;
+        case 'monthlyToAnnual':
+          // Add your custom logic for monthly to annual update
+          break;
+        case 'annualToMonthly':
+          // Add your custom logic for annual to monthly update
+          break;
+        case 'annualToAnnual':
+          // Add your custom logic for annual to annual update
+          break;
+        default:
+          throw new Error('Invalid subscription change type');
+      }
     }),
   cancelSubscription: protectedProcedure.mutation(async ({ ctx }) => {
     const { stripe, session, prisma } = ctx;

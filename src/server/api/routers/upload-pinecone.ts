@@ -37,7 +37,7 @@ export const uploadPinecone = createTRPCRouter({
 
       const cleanedText = text.trim().replaceAll('\n', ' ');
 
-      // TODO - token count - can use TokenTextSplitter from langchain
+      // TODO - token count - can use TokenTextSplitter from langchain?
       const encoding = get_encoding('cl100k_base');
       const tokenCount = encoding.encode(cleanedText).length;
 
@@ -49,7 +49,6 @@ export const uploadPinecone = createTRPCRouter({
 
       const texts = await textSplitter.splitText(cleanedText);
       const metadataIds = texts.map(() => ({ metadataId }));
-      // const metadataIds = texts.map(() => ({ metadataId, userId }));
 
       /*create and store the embeddings in the vectorStore*/
       const embeddings = new OpenAIEmbeddings();
@@ -74,7 +73,7 @@ export const uploadPinecone = createTRPCRouter({
         },
       });
 
-      // add to user's upload tokens
+      // add to user's upload usage
       await ctx.prisma.user.update({
         where: {
           id: userId,

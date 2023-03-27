@@ -141,6 +141,8 @@ export const manageSubscriptionStatusChange = async ({
   const customerId = subscription.customer as string;
   const createAction = event.type === 'customer.subscription.created';
 
+  // Add a check for the pending_update hash to see if subscription payment failed
+
   // Get customer's UUID from mapping table.
   const customerData = await prisma.user.findUnique({
     where: {
