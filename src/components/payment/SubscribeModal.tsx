@@ -4,7 +4,7 @@ import { modalStageAtom } from './SubscribeButton';
 import { useAtom, useAtomValue } from 'jotai';
 import ProrationModal from './ProrationModal';
 import SwapModal from './SwapModal';
-import { selectedAmountAtom, selectedTierAtom } from './Plans';
+import { frequencyAtom, selectedAmountAtom, selectedTierAtom } from './Plans';
 import { api } from '@/utils/api';
 import dayjs from 'dayjs';
 
@@ -16,6 +16,7 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
   const [modalStage, setModalStage] = useAtom(modalStageAtom);
   const selectedTier = useAtomValue(selectedTierAtom);
   const selectedAmount = useAtomValue(selectedAmountAtom);
+  const frequency = useAtomValue(frequencyAtom);
 
   const { data: activeSubscription, isLoading: isLoadingSubscription } =
     api.user.getActiveSubscription.useQuery();
@@ -102,7 +103,8 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
                             </div>
                             <div className="flex items-end">
                               <p className="text-gray-500">
-                                ${selectedAmount / 100} / {subscriptionFrequency}
+                                ${selectedAmount / 100} /{' '}
+                                {frequency.value === 'monthly' ? 'month' : 'year'}
                               </p>
                             </div>
                           </li>

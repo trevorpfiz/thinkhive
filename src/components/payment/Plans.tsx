@@ -33,6 +33,7 @@ export interface Tier {
   };
   description: string;
   features: string[];
+  metadata: Metadata;
   isSubscribedPrice: {
     monthly: boolean;
     annual: boolean;
@@ -44,7 +45,7 @@ interface ProductWithPrice extends Product {
   Price: Price[];
 }
 
-interface Metadata extends Prisma.JsonObject {
+export interface Metadata extends Prisma.JsonObject {
   index?: string;
   feature_1?: string;
   feature_2?: string;
@@ -89,6 +90,7 @@ function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) 
         },
         description: product.description || '',
         features,
+        metadata,
         isSubscribedPrice: {
           monthly: subscriptionPriceId === monthlyPrice?.id,
           annual: subscriptionPriceId === annualPrice?.id,
@@ -97,6 +99,25 @@ function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) 
           !!subscriptionPriceId && product.Price.some((price) => price.id === subscriptionPriceId),
       };
     });
+}
+
+function getButtonState(
+  activeSubscriptionPriceId,
+  activeMetadata,
+  productIndex,
+  targetPriceId,
+  tier
+) {
+  if (activeSubscriptionPriceId === targetPriceId) {
+    return 'Current plan';
+  }
+  if (tier.isSubscribedProduct && tier.price.annual.priceId === targetPriceId) {
+    return 'Change to Annual';
+  }
+  if (productIndex > activeMetadata.index) {
+    return 'Upgrade';
+  }
+  return 'Downgrade';
 }
 
 function classNames(...classes: string[]) {
@@ -117,6 +138,7 @@ export default function Plans() {
   const subscriptionStatus = activeSubscription?.[0]?.status;
   const subscriptionPriceId = activeSubscription?.[0]?.price_id;
   const subscribedProductName = activeSubscription?.[0]?.price?.product.name;
+  const subscribedMetadata = activeSubscription?.[0]?.price?.product.metadata;
 
   const tiers = useMemo(() => {
     if (isLoadingProducts || isLoadingSubscription || !products) {
@@ -174,7 +196,14 @@ export default function Plans() {
             </div>
             <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
               {tiers.map((tier) => (
-                <TierCard key={tier.id} tier={tier} hasActiveSubscription={!!subscriptionStatus} />
+                <TierCard
+                  key={tier.id}
+                  tier={tier}
+                  hasActiveSubscription={!!subscriptionStatus}
+                  subscriptionPriceId={subscriptionPriceId}
+                  subscribedMetadata={subscribedMetadata}
+                  buttonState={getButtonState}
+                />
               ))}
             </div>
           </div>

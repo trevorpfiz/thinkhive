@@ -14,6 +14,7 @@ interface SubscribeButtonProps {
   hasActiveSubscription: boolean;
   tier: Tier;
   amount: number;
+  state: string;
 }
 
 export const modalStageAtom = atom(0);
@@ -26,6 +27,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   hasActiveSubscription,
   tier,
   amount,
+  state,
 }) => {
   const [modalStage, setModalStage] = useAtom(modalStageAtom);
   const [swapImmediately, setSwapImmediately] = useAtom(swapImmediatelyAtom);
@@ -107,7 +109,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
         onClick={handleClick}
         disabled={isSubscribedPrice}
       >
-        {buttonText()}
+        {state}
       </button>
     </>
   );

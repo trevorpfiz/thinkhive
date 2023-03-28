@@ -1,7 +1,7 @@
 // TierCard.tsx
 import { SubscribeButton } from './SubscribeButton';
 import { CheckIcon } from '@heroicons/react/20/solid';
-import { frequencyAtom, type Tier } from './Plans';
+import { frequencyAtom, type Metadata, type Tier } from './Plans';
 import { useAtomValue } from 'jotai';
 
 interface Interval {
@@ -12,9 +12,18 @@ interface Interval {
 interface TierCardProps {
   tier: Tier;
   hasActiveSubscription: boolean;
+  subscriptionPriceId: string;
+  subscribedMetadata: Metadata;
+  buttonState: any;
 }
 
-export const TierCard: React.FC<TierCardProps> = ({ tier, hasActiveSubscription }) => {
+export const TierCard: React.FC<TierCardProps> = ({
+  tier,
+  hasActiveSubscription,
+  subscriptionPriceId,
+  subscribedMetadata,
+  buttonState,
+}) => {
   const frequency = useAtomValue(frequencyAtom);
   const isSubscribedPrice = tier.isSubscribedPrice[frequency.value as keyof Interval] || false;
   const isSubscribedProduct = tier.isSubscribedProduct;
@@ -45,6 +54,13 @@ export const TierCard: React.FC<TierCardProps> = ({ tier, hasActiveSubscription 
         hasActiveSubscription={hasActiveSubscription}
         tier={tier}
         amount={tier.price[frequency?.value as keyof Interval]?.amount || 0}
+        state={buttonState(
+          subscriptionPriceId,
+          subscribedMetadata,
+          parseInt(tier.metadata.index || '0', 10),
+          tier.price[frequency.value].priceId,
+          tier
+        )}
       />
       <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
         {tier.features.map((feature) => (
