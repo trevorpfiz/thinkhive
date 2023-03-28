@@ -4,16 +4,16 @@ import { api } from '@/utils/api';
 import SubscribeModal from './SubscribeModal';
 import Notification from '../ui/Notification';
 import useNotification from '@/hooks/useNotification';
-import SwapModal from './SwapModal';
-import ProrationModal from './ProrationModal';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { frequencyAtom, selectedAmountAtom, selectedTierAtom, type Tier } from './Plans';
 
 interface SubscribeButtonProps {
   priceId: string;
   isSubscribedPrice: boolean;
   isSubscribedProduct: boolean;
-  frequency: string;
   hasActiveSubscription: boolean;
+  tier: Tier;
+  amount: number;
 }
 
 export const modalStageAtom = atom(0);
@@ -23,11 +23,16 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   priceId,
   isSubscribedPrice,
   isSubscribedProduct,
-  frequency,
   hasActiveSubscription,
+  tier,
+  amount,
 }) => {
   const [modalStage, setModalStage] = useAtom(modalStageAtom);
   const [swapImmediately, setSwapImmediately] = useAtom(swapImmediatelyAtom);
+  const setSelectedTier = useSetAtom(selectedTierAtom);
+  const setSelectedAmount = useSetAtom(selectedAmountAtom);
+  const frequency = useAtomValue(frequencyAtom);
+
   const utils = api.useContext();
   const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
   const { mutate: changeSubscription } = api.stripe.upgradeOrDowngradeSubscription.useMutation({
@@ -51,7 +56,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
       if (isSubscribedPrice) {
         return 'Current plan';
       } else {
-        return frequency === 'monthly' ? 'Change to Monthly' : 'Change to Annual';
+        return frequency.value === 'monthly' ? 'Change to Monthly' : 'Change to Annual';
       }
     }
     return 'Subscribe';
@@ -64,6 +69,8 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   // handlers
   const handleClick = async () => {
     if (hasActiveSubscription) {
+      setSelectedTier(tier);
+      setSelectedAmount(amount);
       setModalStage(1);
     } else {
       const { checkoutUrl } = await createCheckoutSession({ priceId });
@@ -94,9 +101,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
           timeout={notification.timeout}
         />
       )}
-      <SwapModal />
       <SubscribeModal onSubmit={handleSubscribe} />
-      <ProrationModal onSubmit={handleSubscribe} />
       <button
         className="mt-6 block w-full rounded-md bg-indigo-600 py-2 px-3 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-30"
         onClick={handleClick}

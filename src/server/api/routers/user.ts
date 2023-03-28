@@ -39,6 +39,20 @@ export const userRouter = createTRPCRouter({
           where: {
             status: 'active',
           },
+          include: {
+            price: {
+              select: {
+                type: true,
+                unit_amount: true,
+                interval: true,
+                product: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });

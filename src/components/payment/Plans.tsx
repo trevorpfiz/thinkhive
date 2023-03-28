@@ -1,29 +1,24 @@
 import { useMemo, useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/20/solid';
-import { SubscribeButton } from './SubscribeButton';
 import type { Product, Price, Prisma } from '@prisma/client';
 import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
 import { ManageBilling } from './ManageBilling';
+import { atom, useAtom, useSetAtom } from 'jotai';
+import { TierCard } from './TierCard';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
   { value: 'annual', label: 'Annually', priceSuffix: '/year' },
 ];
 
-interface Frequency {
+export interface Frequency {
   value: string;
   label: string;
   priceSuffix: string;
 }
 
-interface Interval {
-  monthly: string;
-  annual: string;
-}
-
-interface Tier {
+export interface Tier {
   name: string;
   id: string;
   price: {
@@ -104,37 +99,24 @@ function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) 
     });
 }
 
-function getSubscribedProductName(tiers: Tier[], subscriptionPriceId: string): string {
-  for (const tier of tiers) {
-    if (
-      tier.price.monthly.priceId === subscriptionPriceId ||
-      tier.price.annual.priceId === subscriptionPriceId
-    ) {
-      return tier.name;
-    }
-  }
-  return '';
-}
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+export const selectedTierAtom = atom<Tier | null>(null);
+export const selectedAmountAtom = atom<number>(0);
+export const frequencyAtom = atom<Frequency>(frequencies[0]!);
+
 export default function Plans() {
+  const [frequency, setFrequency] = useAtom(frequencyAtom);
+
   const { data: products, isLoading: isLoadingProducts } =
     api.stripe.getActiveProductsWithPrices.useQuery();
   const { data: activeSubscription, isLoading: isLoadingSubscription } =
     api.user.getActiveSubscription.useQuery();
   const subscriptionStatus = activeSubscription?.[0]?.status;
   const subscriptionPriceId = activeSubscription?.[0]?.price_id;
-
-  const [frequency, setFrequency] = useState<Frequency>(
-    frequencies[0] || {
-      value: 'monthly',
-      label: 'Monthly',
-      priceSuffix: '/month',
-    }
-  );
+  const subscribedProductName = activeSubscription?.[0]?.price?.product.name;
 
   const tiers = useMemo(() => {
     if (isLoadingProducts || isLoadingSubscription || !products) {
@@ -143,10 +125,6 @@ export default function Plans() {
 
     return createTiers(products, subscriptionPriceId ?? '');
   }, [isLoadingProducts, isLoadingSubscription, products, subscriptionPriceId]);
-
-  const subscribedProductName = useMemo(() => {
-    return getSubscribedProductName(tiers, subscriptionPriceId ?? '');
-  }, [tiers, subscriptionPriceId]);
 
   return (
     <>
@@ -196,52 +174,7 @@ export default function Plans() {
             </div>
             <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
               {tiers.map((tier) => (
-                <div
-                  key={tier.id}
-                  className="rounded-3xl bg-white p-8 shadow ring-1 ring-gray-200 xl:p-10"
-                >
-                  <div className="flex items-center justify-between gap-x-4">
-                    <h3 id={tier.id} className="text-lg font-semibold leading-8 text-gray-900">
-                      {tier.name}
-                    </h3>
-                  </div>
-                  <p className="mt-4 min-h-[50px] text-sm leading-6 text-gray-600">
-                    {tier.description}
-                  </p>
-                  <p className="mt-6 flex items-baseline gap-x-1">
-                    <span className="text-4xl font-bold tracking-tight text-gray-900">
-                      {tier.price[frequency?.value as keyof Interval]
-                        ? `$${tier.price[frequency?.value as keyof Interval].amount / 100}`
-                        : '$0'}
-                    </span>
-                    <span className="text-sm font-semibold leading-6 text-gray-600">
-                      {frequency?.priceSuffix}
-                    </span>
-                  </p>
-                  <SubscribeButton
-                    priceId={tier.price[frequency?.value as keyof Interval]?.priceId || ''}
-                    isSubscribedPrice={
-                      tier.isSubscribedPrice[frequency?.value as keyof Interval] || false
-                    }
-                    isSubscribedProduct={tier.isSubscribedProduct}
-                    frequency={frequency?.value}
-                    hasActiveSubscription={!!subscriptionStatus}
-                  />
-                  <ul
-                    role="list"
-                    className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10"
-                  >
-                    {tier.features.map((feature) => (
-                      <li key={feature} className="flex gap-x-3">
-                        <CheckIcon
-                          className="h-6 w-5 flex-none text-indigo-600"
-                          aria-hidden="true"
-                        />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <TierCard key={tier.id} tier={tier} hasActiveSubscription={!!subscriptionStatus} />
               ))}
             </div>
           </div>
