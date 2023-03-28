@@ -47,7 +47,7 @@ const faqs = [
     {
       question: 'Can I purchase more credits while on my current plan?',
       answer:
-        'Yes you can! Just head to the billing page in the dashboard where you can see your usage. Here is where you can buy more credits. 1 credit = ~1 message or ~1,000 words uploaded. Purchased credits will persist between subscription periods and base plan credit usage will be prioritized. However, you will need an active subscription in order to use purchased credits.',
+        "Yes you can! Just head to the billing page in the dashboard where you can see your usage. Here is where you can buy more credits. 1 credit = ~1 message or ~1,000 words uploaded. Purchased credits will persist between subscription periods and your plan's credits will be used up first. However, you will need an active subscription in order to use purchased credits.",
     },
    
   ],
