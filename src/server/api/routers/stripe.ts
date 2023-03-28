@@ -2,7 +2,11 @@ import { env } from '@/env.mjs';
 import { getOrCreateStripeCustomerIdForUser } from '@/server/stripe/stripe-webhook-handlers';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { z } from 'zod';
-import { getCreditsForProduct, monthlyToMonthlyUpdate } from '@/server/helpers/payments';
+import {
+  annualToAnnual,
+  getCreditsForProduct,
+  monthlyToMonthlyOrAnnual,
+} from '@/server/helpers/payments';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
@@ -157,16 +161,18 @@ export const stripeRouter = createTRPCRouter({
       }
 
       const currentPriceAmount = currentPrice.unit_amount / 100;
+      const newPriceAmount = newPrice.unit_amount / 100;
       const currentPriceType = currentPrice.recurring.interval;
       const newPriceType = newPrice.recurring.interval;
 
       const subscriptionChangeType = `${currentPriceType}To${newPriceType
         .charAt(0)
         .toUpperCase()}${newPriceType.slice(1)}`;
-
+      console.log(subscriptionChangeType);
       switch (subscriptionChangeType) {
         case 'monthToMonth':
-          const stripeSubscriptionUpdated = monthlyToMonthlyUpdate(
+        case 'monthToYear':
+          const monthlySubscriptionUpdated = monthlyToMonthlyOrAnnual(
             customerId,
             subscriptionId,
             selectedPriceId,
@@ -174,18 +180,27 @@ export const stripeRouter = createTRPCRouter({
             swapImmediately,
             credits,
             currentProductCredits,
-            currentPriceAmount
+            currentPriceAmount,
+            newPriceAmount
           );
-          return stripeSubscriptionUpdated;
+          return monthlySubscriptionUpdated;
           break;
-        case 'monthToAnnual':
-          // Add your custom logic for monthly to annual update
+        case 'yearToYear':
+          const annualSubscriptionUpdated = annualToAnnual(
+            customerId,
+            subscriptionId,
+            selectedPriceId,
+            stripeSubscription,
+            swapImmediately,
+            credits,
+            currentProductCredits,
+            currentPriceAmount,
+            newPriceAmount
+          );
+          return annualSubscriptionUpdated;
           break;
-        case 'annualToMonth':
-          // Add your custom logic for annual to monthly update
-          break;
-        case 'annualToAnnual':
-          // Add your custom logic for annual to annual update
+        case 'yearToMonth':
+          throw new Error('Reach out to us and we can help you with this');
           break;
         default:
           throw new Error('Invalid subscription change type');
