@@ -16,10 +16,21 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     where: {
       id: userId,
     },
-    include: {
+    select: {
+      email: true,
+      name: true,
+      stripeCustomerId: true,
+      credits: true,
       stripeSubscription: {
         where: {
           status: 'active',
+        },
+        include: {
+          price: {
+            include: {
+              product: true,
+            },
+          },
         },
       },
     },
@@ -31,6 +42,7 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     return {
       customerId: user.stripeCustomerId,
       activeSubscription: user.stripeSubscription[0],
+      credits: user.credits,
     };
   }
 

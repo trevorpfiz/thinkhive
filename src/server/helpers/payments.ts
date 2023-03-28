@@ -1,23 +1,41 @@
+import { env } from '@/env.mjs';
+import { getProrationAmount } from '@/utils/payments';
 import type Stripe from 'stripe';
 
 import { stripe } from '../stripe/client';
+
+export function getCreditsForProduct(productId: string) {
+  switch (productId) {
+    case env.STRIPE_HANGOUT_PRODUCT_ID:
+      return 5000;
+    case env.STRIPE_COMMUNITY_PRODUCT_ID:
+      return 25000;
+    case env.STRIPE_ENTERPRISE_PRODUCT_ID:
+      return 100000;
+    default:
+      return 0;
+  }
+}
 
 export async function monthlyToMonthlyUpdate(
   customerId: string,
   subscriptionId: string,
   priceId: string,
   stripeSubscription: Stripe.Response<Stripe.Subscription>,
-  swapImmediately: boolean
+  swapImmediately: boolean,
+  credits: number,
+  currentProductCredits: number,
+  currentPriceAmount: number
 ) {
   // only prorate if swapping immediately
   if (swapImmediately) {
     // Custom amount for the upgrade
-    const customAmount = 2000; //proration algo
+    const prorationAmount = getProrationAmount(credits, currentProductCredits, currentPriceAmount);
 
     // Create the negative invoice item
     const invoiceItem = await stripe.invoiceItems.create({
       customer: customerId,
-      amount: -customAmount,
+      amount: -prorationAmount,
       currency: 'usd',
       description: 'Discount for subscription upgrade',
       subscription: subscriptionId,

@@ -8,7 +8,7 @@ import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { frequencyAtom, selectedAmountAtom, selectedTierAtom, type Tier } from './Plans';
 
 interface SubscribeButtonProps {
-  priceId: string;
+  selectedPriceId: string;
   isSubscribedPrice: boolean;
   isSubscribedProduct: boolean;
   hasActiveSubscription: boolean;
@@ -21,7 +21,7 @@ export const modalStageAtom = atom(0);
 export const swapImmediatelyAtom = atom(false);
 
 export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
-  priceId,
+  selectedPriceId,
   isSubscribedPrice,
   isSubscribedProduct,
   hasActiveSubscription,
@@ -75,7 +75,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
       setSelectedAmount(amount);
       setModalStage(1);
     } else {
-      const { checkoutUrl } = await createCheckoutSession({ priceId });
+      const { checkoutUrl } = await createCheckoutSession({ selectedPriceId });
       if (checkoutUrl) {
         void push(checkoutUrl);
       }
@@ -86,7 +86,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
     e.preventDefault();
     showLoadingNotification('Updating subscription...');
 
-    changeSubscription({ priceId, swapImmediately });
+    changeSubscription({ selectedPriceId, swapImmediately });
 
     setModalStage(0);
   }

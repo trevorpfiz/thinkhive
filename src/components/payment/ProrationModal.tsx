@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { getProrationAmount } from '@/utils/payments';
+import { api } from '@/utils/api';
 import { Dialog } from '@headlessui/react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { frequencyAtom, selectedAmountAtom, selectedTierAtom } from './Plans';
@@ -8,16 +10,34 @@ import { modalStageAtom } from './SubscribeButton';
 interface ModalProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   activeSubscription: any; // FIXME - RouterOutputs for type?
+  credits: number;
 }
 
-export default function ProrationModal({ onSubmit, activeSubscription }: ModalProps) {
+export default function ProrationModal({ onSubmit, activeSubscription, credits }: ModalProps) {
   const setModalStage = useSetAtom(modalStageAtom);
   const selectedTier = useAtomValue(selectedTierAtom);
-  const selectedAmount = useAtomValue(selectedAmountAtom);
+  const selectedAmount = useAtomValue(selectedAmountAtom) / 100;
   const frequency = useAtomValue(frequencyAtom);
 
-  const subscriptionPrice = activeSubscription?.[0]?.price?.unit_amount;
-  const subscribedProductName = activeSubscription?.[0]?.price?.product.name;
+  const { data: subscribedProductCredits, isLoading } = api.stripe.getCreditsForProduct.useQuery(
+    {
+      productId: activeSubscription?.price?.product.id as string,
+    },
+    { enabled: !!activeSubscription?.price?.product.id }
+  );
+
+  console.log(activeSubscription, 'activeSubscription');
+
+  const subscriptionPrice = activeSubscription?.price?.unit_amount / 100;
+  const subscribedProductName = activeSubscription?.price?.product.name;
+  const subscribedProductId = activeSubscription?.price?.product.id;
+  console.log(subscribedProductId, 'subscribedProductId');
+
+  const prorationAmount = getProrationAmount(credits, subscribedProductCredits, subscriptionPrice);
+
+  console.log(prorationAmount, 'prorationAmount');
+
+  isLoading && <div>Loading...</div>;
 
   return (
     <form onSubmit={(e) => onSubmit(e)}>
@@ -41,7 +61,7 @@ export default function ProrationModal({ onSubmit, activeSubscription }: ModalPr
             <p className="text-sm text-gray-500">Unused Credits</p>
           </div>
           <div className="flex items-end">
-            <p className="text-green-600">+${subscriptionPrice / 100}</p>
+            <p className="text-green-600">+${prorationAmount}</p>
           </div>
         </li>
         <li key={2} className="flex justify-between px-4 py-2">
@@ -51,7 +71,7 @@ export default function ProrationModal({ onSubmit, activeSubscription }: ModalPr
           </div>
           <div className="flex items-end">
             <p className="text-red-600">
-              ${selectedAmount / 100} / {frequency.value === 'monthly' ? 'month' : 'year'}
+              ${selectedAmount} / {frequency.value === 'monthly' ? 'month' : 'year'}
             </p>
           </div>
         </li>
@@ -63,7 +83,7 @@ export default function ProrationModal({ onSubmit, activeSubscription }: ModalPr
             <p className="text-sm text-gray-500">Tax</p>
           </div>
           <div>
-            <p className="text-gray-500">${subscriptionPrice / 100}</p>
+            <p className="text-gray-500">${selectedAmount - prorationAmount}</p>
             <p className="text-gray-500">$0</p>
           </div>
         </li>
@@ -72,7 +92,7 @@ export default function ProrationModal({ onSubmit, activeSubscription }: ModalPr
             <p className="text-sm font-medium text-gray-900">Amount Due</p>
           </div>
           <div>
-            <p className="text-gray-500">${selectedAmount / 100}</p>
+            <p className="text-gray-500">${selectedAmount - prorationAmount}</p>
           </div>
         </li>
       </ul>

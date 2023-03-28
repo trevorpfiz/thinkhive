@@ -2,14 +2,14 @@ import { env } from '@/env.mjs';
 import { getOrCreateStripeCustomerIdForUser } from '@/server/stripe/stripe-webhook-handlers';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { z } from 'zod';
-import { monthlyToMonthlyUpdate } from '@/server/helpers/payments';
+import { getCreditsForProduct, monthlyToMonthlyUpdate } from '@/server/helpers/payments';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
-    .input(z.object({ priceId: z.string() }))
+    .input(z.object({ selectedPriceId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { stripe, session, prisma, req } = ctx;
-      const { priceId } = input;
+      const { selectedPriceId } = input;
 
       const customer = await getOrCreateStripeCustomerIdForUser({
         prisma,
@@ -29,7 +29,7 @@ export const stripeRouter = createTRPCRouter({
 
       const lineItems = [
         {
-          price: priceId,
+          price: selectedPriceId,
           quantity: 1,
         },
       ];
@@ -121,10 +121,10 @@ export const stripeRouter = createTRPCRouter({
     return products;
   }),
   upgradeOrDowngradeSubscription: protectedProcedure
-    .input(z.object({ priceId: z.string(), swapImmediately: z.boolean() }))
+    .input(z.object({ selectedPriceId: z.string(), swapImmediately: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const { stripe, session, prisma } = ctx;
-      const { priceId, swapImmediately } = input;
+      const { selectedPriceId, swapImmediately } = input;
 
       const customer = await getOrCreateStripeCustomerIdForUser({
         prisma,
@@ -133,10 +133,15 @@ export const stripeRouter = createTRPCRouter({
       });
       const customerId = customer?.customerId;
       const subscriptionId = customer?.activeSubscription?.id;
+      const credits = customer?.credits;
+      const currentProduct = customer?.activeSubscription?.price?.product;
 
-      if (!customerId || !subscriptionId) {
+      if (!customerId || !subscriptionId || !credits || !currentProduct) {
         throw new Error('Could not find subscription');
       }
+
+      // get the product credits
+      const currentProductCredits = getCreditsForProduct(currentProduct.id);
 
       const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
 
@@ -145,12 +150,13 @@ export const stripeRouter = createTRPCRouter({
       }
 
       const currentPrice = await stripe.prices.retrieve(stripeSubscription.items.data[0].price.id);
-      const newPrice = await stripe.prices.retrieve(priceId);
+      const newPrice = await stripe.prices.retrieve(selectedPriceId);
 
       if (!currentPrice || !newPrice) {
         throw new Error('Could not find price details');
       }
 
+      const currentPriceAmount = currentPrice.unit_amount / 100;
       const currentPriceType = currentPrice.recurring.interval;
       const newPriceType = newPrice.recurring.interval;
 
@@ -165,7 +171,10 @@ export const stripeRouter = createTRPCRouter({
             subscriptionId,
             priceId,
             stripeSubscription,
-            swapImmediately
+            swapImmediately,
+            credits,
+            currentProductCredits,
+            currentPriceAmount
           );
           return stripeSubscriptionUpdated;
           break;
@@ -205,4 +214,13 @@ export const stripeRouter = createTRPCRouter({
 
     return stripeSubscriptionCanceled;
   }),
+  getCreditsForProduct: protectedProcedure
+    .input(z.object({ productId: z.string() }))
+    .query(({ input }) => {
+      const { productId } = input;
+
+      const credits = getCreditsForProduct(productId);
+
+      return credits;
+    }),
 });

@@ -35,6 +35,7 @@ export const userRouter = createTRPCRouter({
         id: session.user?.id,
       },
       select: {
+        credits: true,
         stripeSubscription: {
           where: {
             status: 'active',
@@ -47,6 +48,7 @@ export const userRouter = createTRPCRouter({
                 interval: true,
                 product: {
                   select: {
+                    id: true,
                     name: true,
                     metadata: true,
                   },
@@ -62,6 +64,6 @@ export const userRouter = createTRPCRouter({
       throw new Error('Could not find user');
     }
 
-    return data.stripeSubscription;
+    return { activeSubscription: data.stripeSubscription, credits: data.credits };
   }),
 });

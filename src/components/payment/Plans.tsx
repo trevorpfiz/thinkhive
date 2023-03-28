@@ -133,12 +133,12 @@ export default function Plans() {
 
   const { data: products, isLoading: isLoadingProducts } =
     api.stripe.getActiveProductsWithPrices.useQuery();
-  const { data: activeSubscription, isLoading: isLoadingSubscription } =
-    api.user.getActiveSubscription.useQuery();
-  const subscriptionStatus = activeSubscription?.[0]?.status;
-  const subscriptionPriceId = activeSubscription?.[0]?.price_id;
-  const subscribedProductName = activeSubscription?.[0]?.price?.product.name;
-  const subscribedMetadata = activeSubscription?.[0]?.price?.product.metadata;
+  const { data, isLoading: isLoadingSubscription } = api.user.getActiveSubscription.useQuery();
+  const activeSubscription = data?.activeSubscription?.[0];
+  const subscriptionStatus = activeSubscription?.status;
+  const subscriptionPriceId = activeSubscription?.price_id;
+  const subscribedProductName = activeSubscription?.price?.product.name;
+  const subscribedMetadata = activeSubscription?.price?.product.metadata;
 
   const tiers = useMemo(() => {
     if (isLoadingProducts || isLoadingSubscription || !products) {

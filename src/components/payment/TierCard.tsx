@@ -27,7 +27,7 @@ export const TierCard: React.FC<TierCardProps> = ({
   const frequency = useAtomValue(frequencyAtom);
   const isSubscribedPrice = tier.isSubscribedPrice[frequency.value as keyof Interval] || false;
   const isSubscribedProduct = tier.isSubscribedProduct;
-  const priceId = tier.price[frequency.value as keyof Interval]?.priceId || '';
+  const selectedPriceId = tier.price[frequency.value as keyof Interval]?.priceId || '';
 
   return (
     <div key={tier.id} className="rounded-3xl bg-white p-8 shadow ring-1 ring-gray-200 xl:p-10">
@@ -48,7 +48,7 @@ export const TierCard: React.FC<TierCardProps> = ({
         </span>
       </p>
       <SubscribeButton
-        priceId={priceId}
+        selectedPriceId={selectedPriceId}
         isSubscribedPrice={isSubscribedPrice}
         isSubscribedProduct={isSubscribedProduct}
         hasActiveSubscription={hasActiveSubscription}

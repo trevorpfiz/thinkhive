@@ -18,13 +18,14 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
   const selectedAmount = useAtomValue(selectedAmountAtom);
   const frequency = useAtomValue(frequencyAtom);
 
-  const { data: activeSubscription, isLoading: isLoadingSubscription } =
-    api.user.getActiveSubscription.useQuery();
+  const { data, isLoading: isLoadingSubscription } = api.user.getActiveSubscription.useQuery();
+  const activeSubscription = data?.activeSubscription?.[0];
+  const credits = data?.credits;
 
-  const subscriptionPrice = activeSubscription?.[0]?.price?.unit_amount;
-  const subscribedProductName = activeSubscription?.[0]?.price?.product.name;
-  const subscriptionFrequency = activeSubscription?.[0]?.price?.interval;
-  const periodEnd = activeSubscription?.[0]?.current_period_end;
+  const subscriptionPrice = activeSubscription?.price?.unit_amount / 100;
+  const subscribedProductName = activeSubscription?.price?.product.name;
+  const subscriptionFrequency = activeSubscription?.price?.interval;
+  const periodEnd = activeSubscription?.current_period_end;
   const dueDate = dayjs(periodEnd).format('MMMM D, YYYY');
   // TODO per month
   return (
@@ -90,7 +91,7 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
                             </div>
                             <div className="flex items-end">
                               <p className="text-gray-500">
-                                ${subscriptionPrice / 100} / {subscriptionFrequency}
+                                ${subscriptionPrice} / {subscriptionFrequency}
                               </p>
                             </div>
                           </li>
@@ -134,7 +135,11 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
                       </form>
                     )}
                     {modalStage === 3 && (
-                      <ProrationModal activeSubscription={activeSubscription} onSubmit={onSubmit} />
+                      <ProrationModal
+                        activeSubscription={activeSubscription}
+                        credits={credits}
+                        onSubmit={onSubmit}
+                      />
                     )}
                   </>
                 )}
