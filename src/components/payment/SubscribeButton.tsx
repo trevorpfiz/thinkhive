@@ -5,35 +5,42 @@ import SubscribeModal from './SubscribeModal';
 import Notification from '../ui/Notification';
 import useNotification from '@/hooks/useNotification';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { frequencyAtom, selectedAmountAtom, selectedTierAtom, type Tier } from './Plans';
+import {
+  frequencyAtom,
+  selectedAmountAtom,
+  selectedPriceIdAtom,
+  selectedTierAtom,
+  type Interval,
+  type Metadata,
+  type Tier,
+} from './Plans';
 
 interface SubscribeButtonProps {
-  selectedPriceId: string;
-  isSubscribedPrice: boolean;
-  isSubscribedProduct: boolean;
-  hasActiveSubscription: boolean;
   tier: Tier;
-  amount: number;
-  state: string;
+  hasActiveSubscription: boolean;
 }
 
 export const modalStageAtom = atom(0);
 export const swapImmediatelyAtom = atom(false);
 
 export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
-  selectedPriceId,
-  isSubscribedPrice,
-  isSubscribedProduct,
-  hasActiveSubscription,
   tier,
-  amount,
-  state,
+  hasActiveSubscription,
 }) => {
-  const [modalStage, setModalStage] = useAtom(modalStageAtom);
-  const [swapImmediately, setSwapImmediately] = useAtom(swapImmediatelyAtom);
+  const setModalStage = useSetAtom(modalStageAtom);
+  const swapImmediately = useAtomValue(swapImmediatelyAtom);
   const setSelectedTier = useSetAtom(selectedTierAtom);
   const setSelectedAmount = useSetAtom(selectedAmountAtom);
   const frequency = useAtomValue(frequencyAtom);
+  const [selectedPriceId, setSelectedPriceId] = useAtom(selectedPriceIdAtom);
+
+  const { data, isLoading: isLoadingSubscription } = api.user.getActiveSubscription.useQuery();
+  const activeSubscription = data?.activeSubscription?.[0];
+  const subscriptionPriceId = activeSubscription?.price_id;
+  const subscribedMetadata = activeSubscription?.price?.product.metadata as Metadata;
+
+  const isSubscribedPrice = tier?.isSubscribedPrice[frequency?.value as keyof Interval] || false;
+  const amount = tier?.price[frequency?.value as keyof Interval]?.amount || 0;
 
   const utils = api.useContext();
   const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
@@ -53,15 +60,18 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   });
   const { push } = useRouter();
 
-  const buttonText = () => {
-    if (isSubscribedProduct) {
-      if (isSubscribedPrice) {
-        return 'Current plan';
-      } else {
-        return frequency.value === 'monthly' ? 'Change to Monthly' : 'Change to Annual';
-      }
+  // dynamic button state
+  const getButtonState = () => {
+    if (subscriptionPriceId === tier?.price[frequency?.value as keyof Interval]?.priceId) {
+      return 'Current plan';
     }
-    return 'Subscribe';
+    if (tier.isSubscribedProduct) {
+      return frequency?.value === 'monthly' ? 'Change to Monthly' : 'Change to Annual';
+    }
+    if (parseInt(tier.metadata.index || '0', 10) > parseInt(subscribedMetadata?.index || '0', 10)) {
+      return 'Upgrade';
+    }
+    return 'Downgrade';
   };
 
   // notifications
@@ -73,6 +83,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
     if (hasActiveSubscription) {
       setSelectedTier(tier);
       setSelectedAmount(amount);
+      setSelectedPriceId(tier.price[frequency.value as keyof Interval]?.priceId || '');
       setModalStage(1);
     } else {
       const { checkoutUrl } = await createCheckoutSession({ selectedPriceId });
@@ -109,7 +120,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
         onClick={handleClick}
         disabled={isSubscribedPrice}
       >
-        {state}
+        {getButtonState()}
       </button>
     </>
   );

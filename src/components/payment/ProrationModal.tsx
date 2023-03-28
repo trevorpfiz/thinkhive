@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { getProrationAmount } from '@/utils/payments';
+import { getProrationAmountMonthly } from '@/utils/payments';
 import { api } from '@/utils/api';
 import { Dialog } from '@headlessui/react';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -33,7 +33,11 @@ export default function ProrationModal({ onSubmit, activeSubscription, credits }
   const subscribedProductId = activeSubscription?.price?.product.id;
   console.log(subscribedProductId, 'subscribedProductId');
 
-  const prorationAmount = getProrationAmount(credits, subscribedProductCredits, subscriptionPrice);
+  const prorationAmount = getProrationAmountMonthly(
+    credits,
+    subscribedProductCredits,
+    subscriptionPrice
+  );
 
   console.log(prorationAmount, 'prorationAmount');
 

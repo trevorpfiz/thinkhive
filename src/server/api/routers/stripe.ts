@@ -165,11 +165,11 @@ export const stripeRouter = createTRPCRouter({
         .toUpperCase()}${newPriceType.slice(1)}`;
 
       switch (subscriptionChangeType) {
-        case 'monthlyToMonthly':
+        case 'monthToMonth':
           const stripeSubscriptionUpdated = monthlyToMonthlyUpdate(
             customerId,
             subscriptionId,
-            priceId,
+            selectedPriceId,
             stripeSubscription,
             swapImmediately,
             credits,
@@ -178,10 +178,10 @@ export const stripeRouter = createTRPCRouter({
           );
           return stripeSubscriptionUpdated;
           break;
-        case 'monthlyToAnnual':
+        case 'monthToAnnual':
           // Add your custom logic for monthly to annual update
           break;
-        case 'annualToMonthly':
+        case 'annualToMonth':
           // Add your custom logic for annual to monthly update
           break;
         case 'annualToAnnual':

@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { RadioGroup } from '@headlessui/react';
 import type { Product, Price, Prisma } from '@prisma/client';
 import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
 import { ManageBilling } from './ManageBilling';
-import { atom, useAtom, useSetAtom } from 'jotai';
-import { TierCard } from './TierCard';
+import { atom, useAtom } from 'jotai';
+import { SubscribeButton } from './SubscribeButton';
+import { CheckIcon } from '@heroicons/react/20/solid';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -16,6 +17,11 @@ export interface Frequency {
   value: string;
   label: string;
   priceSuffix: string;
+}
+
+export interface Interval {
+  monthly: string;
+  annual: string;
 }
 
 export interface Tier {
@@ -101,31 +107,13 @@ function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) 
     });
 }
 
-function getButtonState(
-  activeSubscriptionPriceId,
-  activeMetadata,
-  productIndex,
-  targetPriceId,
-  tier
-) {
-  if (activeSubscriptionPriceId === targetPriceId) {
-    return 'Current plan';
-  }
-  if (tier.isSubscribedProduct && tier.price.annual.priceId === targetPriceId) {
-    return 'Change to Annual';
-  }
-  if (productIndex > activeMetadata.index) {
-    return 'Upgrade';
-  }
-  return 'Downgrade';
-}
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
 export const selectedTierAtom = atom<Tier | null>(null);
 export const selectedAmountAtom = atom<number>(0);
+export const selectedPriceIdAtom = atom('');
 export const frequencyAtom = atom<Frequency>(frequencies[0]!);
 
 export default function Plans() {
@@ -138,7 +126,6 @@ export default function Plans() {
   const subscriptionStatus = activeSubscription?.status;
   const subscriptionPriceId = activeSubscription?.price_id;
   const subscribedProductName = activeSubscription?.price?.product.name;
-  const subscribedMetadata = activeSubscription?.price?.product.metadata;
 
   const tiers = useMemo(() => {
     if (isLoadingProducts || isLoadingSubscription || !products) {
@@ -196,14 +183,44 @@ export default function Plans() {
             </div>
             <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
               {tiers.map((tier) => (
-                <TierCard
+                <div
                   key={tier.id}
-                  tier={tier}
-                  hasActiveSubscription={!!subscriptionStatus}
-                  subscriptionPriceId={subscriptionPriceId}
-                  subscribedMetadata={subscribedMetadata}
-                  buttonState={getButtonState}
-                />
+                  className="rounded-3xl bg-white p-8 shadow ring-1 ring-gray-200 xl:p-10"
+                >
+                  <div className="flex items-center justify-between gap-x-4">
+                    <h3 id={tier.id} className="text-lg font-semibold leading-8 text-gray-900">
+                      {tier.name}
+                    </h3>
+                  </div>
+                  <p className="mt-4 min-h-[50px] text-sm leading-6 text-gray-600">
+                    {tier.description}
+                  </p>
+                  <p className="mt-6 flex items-baseline gap-x-1">
+                    <span className="text-4xl font-bold tracking-tight text-gray-900">
+                      {tier.price[frequency?.value as keyof Interval]
+                        ? `$${tier.price[frequency?.value as keyof Interval].amount / 100}`
+                        : '$0'}
+                    </span>
+                    <span className="text-sm font-semibold leading-6 text-gray-600">
+                      {frequency?.priceSuffix}
+                    </span>
+                  </p>
+                  <SubscribeButton tier={tier} hasActiveSubscription={!!subscriptionStatus} />
+                  <ul
+                    role="list"
+                    className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10"
+                  >
+                    {tier.features.map((feature) => (
+                      <li key={feature} className="flex gap-x-3">
+                        <CheckIcon
+                          className="h-6 w-5 flex-none text-indigo-600"
+                          aria-hidden="true"
+                        />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
           </div>
