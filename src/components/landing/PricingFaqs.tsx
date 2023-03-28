@@ -18,7 +18,7 @@ const faqs = [
     {
       question: 'How can I determine if I need more usage?',
       answer:
-        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your Experts and uploading new information will not be possible.',
+        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your Experts and uploading new information will not be possible. However, you can purchase more credits.',
     },
   ],
   [
@@ -32,6 +32,11 @@ const faqs = [
       answer:
         'No, it does not renew each month. The reason behind this is that we aim to provide our users with a generous and complete testing experience of ThinkHive, using all their data. If the fixed usage renewed every month, it would put a significant financial strain on us.',
     },
+    {
+      question: 'What if I want to upgrade my plan?',
+      answer:
+        'Just select the plan you want to upgrade to in the billing dashboard and you will have two options. One option is to start on the new plan at the end of your current subscription period. The other option is to upgrade immediately while getting prorated for your unused credits. For example, if you only used 1,000 of your 5,000 credits on a $20 plan, you would get $16 towards your upgrade.',
+    },
   ],
   [
     {
@@ -39,6 +44,12 @@ const faqs = [
       answer:
         'You have the option to subscribe and be billed either monthly or annually. If you choose to pay annually, you will be charged the full amount for the entire year upfront, but at a discounted price compared to paying on a monthly basis. You will receive one month free as part of the annual payment plan.',
     },
+    {
+      question: 'Can I purchase more credits while on my current plan?',
+      answer:
+        'Yes you can! Just head to the billing page in the dashboard where you can see your usage. Here is where you can buy more credits. 1 credit = ~1 message or ~1,000 words uploaded. Purchased credits will persist between subscription periods and base plan credit usage will be prioritized. However, you will need an active subscription in order to use purchased credits.',
+    },
+   
   ],
 ];
 
