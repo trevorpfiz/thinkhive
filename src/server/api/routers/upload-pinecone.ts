@@ -8,7 +8,7 @@ import { get_encoding } from '@dqbd/tiktoken';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
-import { uploadLimit } from '@/server/helpers/ratelimit';
+import { uploadLimit, uploadLimitDay } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
 
 const MetadataInput = z.object({
@@ -31,6 +31,8 @@ export const uploadPinecone = createTRPCRouter({
       // rate limit
       const { success } = await uploadLimit.limit(userId);
       if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+      const { success: successDay } = await uploadLimitDay.limit(userId);
+      if (!successDay) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
 
       const metadataId = ulid();
       const uploadDate = new Date().toISOString();

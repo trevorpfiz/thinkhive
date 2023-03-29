@@ -9,7 +9,7 @@ import { openai, tokenUsage } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { messageLimit } from '@/server/helpers/ratelimit';
+import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
 import { hasEnoughCredits } from '@/server/helpers/permissions';
 
@@ -24,8 +24,10 @@ export const openAiPinecone = createTRPCRouter({
       // rate limit
       const ip = getClientIp(req);
       if (!ip) throw new TRPCError({ code: 'BAD_REQUEST' });
-      const { success } = await messageLimit.limit(ip);
+      const { success } = await messageLimitMinute.limit(ip);
       if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+      const { success: successDay } = await messageLimitDay.limit(ip);
+      if (!successDay) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
 
       const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 
