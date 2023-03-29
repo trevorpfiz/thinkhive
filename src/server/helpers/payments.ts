@@ -42,7 +42,7 @@ export async function monthlyToMonthlyOrAnnual(
       customer: customerId,
       amount: -amounts.proration * 100,
       currency: 'usd',
-      description: 'Discount for subscription upgrade',
+      description: 'Discount for unused credits',
       subscription: subscriptionId,
     });
 
@@ -99,7 +99,7 @@ export async function annualToAnnual(
       customer: customerId,
       amount: -amounts.proration * 100,
       currency: 'usd',
-      description: 'Discount for subscription upgrade',
+      description: 'Discount for unused credits',
       subscription: subscriptionId,
     });
 

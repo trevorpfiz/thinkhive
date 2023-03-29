@@ -6,6 +6,7 @@ import { prisma } from '@/server/db';
 import type Stripe from 'stripe';
 import { buffer } from 'micro';
 import {
+  handleInvoicePaid,
   manageSubscriptionStatusChange,
   upsertPrice,
   upsertProduct,
@@ -74,6 +75,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
             break;
           case 'checkout.session.completed':
+            break;
+          case 'invoice.paid':
+            await handleInvoicePaid({
+              event,
+              prisma,
+              stripe,
+            });
             break;
           default:
             throw new Error('Unhandled relevant event!');

@@ -39,6 +39,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
 
   const { data, isLoading: isLoadingSubscription } = api.user.getActiveSubscription.useQuery();
   const activeSubscription = data?.activeSubscription?.[0];
+  const subscriptionStatus = activeSubscription?.status;
   const subscriptionPriceId = activeSubscription?.price_id;
   const subscribedMetadata = activeSubscription?.price?.product.metadata as Metadata;
 
@@ -71,6 +72,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
 
   // dynamic button state
   const getButtonState = () => {
+    if (!subscriptionStatus) return 'Subscribe';
     if (subscriptionPriceId === tier?.price[frequency?.value as keyof Interval]?.priceId) {
       return 'Current plan';
     }
@@ -81,7 +83,7 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
     if (parseInt(tier.metadata.index || '0', 10) > parseInt(subscribedMetadata?.index || '0', 10)) {
       return 'Upgrade';
     }
-    return 'Contact Us';
+    return 'Contact us';
   };
 
   // notifications

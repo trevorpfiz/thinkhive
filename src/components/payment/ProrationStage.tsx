@@ -7,6 +7,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { frequencyAtom, selectedAmountAtom, selectedTierAtom } from './Plans';
 import { modalStageAtom } from './SubscribeButton';
 import LoadingBars from '../ui/LoadingBars';
+import { useEffect, useState } from 'react';
 
 interface ModalProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -27,7 +28,10 @@ export default function ProrationStage({ onSubmit, activeSubscription, credits }
     { enabled: !!activeSubscription?.price?.product.id }
   );
 
-  console.log(activeSubscription, 'activeSubscription');
+  const [prorationAmounts, setProrationAmounts] = useState<{
+    monthly: { proration: number; total: number };
+    annual: { proration: number; total: number };
+  } | null>(null);
 
   const subscriptionPrice = activeSubscription?.price?.unit_amount / 100;
   const subscribedProductName = activeSubscription?.price?.product.name;
@@ -36,28 +40,29 @@ export default function ProrationStage({ onSubmit, activeSubscription, credits }
     frequency?.value === 'annual' && activeSubscription.price.interval === 'year';
   console.log(subscribedProductId, 'subscribedProductId');
 
-  const prorationAmountsMonthly = getProrationAmountsMonthly(
-    credits,
-    subscribedProductCredits,
-    subscriptionPrice,
-    selectedAmount
-  );
-
-  const prorationAmountsAnnual = getProrationAmountsAnnual(
-    credits,
-    subscribedProductCredits,
-    subscriptionPrice,
-    activeSubscription?.current_period_end,
-    selectedAmount
-  );
+  useEffect(() => {
+    if (subscribedProductCredits !== undefined) {
+      setProrationAmounts({
+        monthly: getProrationAmountsMonthly(
+          credits,
+          subscribedProductCredits,
+          subscriptionPrice,
+          selectedAmount
+        ),
+        annual: getProrationAmountsAnnual(
+          credits,
+          subscribedProductCredits,
+          subscriptionPrice,
+          activeSubscription?.current_period_end as number,
+          selectedAmount
+        ),
+      });
+    }
+  }, [subscribedProductCredits, credits, subscriptionPrice, selectedAmount, activeSubscription]);
 
   return (
     <form onSubmit={(e) => onSubmit(e)}>
-      {isLoading ||
-      isNaN(prorationAmountsMonthly?.proration) ||
-      isNaN(prorationAmountsMonthly?.total) ||
-      isNaN(prorationAmountsAnnual?.proration) ||
-      isNaN(prorationAmountsAnnual?.total) ? (
+      {isLoading || !prorationAmounts ? (
         <div className="flex h-[464px] justify-center">
           <LoadingBars />
         </div>
@@ -88,8 +93,8 @@ export default function ProrationStage({ onSubmit, activeSubscription, credits }
                 <p className="text-green-600">
                   +$
                   {annualProration
-                    ? prorationAmountsAnnual.proration
-                    : prorationAmountsMonthly.proration}
+                    ? prorationAmounts.annual.proration
+                    : prorationAmounts.monthly.proration}
                 </p>
               </div>
             </li>
@@ -113,7 +118,8 @@ export default function ProrationStage({ onSubmit, activeSubscription, credits }
               </div>
               <div>
                 <p className="text-gray-500">
-                  ${annualProration ? prorationAmountsAnnual.total : prorationAmountsMonthly.total}
+                  $
+                  {annualProration ? prorationAmounts.annual.total : prorationAmounts.monthly.total}
                 </p>
                 <p className="text-gray-500">$0</p>
               </div>
@@ -124,7 +130,8 @@ export default function ProrationStage({ onSubmit, activeSubscription, credits }
               </div>
               <div>
                 <p className="text-gray-500">
-                  ${annualProration ? prorationAmountsAnnual.total : prorationAmountsMonthly.total}
+                  $
+                  {annualProration ? prorationAmounts.annual.total : prorationAmounts.monthly.total}
                 </p>
               </div>
             </li>

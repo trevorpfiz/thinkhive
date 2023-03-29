@@ -136,6 +136,7 @@ export default function Plans() {
     return createTiers(products, subscriptionPriceId ?? '');
   }, [isLoadingProducts, isLoadingSubscription, products, subscriptionPriceId]);
 
+  // FIXME - does subscriptionStatus only based on active subscription work?
   return (
     <>
       {isLoadingProducts || isLoadingSubscription ? (

@@ -58,7 +58,7 @@ model User {
   image              String?
   stripeCustomerId   String?        @unique
   credits            Float          @default(30) // 15 decimal
-  additionalCredits  Float          @default(0) // 15 decimal
+  additionalCredits  Float          @default(0)
   uploadUsage        Int            @default(0)
   questionUsage      Int            @default(0)
   responseUsage      Int            @default(0)

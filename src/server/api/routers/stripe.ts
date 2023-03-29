@@ -7,6 +7,7 @@ import {
   getCreditsForProduct,
   monthlyToMonthlyOrAnnual,
 } from '@/server/helpers/payments';
+import { TRPCError } from '@trpc/server';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
@@ -153,17 +154,19 @@ export const stripeRouter = createTRPCRouter({
         throw new Error('Could not find subscription');
       }
 
-      const currentPrice = await stripe.prices.retrieve(stripeSubscription.items.data[0].price.id);
+      const currentPrice = await stripe.prices.retrieve(
+        stripeSubscription.items.data[0]?.price.id as string
+      );
       const newPrice = await stripe.prices.retrieve(selectedPriceId);
 
       if (!currentPrice || !newPrice) {
-        throw new Error('Could not find price details');
+        throw new TRPCError({ message: 'Could not find price', code: 'NOT_FOUND' });
       }
 
-      const currentPriceAmount = currentPrice.unit_amount / 100;
-      const newPriceAmount = newPrice.unit_amount / 100;
-      const currentPriceType = currentPrice.recurring.interval;
-      const newPriceType = newPrice.recurring.interval;
+      const currentPriceAmount = (currentPrice.unit_amount as number) / 100;
+      const newPriceAmount = (newPrice.unit_amount as number) / 100;
+      const currentPriceType = currentPrice?.recurring?.interval || 'undefined';
+      const newPriceType = newPrice?.recurring?.interval || 'undefined';
 
       const subscriptionChangeType = `${currentPriceType}To${newPriceType
         .charAt(0)
