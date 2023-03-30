@@ -1,6 +1,7 @@
 import { toDateTime } from '@/utils/helpers';
 import type { PrismaClient } from '@prisma/client';
 import type Stripe from 'stripe';
+import { getCreditsForProduct } from '../helpers/payments';
 
 // retrieves a Stripe customer id for a given user if it exists or creates a new one
 export const getOrCreateStripeCustomerIdForUser = async ({
@@ -205,5 +206,46 @@ export const manageSubscriptionStatusChange = async ({
   } catch (error: any) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
     throw new Error(`Failed to upsert subscription with ID ${subscriptionId}: ${error.message}`);
+  }
+};
+
+export const handleInvoicePaid = async ({
+  event,
+  prisma,
+  stripe,
+}: {
+  event: Stripe.Event;
+  prisma: PrismaClient;
+  stripe: Stripe;
+}) => {
+  const invoice = event.data.object as Stripe.Invoice;
+  const subscriptionId = invoice.subscription as string;
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const customerId = subscription.customer as string;
+
+  const customerData = await prisma.user.findUnique({
+    where: {
+      stripeCustomerId: customerId,
+    },
+  });
+
+  if (!customerData) throw new Error('Customer not found');
+  const { id: userId } = customerData;
+
+  try {
+    const updatedCustomer = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        credits: {
+          set: getCreditsForProduct(subscription.items.data[0]?.price.product as string),
+        },
+      },
+    });
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+    throw new Error(`Failed to update subscription with ID ${subscriptionId}: ${error.message}`);
   }
 };

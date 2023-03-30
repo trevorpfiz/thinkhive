@@ -6,6 +6,7 @@ import Notification from '../ui/Notification';
 import useNotification from '@/hooks/useNotification';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
+  buttonDisabledAtom,
   frequencyAtom,
   selectedAmountAtom,
   selectedPriceIdAtom,
@@ -14,6 +15,7 @@ import {
   type Metadata,
   type Tier,
 } from './Plans';
+import { useEffect } from 'react';
 
 interface SubscribeButtonProps {
   tier: Tier;
@@ -21,7 +23,7 @@ interface SubscribeButtonProps {
 }
 
 export const modalStageAtom = atom(0);
-export const swapImmediatelyAtom = atom(false);
+export const swapImmediatelyAtom = atom(true);
 
 export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   tier,
@@ -33,45 +35,55 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   const setSelectedAmount = useSetAtom(selectedAmountAtom);
   const frequency = useAtomValue(frequencyAtom);
   const [selectedPriceId, setSelectedPriceId] = useAtom(selectedPriceIdAtom);
+  const [buttonDisabled, setButtonDisabled] = useAtom(buttonDisabledAtom);
 
   const { data, isLoading: isLoadingSubscription } = api.user.getActiveSubscription.useQuery();
   const activeSubscription = data?.activeSubscription?.[0];
+  const subscriptionStatus = activeSubscription?.status;
   const subscriptionPriceId = activeSubscription?.price_id;
   const subscribedMetadata = activeSubscription?.price?.product.metadata as Metadata;
 
   const isSubscribedPrice = tier?.isSubscribedPrice[frequency?.value as keyof Interval] || false;
   const amount = tier?.price[frequency?.value as keyof Interval]?.amount || 0;
+  const disableMonthly =
+    activeSubscription?.price?.interval === 'year' && frequency?.value === 'monthly';
+  const disableDowngrade =
+    parseInt(tier.metadata.index || '0', 10) < parseInt(subscribedMetadata?.index || '0', 10);
 
   const utils = api.useContext();
   const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
-  const { mutate: changeSubscription } = api.stripe.upgradeOrDowngradeSubscription.useMutation({
-    onSuccess() {
-      // FIXME - need to wait for Stripe webhook to update the subscription
-      setTimeout(() => {
-        showSuccessNotification('Enjoy your new subscription!');
-        // Refetch the query after a successful detach
-        void utils.stripe.getActiveProductsWithPrices.invalidate();
-        void utils.user.getActiveSubscription.invalidate();
-      }, 3000);
-    },
-    onError: (error) => {
-      showErrorNotification('Error Updating Subscription', error.message);
-    },
-  });
+  const { mutate: changeSubscription, isLoading: isChangingSubscription } =
+    api.stripe.upgradeOrDowngradeSubscription.useMutation({
+      onSuccess() {
+        // FIXME - need to wait for Stripe webhook to update the subscription
+        setTimeout(() => {
+          setButtonDisabled(false);
+          showSuccessNotification('Enjoy your new subscription!');
+          // Refetch the query after a successful detach
+          void utils.stripe.getActiveProductsWithPrices.invalidate();
+          void utils.user.getActiveSubscription.invalidate();
+        }, 3000);
+      },
+      onError: (error) => {
+        showErrorNotification('Error Updating Subscription', error.message);
+      },
+    });
   const { push } = useRouter();
 
   // dynamic button state
   const getButtonState = () => {
+    if (!subscriptionStatus) return 'Subscribe';
     if (subscriptionPriceId === tier?.price[frequency?.value as keyof Interval]?.priceId) {
       return 'Current plan';
     }
+    if (disableMonthly) return 'Annual active';
     if (tier.isSubscribedProduct) {
       return frequency?.value === 'monthly' ? 'Change to Monthly' : 'Change to Annual';
     }
     if (parseInt(tier.metadata.index || '0', 10) > parseInt(subscribedMetadata?.index || '0', 10)) {
       return 'Upgrade';
     }
-    return 'Downgrade';
+    return 'Contact us';
   };
 
   // notifications
@@ -79,17 +91,12 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
     useNotification();
 
   // handlers
-  const handleClick = async () => {
+  const handleClick = () => {
+    setSelectedPriceId(tier.price[frequency.value as keyof Interval]?.priceId || '');
     if (hasActiveSubscription) {
       setSelectedTier(tier);
       setSelectedAmount(amount);
-      setSelectedPriceId(tier.price[frequency.value as keyof Interval]?.priceId || '');
-      setModalStage(1);
-    } else {
-      const { checkoutUrl } = await createCheckoutSession({ selectedPriceId });
-      if (checkoutUrl) {
-        void push(checkoutUrl);
-      }
+      setModalStage(3);
     }
   };
 
@@ -101,6 +108,23 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
 
     setModalStage(0);
   }
+
+  useEffect(() => {
+    if (selectedPriceId && !hasActiveSubscription) {
+      void (async () => {
+        const { checkoutUrl } = await createCheckoutSession({ selectedPriceId });
+        if (checkoutUrl) {
+          void push(checkoutUrl);
+        }
+      })();
+    }
+  }, [selectedPriceId, createCheckoutSession, push, hasActiveSubscription]);
+
+  useEffect(() => {
+    if (isChangingSubscription) {
+      setButtonDisabled(true);
+    }
+  }, [isChangingSubscription, setButtonDisabled]);
 
   return (
     <>
@@ -118,7 +142,13 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
       <button
         className="mt-6 block w-full rounded-md bg-indigo-600 py-2 px-3 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-30"
         onClick={handleClick}
-        disabled={isSubscribedPrice}
+        disabled={
+          isSubscribedPrice ||
+          disableMonthly ||
+          buttonDisabled ||
+          isLoadingSubscription ||
+          disableDowngrade
+        }
       >
         {getButtonState()}
       </button>

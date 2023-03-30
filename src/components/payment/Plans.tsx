@@ -115,6 +115,7 @@ export const selectedTierAtom = atom<Tier | null>(null);
 export const selectedAmountAtom = atom<number>(0);
 export const selectedPriceIdAtom = atom('');
 export const frequencyAtom = atom<Frequency>(frequencies[0]!);
+export const buttonDisabledAtom = atom(false);
 
 export default function Plans() {
   const [frequency, setFrequency] = useAtom(frequencyAtom);
@@ -135,6 +136,7 @@ export default function Plans() {
     return createTiers(products, subscriptionPriceId ?? '');
   }, [isLoadingProducts, isLoadingSubscription, products, subscriptionPriceId]);
 
+  // FIXME - does subscriptionStatus only based on active subscription work?
   return (
     <>
       {isLoadingProducts || isLoadingSubscription ? (

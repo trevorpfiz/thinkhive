@@ -13,7 +13,7 @@ export default function Messages() {
         {messages.map((message, index) => (
           <div
             key={index}
-            className={clsx('clear-both', {
+            className={clsx('clear-both max-w-prose', {
               'float-left': message.type !== 'user',
               'float-right': message.type === 'user',
               'mr-8': message.type !== 'user',
@@ -36,7 +36,7 @@ export default function Messages() {
             </div>
           </div>
         ))}
-        <div className="clear-both">{loading && <LoadingBars />}</div>
+        <div className="clear-both mt-2 max-w-prose">{loading && <LoadingBars />}</div>
       </div>
     </>
   );

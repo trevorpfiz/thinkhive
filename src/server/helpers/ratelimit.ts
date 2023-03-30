@@ -11,13 +11,27 @@ export const rateLimit = new Ratelimit({
 // Upload limiter, 10 requests per 10 seconds
 export const uploadLimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, '10 s'),
+  limiter: Ratelimit.slidingWindow(200, '10 s'),
+  analytics: true,
+});
+
+// Upload limiter, 10 requests per 10 seconds
+export const uploadLimitDay = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(1000, '86400 s'),
   analytics: true,
 });
 
 // Message limiter, 10 requests per 10 seconds
-export const messageLimit = new Ratelimit({
+export const messageLimitMinute = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, '10 s'),
+  limiter: Ratelimit.slidingWindow(15, '60 s'),
+  analytics: true,
+});
+
+// Message limiter, 10 requests per 10 seconds
+export const messageLimitDay = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(200, '86400 s'),
   analytics: true,
 });

@@ -13,7 +13,7 @@ interface Timeframe {
   swapImmediately: boolean;
 }
 
-export default function SwapModal() {
+export default function SwapStage() {
   const setModalStage = useSetAtom(modalStageAtom);
   const setSwapImmediately = useSetAtom(swapImmediatelyAtom);
   const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe>(timeframes[0]!);

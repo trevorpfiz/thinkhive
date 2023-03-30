@@ -9,39 +9,47 @@ import { openai, tokenUsage } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { messageLimit } from '@/server/helpers/ratelimit';
+import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
+import { hasEnoughCredits } from '@/server/helpers/permissions';
 
 export const openAiPinecone = createTRPCRouter({
   getAnswer: protectedProcedure
     .input(z.object({ question: z.string(), metadataIds: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
       const { question, metadataIds } = input;
-      const { req } = ctx;
+      const { req, session, prisma } = ctx;
+      const userId = session.user.id;
 
       // rate limit
       const ip = getClientIp(req);
       if (!ip) throw new TRPCError({ code: 'BAD_REQUEST' });
-      const { success } = await messageLimit.limit(ip);
+      const { success } = await messageLimitMinute.limit(ip);
       if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+      const { success: successDay } = await messageLimitDay.limit(ip);
+      if (!successDay) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
 
       const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 
       const encoding = get_encoding('cl100k_base');
       const questionTokens = encoding.encode(sanitizedQuestion).length;
+      const adaQuestionTokens = questionTokens / 5;
       console.log('questionTokens', questionTokens);
 
-      // metadata filtering
+      // FIXME - we don't know how many tokens the response will be, which takes away from prisma transaction atomicity, and these are also long queries which will hurt database performance
+      // 1. Check if user has enough credits for the question.
+      await hasEnoughCredits(userId, adaQuestionTokens);
+
+      // 2. Metadata filtering and VectorDBQAChain.
       const filter = {
         metadataId: { $in: metadataIds },
       };
 
       const index = pinecone.Index(PINECONE_INDEX_NAME);
-      /* create vectorstore*/
       const vectorStore = await PineconeStore.fromExistingIndex(
         new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' }),
         {
-          namespace: ctx.session.user.id,
+          namespace: userId,
           pineconeIndex: index,
           textKey: 'text',
           filter: filter,
@@ -56,21 +64,21 @@ export const openAiPinecone = createTRPCRouter({
       const response = await chain.call({
         query: sanitizedQuestion,
       });
-      console.log('response', response);
 
+      // 3. Update user credits and usage.
       // Add ada question tokens to total tokens from openai callback
-      const adaQuestionTokens = questionTokens / 5;
       const messageTokens = tokenUsage.totalTokens + adaQuestionTokens;
       console.log(messageTokens, 'messageTokens');
 
       // subtract credits from user
-      await ctx.prisma.user.update({
+      // TODO - might not be tracking the adaQuestionTokens correctly
+      await prisma.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: userId,
         },
         data: {
           credits: {
-            decrement: messageTokens / 1000,
+            decrement: tokenUsage.totalTokens / 1000,
           },
           questionUsage: {
             increment: questionTokens,

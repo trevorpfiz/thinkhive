@@ -92,24 +92,40 @@ export default function FileDropzone() {
 
   const [myFiles, setMyFiles] = useState<File[]>([]);
   const [isHovered, setIsHovered] = useState(false);
+  const [fileTexts, setFileTexts] = useState<Record<string, string>>({});
+  const [fileMetadata, setFileMetadata] = useState<Record<string, PdfMetadata>>({});
+  const [wordCounts, setWordCounts] = useState<Record<string, number>>({});
 
+  // TODO - add a notification for file calcs
   const onDropAccepted = useCallback(
-    (acceptedFiles: File[]) => {
+    async (acceptedFiles: File[]) => {
       const updatedFiles = [...myFiles];
-      acceptedFiles.forEach((newFile) => {
+      const updatedWordCounts = { ...wordCounts };
+      const updatedFileTexts = { ...fileTexts };
+      const updatedFileMetadata = { ...fileMetadata };
+
+      for (const newFile of acceptedFiles) {
         // Check if the file already exists in the list of selected files
         const fileExists = updatedFiles.some(
           (existingFile) => existingFile.name === newFile.name && existingFile.size === newFile.size
         );
         if (!fileExists) {
           updatedFiles.push(newFile);
+          const { text, wordCount } = await convertPdfToText(newFile);
+          const metadata = await getPdfMetadata(newFile);
+          updatedWordCounts[newFile.name] = wordCount;
+          updatedFileTexts[newFile.name] = text;
+          updatedFileMetadata[newFile.name] = metadata;
         } else {
           console.log(`File ${newFile.name} already exists`);
         }
-      });
+      }
       setMyFiles(updatedFiles);
+      setWordCounts(updatedWordCounts);
+      setFileTexts(updatedFileTexts);
+      setFileMetadata(updatedFileMetadata);
     },
-    [myFiles]
+    [myFiles, wordCounts, fileTexts, fileMetadata]
   );
 
   // Remove focus after drop
@@ -145,7 +161,7 @@ export default function FileDropzone() {
       },
       multiple: true,
       onDropAccepted: (acceptedFiles: File[]) => {
-        onDropAccepted(acceptedFiles);
+        void onDropAccepted(acceptedFiles);
         handleInputBlur();
       },
       onDropRejected,
@@ -155,10 +171,25 @@ export default function FileDropzone() {
     const newFiles = [...myFiles];
     newFiles.splice(newFiles.indexOf(file), 1);
     setMyFiles(newFiles);
+
+    const newWordCounts = { ...wordCounts };
+    delete newWordCounts[file.name];
+    setWordCounts(newWordCounts);
+
+    const newFileTexts = { ...fileTexts };
+    delete newFileTexts[file.name];
+    setFileTexts(newFileTexts);
+
+    const newFileMetadata = { ...fileMetadata };
+    delete newFileMetadata[file.name];
+    setFileMetadata(newFileMetadata);
   };
 
   const removeAll = () => {
     setMyFiles([]);
+    setWordCounts({});
+    setFileTexts({});
+    setFileMetadata({});
   };
 
   const style = useMemo(
@@ -176,7 +207,7 @@ export default function FileDropzone() {
     mutate({ text, wordCount, metadata });
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (myFiles.length === 0) {
       console.log('no files selected');
       return;
@@ -185,11 +216,10 @@ export default function FileDropzone() {
     showLoadingNotification('Uploading files...');
     setMyFiles([]);
 
-    // TODO - is calling sendDataToBackend for each file, will need to convert to handling a page
     for (const file of myFiles) {
-      const { text, wordCount } = await convertPdfToText(file);
-
-      const metadata = await getPdfMetadata(file);
+      const text = fileTexts[file.name] as string;
+      const wordCount = wordCounts[file.name] as number;
+      const metadata = fileMetadata[file.name] as PdfMetadata;
 
       sendDataToBackend(text, wordCount, metadata);
     }
@@ -247,7 +277,9 @@ export default function FileDropzone() {
                               <p className="max-w-[140px] truncate text-sm font-medium text-gray-900 sm:max-w-xs ">
                                 {file.name}
                               </p>
-                              <p className="truncate text-sm text-gray-500">{file.size} bytes</p>
+                              <p className="truncate text-sm text-gray-500">
+                                {wordCounts[file.name]} words
+                              </p>
                             </div>
                           </div>
                         </div>

@@ -1,12 +1,11 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { modalStageAtom } from './SubscribeButton';
-import { useAtom, useAtomValue } from 'jotai';
-import ProrationModal from './ProrationModal';
-import SwapModal from './SwapModal';
-import { frequencyAtom, selectedAmountAtom, selectedTierAtom } from './Plans';
+import { useAtom } from 'jotai';
+import ProrationStage from './ProrationStage';
+import SwapStage from './SwapStage';
 import { api } from '@/utils/api';
-import dayjs from 'dayjs';
+import LoadingBars from '../ui/LoadingBars';
 
 interface ModalProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -14,20 +13,12 @@ interface ModalProps {
 
 export default function SubscribeModal({ onSubmit }: ModalProps) {
   const [modalStage, setModalStage] = useAtom(modalStageAtom);
-  const selectedTier = useAtomValue(selectedTierAtom);
-  const selectedAmount = useAtomValue(selectedAmountAtom);
-  const frequency = useAtomValue(frequencyAtom);
 
   const { data, isLoading: isLoadingSubscription } = api.user.getActiveSubscription.useQuery();
   const activeSubscription = data?.activeSubscription?.[0];
   const credits = data?.credits;
 
-  const subscriptionPrice = activeSubscription?.price?.unit_amount / 100;
-  const subscribedProductName = activeSubscription?.price?.product.name;
-  const subscriptionFrequency = activeSubscription?.price?.interval;
-  const periodEnd = activeSubscription?.current_period_end;
-  const dueDate = dayjs(periodEnd).format('MMMM D, YYYY');
-  // TODO per month
+  // TODO add delayed subscription change back
   return (
     <Transition.Root show={modalStage !== 0} as={Fragment}>
       <Dialog as="div" className="relative z-30" onClose={() => setModalStage(0)}>
@@ -55,87 +46,16 @@ export default function SubscribeModal({ onSubmit }: ModalProps) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                {isLoadingSubscription ? (
-                  <div>Loading...</div>
+                {isLoadingSubscription || !credits ? (
+                  <div className="flex h-[464px] justify-center">
+                    <LoadingBars />
+                  </div>
                 ) : (
                   <>
-                    {modalStage === 1 && <SwapModal />}
-                    {modalStage === 2 && (
-                      <form onSubmit={(e) => onSubmit(e)}>
-                        <div className="sm:flex sm:items-start">
-                          <div className="mt-3 text-center sm:mt-0 sm:text-left">
-                            <Dialog.Title
-                              as="h3"
-                              className="text-base font-semibold leading-6 text-gray-900"
-                            >
-                              Subscribe
-                            </Dialog.Title>
-                            <div className="mt-1">
-                              <p className="max-w-prose text-sm text-gray-500">
-                                At the end of your billing cycle, your subscription plan will
-                                automatically renew and update to your newly chosen plan.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <ul
-                          role="list"
-                          className="my-4 divide-y divide-gray-200 rounded-lg bg-gray-100 py-3"
-                        >
-                          <li key={1} className="flex justify-between py-2 px-4">
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">
-                                From {subscribedProductName} Plan
-                              </p>
-                              <p className="text-sm text-gray-500">Base price</p>
-                            </div>
-                            <div className="flex items-end">
-                              <p className="text-gray-500">
-                                ${subscriptionPrice} / {subscriptionFrequency}
-                              </p>
-                            </div>
-                          </li>
-                          <li key={2} className="flex justify-between px-4 py-2">
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">
-                                To {selectedTier?.name} Plan
-                              </p>
-                              <p className="text-sm text-gray-500">Base price</p>
-                            </div>
-                            <div className="flex items-end">
-                              <p className="text-gray-500">
-                                ${selectedAmount / 100} /{' '}
-                                {frequency.value === 'monthly' ? 'month' : 'year'}
-                              </p>
-                            </div>
-                          </li>
-                        </ul>
-                        <div className="flex flex-wrap items-center justify-between px-4 pb-6">
-                          <p className="text-sm text-gray-500">
-                            Amount due on on{' '}
-                            <span className="font-medium italic text-gray-900">{dueDate}</span>.
-                          </p>
-                          <span className="text-gray-900">${selectedAmount / 100}</span>
-                        </div>
-                        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                          <button
-                            type="submit"
-                            className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
-                          >
-                            Confirm Change
-                          </button>
-                          <button
-                            type="button"
-                            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                            onClick={() => setModalStage(0)}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
-                    )}
+                    {modalStage === 1 && <SwapStage />}
+                    {modalStage === 2 && <div>Delayed change</div>}
                     {modalStage === 3 && (
-                      <ProrationModal
+                      <ProrationStage
                         activeSubscription={activeSubscription}
                         credits={credits}
                         onSubmit={onSubmit}
