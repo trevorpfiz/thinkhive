@@ -28,7 +28,7 @@ const faqs = [
     },
     {
       question: 'What is the response time of the chatbot?',
-      answer: `Our chatbot utilizes the latest AI technology, ChatGPT, resulting in rapid responses in under one second.`,
+      answer: `Our chatbot utilizes the latest AI technology, ChatGPT, resulting in rapid responses within seconds.`,
     },
     {
       question: 'How can I train the chatbot?',
@@ -55,7 +55,7 @@ const faqs = [
     {
       question: 'What industries can benefit from using the chatbot?',
       answer:
-        'The chatbot can be useful for any industry because there will always be team members or users who may not have complete knowledge or information about certain aspects of the business. The chatbot can provide such information easily and quickly.',
+        'The chatbot is useful for any industry since there will always be team members or users who do not have complete knowledge or information about certain aspects of the business. The chatbot can provide such information easily and quickly.',
     },
   ],
 ];
