@@ -41,6 +41,15 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
     }));
   };
 
+  const handleRemoveMessage = (index: number) => {
+    const newInitialMessagesArray = initialMessagesArray.filter((_, i) => i !== index);
+    setInitialMessagesArray(newInitialMessagesArray);
+    setData((prevState) => ({
+      ...prevState,
+      initialMessages: newInitialMessagesArray.join('\n'),
+    }));
+  };
+
   useEffect(() => {
     setInitialMessagesArray(initialMessages.split('\n'));
   }, [initialMessages]);
@@ -102,7 +111,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                     </div>
                   </div>
                   {/* Settings */}
-                  <div className="mt-5">
+                  <div className="mt-5 flex flex-col gap-1">
                     <label
                       htmlFor="initial-messages"
                       className="block text-sm font-medium text-gray-700"
@@ -110,23 +119,34 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       Initial chat messages (maximum 3 messages)
                     </label>
                     {initialMessagesArray.map((message, index) => (
-                      <input
-                        key={index}
-                        type="text"
-                        name={`initialMessage${index}`}
-                        id={`initial-message-${index}`}
-                        className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        value={message}
-                        onChange={(event) => handleInitialMessagesChange(event, index)}
-                        placeholder={`Message ${index + 1}`}
-                        maxLength={1000}
-                        minLength={1}
-                        required
-                      />
+                      <div key={index} className="flex items-center justify-center">
+                        <input
+                          type="text"
+                          name={`initialMessage${index}`}
+                          id={`initial-message-${index}`}
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          value={message}
+                          onChange={(event) => handleInitialMessagesChange(event, index)}
+                          placeholder={`Message ${index + 1}`}
+                          maxLength={1000}
+                          minLength={1}
+                          required
+                        />
+                        {initialMessagesArray.length > 1 && (
+                          <button
+                            type="button"
+                            className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                            onClick={() => handleRemoveMessage(index)}
+                          >
+                            <span className="sr-only">Remove message</span>
+                            <XMarkIcon className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
                     ))}
                     <button
                       type="button"
-                      className="mt-2 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto"
+                      className="mt-2 inline-flex w-16 justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                       onClick={addMessageInput}
                       disabled={initialMessagesArray.length >= 3}
                     >

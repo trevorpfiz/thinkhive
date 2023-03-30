@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
@@ -32,6 +32,12 @@ const ExpertWidgetPage = () => {
   const [deviceWidth, setDeviceWidth] = useAtom(widthAtom);
   const [initial, setInitial] = useAtom(messagesAtom);
   const [initialMessagesSet, setInitialMessagesSet] = useState(false);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const router = useRouter();
   const expertId = router.query.expertId as string;
@@ -180,9 +186,20 @@ const ExpertWidgetPage = () => {
       </Head>
 
       {isReady && (
-        <div className="flex min-h-screen flex-col justify-between overflow-y-auto overflow-x-hidden bg-white px-2 pt-2 lg:px-4 lg:pt-4">
-          <Messages />
-          <ChatInput />
+        <div className="flex h-screen flex-col justify-between bg-white">
+          <div className="relative h-full w-full">
+            <div className="relative h-full w-full overflow-hidden">
+              <div
+                className="absolute inset-0 overflow-y-auto overflow-x-hidden px-2 py-2 lg:px-4 lg:py-4"
+                ref={messagesRef}
+              >
+                <Messages />
+              </div>
+            </div>
+          </div>
+          <div className="px-2 lg:px-4">
+            <ChatInput messagesRef={messagesRef} inputRef={inputRef} />
+          </div>
         </div>
       )}
     </>

@@ -1,13 +1,19 @@
 import { loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
 import { api } from '@/utils/api';
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-export default function ChatInput() {
+export default function ChatInput({
+  messagesRef,
+  inputRef,
+}: {
+  messagesRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLInputElement>;
+}) {
   const setMessages = useSetAtom(messagesAtom);
-  const setLoading = useSetAtom(loadingAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
   const router = useRouter();
   const expertId = router.query.expertId as string;
 
@@ -26,13 +32,13 @@ export default function ChatInput() {
     setMessages((prevMessages) => [...prevMessages, { type, content }]);
   }
 
+  const scrollToBottom = useCallback(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }
+  }, [messagesRef]);
+
   // search
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
   async function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!query) {
@@ -57,13 +63,18 @@ export default function ChatInput() {
     }
   }
 
+  useEffect(() => {
+    scrollToBottom();
+    console.log('scroll to bottom useEffect');
+  }, [loading, scrollToBottom]);
+
   if (isError) {
     return <div>Error: {error.message}</div>;
   }
 
   return (
     <div>
-      <div className="py-2"></div>
+      <div className="pt-1"></div>
       <form onSubmit={(e) => handleSearch(e)} className="flex items-center">
         <div className="flex w-full rounded-md border border-gray-300">
           <label htmlFor="message" className="sr-only">

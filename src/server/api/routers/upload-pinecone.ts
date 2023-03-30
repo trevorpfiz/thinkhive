@@ -44,6 +44,16 @@ export const uploadPinecone = createTRPCRouter({
       const tokenCount = encoding.encode(cleanedText).length;
       const adaUploadTokens = tokenCount / 5;
 
+      // Prepare the text
+      const textSplitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 1000,
+        chunkOverlap: 200,
+      });
+
+      const texts = await textSplitter.splitText(cleanedText);
+      const metadataIds = texts.map(() => ({ metadataId }));
+      const embeddings = new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' });
+
       // check if user has enough credits and perform the transaction
       return await ctx.prisma.$transaction(async (tx) => {
         // 1. Decrement credits from user and add to uploadUsage.
@@ -66,16 +76,7 @@ export const uploadPinecone = createTRPCRouter({
           throw new TRPCError({ message: `Not enough credits to upload file.`, code: 'FORBIDDEN' });
         }
 
-        // 3. Prepare the text and upload to Pinecone.
-        const textSplitter = new RecursiveCharacterTextSplitter({
-          chunkSize: 1000,
-          chunkOverlap: 200,
-        });
-
-        const texts = await textSplitter.splitText(cleanedText);
-        const metadataIds = texts.map(() => ({ metadataId }));
-        const embeddings = new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' });
-
+        // 3. Upload to Pinecone.
         try {
           const index = pinecone.Index(PINECONE_INDEX_NAME);
           const vectorStore = await PineconeStore.fromTexts(texts, metadataIds, embeddings, {
