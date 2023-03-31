@@ -18,7 +18,7 @@ const tiers: Tier[] = [
     features: [
       '~30 messages',
       'Up to 30,000 words uploaded',
-      '1 Expert',
+      '3 Experts',
       'Optional credit top ups',
       'Chat with your Expert in a playground', 
       'Deploy your Expert as a website chatbot',
@@ -34,7 +34,7 @@ const tiers: Tier[] = [
     features: [
       '~5,000 messages per month',
       'Up to 5,000,000 words uploaded per month',
-      '3 Experts',
+      '20 Experts',
       'Optional credit top ups',
       'Chat with your Expert in a playground', 
       'Deploy your Expert as a website chatbot',
@@ -50,7 +50,7 @@ const tiers: Tier[] = [
     features: [
       '~25,000 messages per month',
       'Up to 25,000,000 words uploaded per month',
-      '5 Experts',
+      '20 Experts',
       'Optional credit top ups',
       'Chat with your Expert in a playground', 
       'Deploy your Expert as a website chatbot',
@@ -66,7 +66,7 @@ const tiers: Tier[] = [
     features: [
       '~100,000 messages per month',
       'Up to 100,000,000 words uploaded per month',
-      '10 Experts',
+      '20 Experts',
       'Optional credit top ups',
       'Chat with your Expert in a playground', 
       'Deploy your Expert as a website chatbot',
