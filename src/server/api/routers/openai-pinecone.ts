@@ -58,7 +58,7 @@ export const openAiPinecone = createTRPCRouter({
 
       const model = openai;
       // create the chain
-      const chain = VectorDBQAChain.fromLLM(model, vectorStore);
+      const chain = VectorDBQAChain.fromLLM(model, vectorStore, { k: 4 });
 
       // Ask a question
       const response = await chain.call({

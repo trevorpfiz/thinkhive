@@ -7,6 +7,8 @@ import { ManageBilling } from './ManageBilling';
 import { atom, useAtom } from 'jotai';
 import { SubscribeButton } from './SubscribeButton';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import UsageStats from './UsageStats';
+import StatusBadge from '../ui/StatusBadge';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -153,11 +155,19 @@ export default function Plans() {
               Choose the plan that works for you.
             </p>
             {subscriptionStatus && (
-              <div className="mt-8 flex flex-wrap items-center justify-around gap-4 rounded-lg bg-white p-4 shadow">
-                <p className="text-xl text-gray-700">
-                  Your subscription is {subscriptionStatus} for {subscribedProductName}.
-                </p>
-                <ManageBilling />
+              <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-lg bg-white p-8 shadow">
+                <div className="flex w-full flex-wrap items-center justify-between">
+                  <p className="text-xl font-medium text-gray-700">
+                    Your <span className="text-indigo-600">{subscribedProductName} Plan</span>
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <StatusBadge status={subscriptionStatus.toUpperCase()} />
+                    <ManageBilling />
+                  </div>
+                </div>
+                <div className="flex w-full flex-wrap items-center justify-between">
+                  <UsageStats />
+                </div>
               </div>
             )}
             <div className="mt-16 flex justify-center">
