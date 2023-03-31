@@ -4,6 +4,7 @@ import { type FileRejection, useDropzone } from 'react-dropzone';
 import type * as CSS from 'csstype';
 import { IconPdf } from '@tabler/icons-react';
 import clsx from 'clsx';
+import { DeltaBar, Card, Flex, Text } from '@tremor/react';
 
 import { api } from '@/utils/api';
 import convertPdfToText from '@/utils/pdf/convert-pdf';
@@ -71,6 +72,7 @@ function fileValidator(file: File) {
 }
 
 export default function FileDropzone() {
+  const { isLoading: isLoadingCredits, data: credits, error } = api.user.getUserCredits.useQuery();
   const utils = api.useContext();
 
   const { mutate, isLoading } = api.upload.uploadText.useMutation({
@@ -95,6 +97,21 @@ export default function FileDropzone() {
   const [fileTexts, setFileTexts] = useState<Record<string, string>>({});
   const [fileMetadata, setFileMetadata] = useState<Record<string, PdfMetadata>>({});
   const [wordCounts, setWordCounts] = useState<Record<string, number>>({});
+  const totalWordCount = useMemo(() => {
+    return Object.values(wordCounts).reduce((sum, wc) => sum + wc, 0);
+  }, [wordCounts]);
+  // calculate the percentage of credits used
+  const creditPercentage = useMemo(() => {
+    if (!credits) return 0;
+    const creditsUsed = totalWordCount / 5 / 1000;
+    const creditsAfter = credits - creditsUsed;
+    const percentage = ((creditsAfter - credits) / credits) * 100;
+    return parseFloat(percentage.toFixed(2));
+  }, [credits, totalWordCount]);
+
+  const creditsUsed = useMemo(() => {
+    return parseFloat((totalWordCount / 5 / 1000).toFixed(2));
+  }, [totalWordCount]);
 
   // TODO - add a notification for file calcs
   const onDropAccepted = useCallback(
@@ -103,7 +120,7 @@ export default function FileDropzone() {
       const updatedWordCounts = { ...wordCounts };
       const updatedFileTexts = { ...fileTexts };
       const updatedFileMetadata = { ...fileMetadata };
-
+      showLoadingNotification('Staging files...');
       for (const newFile of acceptedFiles) {
         // Check if the file already exists in the list of selected files
         const fileExists = updatedFiles.some(
@@ -120,12 +137,13 @@ export default function FileDropzone() {
           console.log(`File ${newFile.name} already exists`);
         }
       }
+      showSuccessNotification('Files staged for upload');
       setMyFiles(updatedFiles);
       setWordCounts(updatedWordCounts);
       setFileTexts(updatedFileTexts);
       setFileMetadata(updatedFileMetadata);
     },
-    [myFiles, wordCounts, fileTexts, fileMetadata]
+    [myFiles, wordCounts, fileTexts, fileMetadata, showLoadingNotification, showSuccessNotification]
   );
 
   // Remove focus after drop
@@ -297,30 +315,46 @@ export default function FileDropzone() {
                   ))}
                 </ul>
               </div>
-              <div className="flex justify-end gap-4">
-                <button
-                  onClick={removeAll}
-                  type="button"
-                  className={clsx(
-                    'flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0',
-                    {
+              <div className="flex flex-wrap justify-between">
+                <Card className="max-w-sm shadow-none">
+                  <Flex className="w-full items-center justify-between">
+                    <Text className="w-full">{credits} Credits</Text>
+                    <Flex className="justify-end space-x-1">
+                      <Text>-{creditsUsed}</Text>
+                      <Text>({creditPercentage}%)</Text>
+                    </Flex>
+                  </Flex>
+                  <DeltaBar
+                    percentageValue={creditPercentage}
+                    isIncreasePositive={true}
+                    className="mt-3"
+                  />
+                </Card>
+                <div className="flex items-end justify-end gap-4">
+                  <button
+                    onClick={removeAll}
+                    type="button"
+                    className={clsx(
+                      'flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0',
+                      {
+                        'cursor-not-allowed opacity-50': isLoading || myFiles.length === 0,
+                      }
+                    )}
+                    disabled={isLoading || myFiles.length === 0}
+                  >
+                    Remove all
+                  </button>
+                  <Button
+                    intent="solidIndigo"
+                    className={clsx('rounded-md', {
                       'cursor-not-allowed opacity-50': isLoading || myFiles.length === 0,
-                    }
-                  )}
-                  disabled={isLoading || myFiles.length === 0}
-                >
-                  Remove all
-                </button>
-                <Button
-                  intent="solidIndigo"
-                  className={clsx('rounded-md', {
-                    'cursor-not-allowed opacity-50': isLoading || myFiles.length === 0,
-                  })}
-                  onClick={handleSubmit}
-                  disabled={isLoading || myFiles.length === 0}
-                >
-                  Upload
-                </Button>
+                    })}
+                    onClick={handleSubmit}
+                    disabled={isLoading || myFiles.length === 0}
+                  >
+                    Upload
+                  </Button>
+                </div>
               </div>
             </div>
           </aside>
