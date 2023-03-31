@@ -242,6 +242,18 @@ export const handleInvoicePaid = async ({
         credits: {
           set: getCreditsForProduct(subscription.items.data[0]?.price.product as string),
         },
+        uploadUsage: {
+          set: 0,
+        },
+        questionUsage: {
+          set: 0,
+        },
+        responseUsage: {
+          set: 0,
+        },
+        last_reset: {
+          set: new Date(),
+        },
       },
     });
   } catch (error: any) {

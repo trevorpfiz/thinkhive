@@ -61,6 +61,7 @@ model User {
   uploadUsage        Int            @default(0)
   questionUsage      Int            @default(0)
   responseUsage      Int            @default(0)
+  last_reset         DateTime       @default(now())
   stripeSubscription Subscription[]
   accounts           Account[]
   sessions           Session[]
