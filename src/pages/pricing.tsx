@@ -14,7 +14,7 @@ const PricingPage: NextPage = () => {
   return (
     <>
       <Script
-        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-expert@latest/index.min.js"
+        src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
         data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
       />
       <Head>
