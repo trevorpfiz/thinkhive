@@ -1,10 +1,23 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/server/db';
-import { getCreditsForProduct } from '@/server/helpers/payments';
+import { env } from '@/env.mjs';
 
 export const config = {
   runtime: 'edge',
 };
+
+function getCreditsForProduct(productId: string) {
+  switch (productId) {
+    case env.STRIPE_HANGOUT_PRODUCT_ID:
+      return 5000;
+    case env.STRIPE_COMMUNITY_PRODUCT_ID:
+      return 25000;
+    case env.STRIPE_ENTERPRISE_PRODUCT_ID:
+      return 100000;
+    default:
+      return 0;
+  }
+}
 
 export default async function handler(req: NextRequest) {
   const key = req.nextUrl.searchParams.get('key');
