@@ -49,11 +49,11 @@ const hoveredStyle: CSS.Properties = {
   borderColor: '#2196f3',
 };
 
-const maxFileSize = 10 * 1024 * 1024; // 4 MB
+const maxFileSize = 100 * 1024 * 1024; // 4 MB
 const maxLength = 255;
 
 function fileValidator(file: File) {
-  // check file size under 10MB
+  // check file size under 4MB
   if (file.size > maxFileSize) {
     return {
       code: 'file-too-large',
