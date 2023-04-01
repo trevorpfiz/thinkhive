@@ -60,6 +60,6 @@ export function getMaxExpertsForTier(tier: string | null | undefined) {
     case env.STRIPE_ENTERPRISE_PRODUCT_ID:
       return 20;
     default:
-      return 3;
+      return 20; // 3
   }
 }
