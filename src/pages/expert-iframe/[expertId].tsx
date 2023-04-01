@@ -100,8 +100,13 @@ const ExpertWidgetPage = () => {
           // INIT_IFRAME
           case EventTypes.INIT_IFRAME:
             const isExpertIdValid = expert?.id === event.data.value.expertId;
+            // TODO - might need to change the regex
             const hasValidDomain =
-              !expert?.domains || expert?.domains.split(',').includes(event.data.value.topHost);
+              !expert?.domains ||
+              expert?.domains.split(',').some((domain) => {
+                const regex = new RegExp(`(^|\\.)${domain.replace('.', '\\.')}$`);
+                return regex.test(event.data.value.topHost);
+              });
             console.log(hasValidDomain, event.data.value.topHost, expert?.domains);
             if (isExpertIdValid && hasValidDomain) {
               // get whitelisted domains

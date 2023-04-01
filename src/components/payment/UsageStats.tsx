@@ -5,25 +5,21 @@ import LoadingBars from '../ui/LoadingBars';
 export default function UsageStats() {
   const { isLoading, data: stats, error } = api.user.getUsageStats.useQuery();
 
-  if (isLoading) {
-    return <LoadingBars />;
-  }
-
   if (error) {
     return <Text>Something went wrong</Text>;
   }
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <LoadingBars />
       ) : (
-        <>
+        <div className="w-full">
           <h3 className="text-base font-semibold leading-6 text-gray-900">Last 30 days</h3>
           <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {stats &&
               stats.map((item, index) => (
-                <Card key={index} className="mx-auto max-w-xs bg-gray-100 shadow-none">
+                <Card key={index} className="mx-auto bg-gray-100 shadow-none">
                   <Text>{item.name}</Text>
                   {item.name === 'Plan Credits' ? ( // conditionally render progress bar for "Credits"
                     <div>
@@ -68,8 +64,8 @@ export default function UsageStats() {
                 </Card>
               ))}
           </dl>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }

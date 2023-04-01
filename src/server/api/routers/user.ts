@@ -1,3 +1,4 @@
+import { env } from '@/env.mjs';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { getCreditsForProduct } from '@/server/helpers/payments';
 
@@ -121,12 +122,12 @@ export const userRouter = createTRPCRouter({
       },
       {
         name: 'Upload Usage',
-        stat: parseFloat((data.uploadUsage / 5 / 1000).toFixed(2)),
+        stat: uploadUsage,
         totalUsed: totalCreditsUsed,
       },
       {
         name: 'Message Usage',
-        stat: parseFloat(((data.questionUsage / 5 + data.responseUsage) / 1000).toFixed(2)),
+        stat: messageUsage,
         totalUsed: totalCreditsUsed,
       },
     ];
@@ -152,5 +153,46 @@ export const userRouter = createTRPCRouter({
     }
 
     return parseFloat(data.credits.toFixed(2));
+  }),
+  getAdditionalCredits: protectedProcedure.query(async ({ ctx }) => {
+    const { session, prisma } = ctx;
+
+    if (!session.user?.id) {
+      throw new Error('Not authenticated');
+    }
+
+    const data = await prisma.user.findUnique({
+      where: {
+        id: session.user?.id,
+      },
+      select: {
+        additionalCredits: true,
+      },
+    });
+
+    const additionalProduct = await prisma.product.findUnique({
+      where: {
+        id: env.STRIPE_ADDITIONAL_PRODUCT_ID,
+      },
+      select: {
+        Price: {
+          where: {
+            active: true,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!data) {
+      throw new Error('Could not find user');
+    }
+
+    return {
+      additionalCredits: parseFloat(data.additionalCredits.toFixed(2)),
+      additionalPriceId: additionalProduct?.Price[0]?.id,
+    };
   }),
 });

@@ -6,6 +6,7 @@ import { prisma } from '@/server/db';
 import type Stripe from 'stripe';
 import { buffer } from 'micro';
 import {
+  handleCheckoutSessionCompleted,
   handleInvoicePaid,
   manageSubscriptionStatusChange,
   upsertPrice,
@@ -75,6 +76,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
             break;
           case 'checkout.session.completed':
+            await handleCheckoutSessionCompleted({
+              event,
+              prisma,
+              stripe,
+            });
             break;
           case 'invoice.paid':
             await handleInvoicePaid({

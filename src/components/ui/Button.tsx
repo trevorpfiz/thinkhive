@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 
 const button = cva(
-  'group inline-flex items-center justify-center rounded-full focus:outline-none',
+  'group inline-flex items-center justify-center rounded-full focus:outline-none, disabled:cursor-not-allowed disabled:opacity-30',
   {
     variants: {
       intent: {
@@ -18,7 +18,7 @@ const button = cva(
         solidGreen:
           'font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white hover:text-slate-100 hover:bg-green-500 active:bg-green-800 active:text-green-100 focus-visible:outline-green-600',
         solidIndigo:
-          'font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600 text-white hover:text-slate-100 hover:bg-indigo-500 active:bg-indigo-800 active:text-indigo-100 focus-visible:outline-indigo-600',
+          'font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600 text-white hover:text-slate-100 hover:bg-indigo-500 active:bg-indigo-800 active:text-indigo-100 focus-visible:outline-indigo-600 dis',
 
         outlineSlate:
           'ring-1 ring-slate-200 text-slate-700 hover:text-slate-900 hover:ring-slate-300 active:bg-slate-100 active:text-slate-600 focus-visible:outline-blue-600 focus-visible:ring-slate-300',

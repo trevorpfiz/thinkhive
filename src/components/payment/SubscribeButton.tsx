@@ -112,7 +112,10 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
   useEffect(() => {
     if (selectedPriceId && !hasActiveSubscription) {
       void (async () => {
-        const { checkoutUrl } = await createCheckoutSession({ selectedPriceId });
+        const { checkoutUrl } = await createCheckoutSession({
+          selectedPriceId,
+          isSubscription: true,
+        });
         if (checkoutUrl) {
           void push(checkoutUrl);
         }

@@ -9,6 +9,7 @@ import { SubscribeButton } from './SubscribeButton';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import UsageStats from './UsageStats';
 import StatusBadge from '../ui/StatusBadge';
+import AdditionalCredits from './AdditionalCredits';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },
@@ -70,13 +71,18 @@ function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) 
         parseInt((b?.metadata as Metadata).index || '0', 10)
     )
     .map((product) => {
+      const metadata = product?.metadata as Metadata;
+      // Check if the metadata index is less than 1
+      if (metadata?.index && parseInt(metadata.index) < 1) {
+        return null;
+      }
+
       const monthlyPrice = product.Price.find((price) => price.interval === 'month');
       const annualPrice = product.Price.find((price) => price.interval === 'year');
 
       // Create features from product metadata
       const features = [];
       let i = 1;
-      const metadata = product?.metadata as Metadata;
       while (metadata?.[`feature_${i}`]) {
         features.push(metadata[`feature_${i}`] as string);
         i++;
@@ -106,7 +112,8 @@ function createTiers(products: ProductWithPrice[], subscriptionPriceId: string) 
         isSubscribedProduct:
           !!subscriptionPriceId && product.Price.some((price) => price.id === subscriptionPriceId),
       };
-    });
+    })
+    .filter(Boolean);
 }
 
 function classNames(...classes: string[]) {
@@ -154,22 +161,28 @@ export default function Plans() {
             <p className="mx-auto mt-4 max-w-2xl text-center text-lg leading-8 text-gray-600">
               Choose the plan that works for you.
             </p>
-            {subscriptionStatus && (
-              <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-lg bg-white p-8 shadow">
-                <div className="flex w-full flex-wrap items-center justify-between">
+            <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-lg bg-white p-8 shadow">
+              <div className="flex w-full flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   <p className="text-xl font-medium text-gray-700">
-                    Your <span className="text-indigo-600">{subscribedProductName} Plan</span>
+                    Your{' '}
+                    <span className="text-indigo-600">
+                      {subscriptionStatus ? subscribedProductName : 'Trial'} Plan
+                    </span>
                   </p>
-                  <div className="flex items-center gap-4">
-                    <StatusBadge status={subscriptionStatus.toUpperCase()} />
-                    <ManageBilling />
-                  </div>
+                  <StatusBadge
+                    status={subscriptionStatus ? subscriptionStatus.toUpperCase() : 'TRIAL'}
+                  />
                 </div>
-                <div className="flex w-full flex-wrap items-center justify-between">
-                  <UsageStats />
+                <div className="flex flex-wrap items-center gap-4">
+                  <AdditionalCredits />
+                  <ManageBilling disabled={!subscriptionStatus} />
                 </div>
               </div>
-            )}
+              <div className="flex w-full flex-wrap items-center justify-between gap-4">
+                <UsageStats />
+              </div>
+            </div>
             <div className="mt-16 flex justify-center">
               <RadioGroup
                 value={frequency}
@@ -194,46 +207,49 @@ export default function Plans() {
               </RadioGroup>
             </div>
             <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-              {tiers.map((tier) => (
-                <div
-                  key={tier.id}
-                  className="rounded-3xl bg-white p-8 shadow ring-1 ring-gray-200 xl:p-10"
-                >
-                  <div className="flex items-center justify-between gap-x-4">
-                    <h3 id={tier.id} className="text-lg font-semibold leading-8 text-gray-900">
-                      {tier.name}
-                    </h3>
-                  </div>
-                  <p className="mt-4 min-h-[50px] text-sm leading-6 text-gray-600">
-                    {tier.description}
-                  </p>
-                  <p className="mt-6 flex items-baseline gap-x-1">
-                    <span className="text-4xl font-bold tracking-tight text-gray-900">
-                      {tier.price[frequency?.value as keyof Interval]
-                        ? `$${tier.price[frequency?.value as keyof Interval].amount / 100}`
-                        : '$0'}
-                    </span>
-                    <span className="text-sm font-semibold leading-6 text-gray-600">
-                      {frequency?.priceSuffix}
-                    </span>
-                  </p>
-                  <SubscribeButton tier={tier} hasActiveSubscription={!!subscriptionStatus} />
-                  <ul
-                    role="list"
-                    className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10"
-                  >
-                    {tier.features.map((feature) => (
-                      <li key={feature} className="flex gap-x-3">
-                        <CheckIcon
-                          className="h-6 w-5 flex-none text-indigo-600"
-                          aria-hidden="true"
-                        />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              {tiers.map(
+                (tier) =>
+                  tier && (
+                    <div
+                      key={tier.id}
+                      className="rounded-3xl bg-white p-8 shadow ring-1 ring-gray-200 xl:p-10"
+                    >
+                      <div className="flex items-center justify-between gap-x-4">
+                        <h3 id={tier.id} className="text-lg font-semibold leading-8 text-gray-900">
+                          {tier.name}
+                        </h3>
+                      </div>
+                      <p className="mt-4 min-h-[50px] text-sm leading-6 text-gray-600">
+                        {tier.description}
+                      </p>
+                      <p className="mt-6 flex items-baseline gap-x-1">
+                        <span className="text-4xl font-bold tracking-tight text-gray-900">
+                          {tier.price[frequency?.value as keyof Interval]
+                            ? `$${tier.price[frequency?.value as keyof Interval].amount / 100}`
+                            : '$0'}
+                        </span>
+                        <span className="text-sm font-semibold leading-6 text-gray-600">
+                          {frequency?.priceSuffix}
+                        </span>
+                      </p>
+                      <SubscribeButton tier={tier} hasActiveSubscription={!!subscriptionStatus} />
+                      <ul
+                        role="list"
+                        className="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10"
+                      >
+                        {tier.features.map((feature) => (
+                          <li key={feature} className="flex gap-x-3">
+                            <CheckIcon
+                              className="h-6 w-5 flex-none text-indigo-600"
+                              aria-hidden="true"
+                            />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+              )}
             </div>
           </div>
         </div>

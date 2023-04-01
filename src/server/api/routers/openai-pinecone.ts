@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { VectorDBQAChain } from 'langchain/chains';
+import { RetrievalQAChain } from 'langchain/chains';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import { get_encoding } from '@dqbd/tiktoken';
@@ -72,7 +72,10 @@ export const openAiPinecone = createTRPCRouter({
 
       const model = openai;
       // create the chain
-      const chain = VectorDBQAChain.fromLLM(model, vectorStore, { k: 4 });
+      // FIXME - this is a bug in langchain
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
       // Ask a question
       const response = await chain.call({
@@ -80,10 +83,6 @@ export const openAiPinecone = createTRPCRouter({
       });
 
       // 3. Update user credits and usage.
-      // Add ada question tokens to total tokens from openai callback
-      const messageTokens = tokenUsage.totalTokens + adaQuestionTokens;
-      console.log(messageTokens, 'messageTokens');
-
       // subtract credits from user
       // TODO - might not be tracking the adaQuestionTokens correctly
       await prisma.user.update({

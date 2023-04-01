@@ -27,7 +27,6 @@ export function getProrationAmountsAnnual(
 ) {
   // get months left
   const monthsLeft = dayjs(currentPeriodEnd).diff(dayjs(), 'month');
-  console.log(monthsLeft, 'months left');
 
   // (CurrentPrice/12) * (credits/CurrentProductCredits + (MonthsLeft))
   const prorationAmount =
