@@ -52,7 +52,7 @@ const ExpertPlayground = () => {
     const metadataIds =
       expert?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
 
-    await mutateAsync({ question, metadataIds });
+    await mutateAsync({ question, metadataIds, expertId });
 
     if (data?.response.text) {
       console.log(data?.response.text);

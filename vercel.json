@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/reset-credits?key=3f6b4065-bf9f-4bd4-8423-1a4ea4386cb3",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

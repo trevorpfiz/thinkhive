@@ -18,9 +18,9 @@ const tiers: Tier[] = [
     features: [
       '~30 messages',
       'Up to 30,000 words uploaded',
-      '3 Experts',
+      '3 Expert',
       'Optional credit top ups',
-      'Chat with your Expert in a playground', 
+      'Chat with your Expert in a playground',
       'Deploy your Expert as a website chatbot',
     ],
     mostPopular: false,
@@ -36,7 +36,7 @@ const tiers: Tier[] = [
       'Up to 5,000,000 words uploaded per month',
       '20 Experts',
       'Optional credit top ups',
-      'Chat with your Expert in a playground', 
+      'Chat with your Expert in a playground',
       'Deploy your Expert as a website chatbot',
     ],
     mostPopular: false,
@@ -52,7 +52,7 @@ const tiers: Tier[] = [
       'Up to 25,000,000 words uploaded per month',
       '20 Experts',
       'Optional credit top ups',
-      'Chat with your Expert in a playground', 
+      'Chat with your Expert in a playground',
       'Deploy your Expert as a website chatbot',
     ],
     mostPopular: false,
@@ -68,7 +68,7 @@ const tiers: Tier[] = [
       'Up to 100,000,000 words uploaded per month',
       '20 Experts',
       'Optional credit top ups',
-      'Chat with your Expert in a playground', 
+      'Chat with your Expert in a playground',
       'Deploy your Expert as a website chatbot',
     ],
     mostPopular: false,
@@ -125,8 +125,8 @@ export default function Pricing() {
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-          Choose an affordable plan that’s packed with the best features for enhancing user satisfaction,
-          fostering customer loyalty, and driving sales.
+          Choose an affordable plan that’s packed with the best features for enhancing user
+          satisfaction, fostering customer loyalty, and driving sales.
         </p>
         <div className="mt-16 flex justify-center">
           <RadioGroup

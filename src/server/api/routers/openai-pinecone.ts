@@ -8,18 +8,19 @@ import { getClientIp } from 'request-ip';
 import { openai, tokenUsage } from '@/utils/openai-client';
 import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
 import { hasEnoughCredits } from '@/server/helpers/permissions';
 
 export const openAiPinecone = createTRPCRouter({
-  getAnswer: protectedProcedure
-    .input(z.object({ question: z.string(), metadataIds: z.array(z.string()) }))
+  getAnswer: publicProcedure
+    .input(
+      z.object({ question: z.string(), metadataIds: z.array(z.string()), expertId: z.string() })
+    )
     .mutation(async ({ ctx, input }) => {
       const { question, metadataIds } = input;
-      const { req, session, prisma } = ctx;
-      const userId = session.user.id;
+      const { req, prisma } = ctx;
 
       // rate limit
       const ip = getClientIp(req);
@@ -28,6 +29,19 @@ export const openAiPinecone = createTRPCRouter({
       if (!success) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
       const { success: successDay } = await messageLimitDay.limit(ip);
       if (!successDay) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+
+      // get userId from expertId
+      const expertUserId = await prisma.expert.findUnique({
+        where: {
+          id: input.expertId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!expertUserId) throw new TRPCError({ code: 'BAD_REQUEST' });
+      const userId = expertUserId?.userId;
 
       const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 

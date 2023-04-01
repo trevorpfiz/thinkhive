@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["clientExtensions"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -62,6 +61,7 @@ model User {
   uploadUsage        Int            @default(0)
   questionUsage      Int            @default(0)
   responseUsage      Int            @default(0)
+  last_reset         DateTime       @default(now())
   stripeSubscription Subscription[]
   accounts           Account[]
   sessions           Session[]

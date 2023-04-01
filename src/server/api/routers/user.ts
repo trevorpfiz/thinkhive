@@ -115,7 +115,7 @@ export const userRouter = createTRPCRouter({
 
     return [
       {
-        name: 'Credits',
+        name: 'Plan Credits',
         stat: parseFloat(data.credits.toFixed(2)),
         limit: getCreditsForProduct(data.stripeSubscription[0]?.price?.product.id as string),
       },

@@ -53,7 +53,7 @@ export default function ChatInput({
       expert?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
 
     setLoading(true);
-    const { response } = await mutateAsync({ question, metadataIds });
+    const { response } = await mutateAsync({ question, metadataIds, expertId });
     setLoading(false);
     console.log(response);
 
