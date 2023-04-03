@@ -76,13 +76,17 @@ export const openAiPinecone = createTRPCRouter({
           filter: filter,
         }
       );
-
+      const systemMessage = ""
+      const qa_template = `Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. ${systemMessage}
+      {context}
+      Question: {question}
+      Helpful Answer:`;
       const model = openai;
       // create the chain
       // FIXME - this is a bug in langchain
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {qaTemplate: qa_template});
 
       // Ask a question
       const response = await chain.call({
