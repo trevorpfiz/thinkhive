@@ -5,7 +5,7 @@ import { api } from '@/utils/api';
 import { calculateExpertsSizes } from '@/utils/word-count';
 import LoadingBars from '../ui/LoadingBars';
 import Notification from '../ui/Notification';
-import StatusBadge from '../ui/StatusBadge';
+import VisibilityBadge from '../ui/VisibilityBadge';
 
 export default function ExpertsTable() {
   const {
@@ -110,7 +110,7 @@ export default function ExpertsTable() {
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Status
+                    Visibility
                   </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4">
                     <span className="sr-only">Edit</span>
@@ -131,14 +131,6 @@ export default function ExpertsTable() {
                           </div>
                         </div>
                       </div>
-                      {/* <dl className="font-normal sm:hidden">
-                      <dt className="sr-only">Expert</dt>
-                      <dd className="mt-1 truncate text-gray-700">{expert.name}</dd>
-                      <dt className="sr-only sm:hidden">Status</dt>
-                      <dd className="mt-1 truncate text-gray-500 sm:hidden">
-                        <StatusBadge status={expert.status} />
-                      </dd>
-                    </dl> */}
                     </td>
                     <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                       {experts[index]?.brains.length}
@@ -148,7 +140,7 @@ export default function ExpertsTable() {
                       <div className="text-gray-500">words</div>
                     </td>
                     <td className="px-3 py-4 text-sm text-gray-500">
-                      <StatusBadge status={expert.status} />
+                      <VisibilityBadge visibility={expert.visibility} />
                     </td>
                     <td className="py-4 pl-3 pr-4 text-right text-sm font-medium">
                       <a

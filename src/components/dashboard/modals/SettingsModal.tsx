@@ -1,12 +1,13 @@
 import { Fragment, useState, useEffect, type ChangeEvent } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import type { Availability } from '@prisma/client';
+import type { Visibility } from '@prisma/client';
 
 export interface SettingsData {
   initialMessages: string;
   domains: string;
-  availability: Availability;
+  visibility: Visibility;
+  systemMessage: string;
 }
 
 interface ModalProps {
@@ -20,7 +21,7 @@ interface ModalProps {
 
 export default function SettingsModal({ modal, formData, onChange, onSubmit }: ModalProps) {
   const [open, setOpen] = modal;
-  const [{ initialMessages, domains, availability }, setData] = formData;
+  const [{ initialMessages, domains, visibility, systemMessage }, setData] = formData;
 
   const [initialMessagesArray, setInitialMessagesArray] = useState(initialMessages.split('\n'));
 
@@ -159,7 +160,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       htmlFor="whitelisted-domains"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Whitelisted domains (separate each domain with a comma)
+                      Whitelisted domains for website chatbot (separate each domain with a comma)
                     </label>
                     <input
                       type="text"
@@ -171,24 +172,39 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       placeholder="example.com,example2.com"
                     />
                   </div>
-                  {/* Availability setting */}
+                  {/* Visibility setting */}
                   <div className="mt-5">
-                    <label
-                      htmlFor="availability"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Availability
+                    <label htmlFor="visibility" className="block text-sm font-medium text-gray-700">
+                      Playground Visibility
                     </label>
                     <select
-                      id="availability"
-                      name="availability"
+                      id="visibility"
+                      name="visibility"
                       className="mt-1 block w-full border-0 bg-white py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      value={availability}
+                      value={visibility}
                       onChange={onChange}
                     >
                       <option value="PUBLIC">Public</option>
                       <option value="PRIVATE">Private</option>
                     </select>
+                  </div>
+                  {/* System message setting */}
+                  <div className="mt-5">
+                    <label
+                      htmlFor="system-message"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      System message
+                    </label>
+                    <textarea
+                      id="system-message"
+                      name="systemMessage"
+                      className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={systemMessage}
+                      onChange={onChange}
+                      maxLength={500}
+                      placeholder="A system message will modify the performance and behavior of your expert."
+                    />
                   </div>
                   {/* Save and Cancel buttons */}
                   <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">

@@ -82,8 +82,8 @@ export const userRouter = createTRPCRouter({
       select: {
         credits: true,
         uploadUsage: true,
-        questionUsage: true,
-        responseUsage: true,
+        embeddingUsage: true,
+        llmUsage: true,
         stripeSubscription: {
           where: {
             status: 'active',
@@ -109,9 +109,7 @@ export const userRouter = createTRPCRouter({
     }
 
     const uploadUsage = parseFloat((data.uploadUsage / 5 / 1000).toFixed(2));
-    const messageUsage = parseFloat(
-      ((data.questionUsage / 5 + data.responseUsage) / 1000).toFixed(2)
-    );
+    const messageUsage = parseFloat(((data.embeddingUsage / 5 + data.llmUsage) / 1000).toFixed(2));
     const totalCreditsUsed = parseFloat((uploadUsage + messageUsage).toFixed(2));
 
     return [
