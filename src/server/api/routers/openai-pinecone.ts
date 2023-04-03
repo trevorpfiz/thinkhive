@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { RetrievalQAChain } from 'langchain/chains';
+import { ConversationalRetrievalQAChain } from 'langchain/chains';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import { get_encoding } from '@dqbd/tiktoken';
@@ -12,14 +12,21 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
 import { hasEnoughCredits } from '@/server/helpers/permissions';
+import { SystemChatMessage } from 'langchain/schema';
+import { PromptTemplate } from 'langchain';
 
 export const openAiPinecone = createTRPCRouter({
   getAnswer: publicProcedure
     .input(
-      z.object({ question: z.string(), metadataIds: z.array(z.string()), expertId: z.string() })
+      z.object({
+        question: z.string(),
+        chatHistory: z.array(z.string()),
+        metadataIds: z.array(z.string()),
+        expertId: z.string(),
+      })
     )
     .mutation(async ({ ctx, input }) => {
-      const { question, metadataIds } = input;
+      const { question, chatHistory, metadataIds, expertId } = input;
       const { req, prisma } = ctx;
 
       // rate limit
@@ -33,7 +40,7 @@ export const openAiPinecone = createTRPCRouter({
       // get userId from expertId
       const expertUserId = await prisma.expert.findUnique({
         where: {
-          id: input.expertId,
+          id: expertId,
         },
         select: {
           userId: true,
@@ -75,11 +82,12 @@ export const openAiPinecone = createTRPCRouter({
       // FIXME - this is a bug in langchain
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
       // Ask a question
       const response = await chain.call({
-        query: sanitizedQuestion,
+        question: sanitizedQuestion,
+        chat_history: chatHistory,
       });
 
       // 3. Update user credits and usage.

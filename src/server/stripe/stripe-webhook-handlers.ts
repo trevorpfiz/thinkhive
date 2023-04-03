@@ -91,6 +91,7 @@ export const upsertProduct = async ({
   prisma: PrismaClient;
 }) => {
   const product = event.data.object as Stripe.Product;
+
   const productData = {
     id: product.id,
     active: product.active,
@@ -149,6 +150,7 @@ export const manageSubscriptionStatusChange = async ({
   prisma: PrismaClient;
   stripe: Stripe;
 }) => {
+  // FIXME - there was a 400 on an enterprise checkout
   const subscription = event.data.object as Stripe.Subscription;
   const subscriptionId = subscription.id;
   const customerId = subscription.customer as string;

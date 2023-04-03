@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-
+import { useEffect, useRef, useState } from 'react';
 import { getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
+import { useAtom } from 'jotai';
 
 import { authOptions } from '@/server/auth';
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
 import { api } from '@/utils/api';
-import LoadingBars from '@/components/ui/LoadingBars';
 import { prisma } from '@/server/db';
 import Messages from '@/components/widget/Messages';
 import ChatInput from '@/components/widget/ChatInput';
-import { useAtom } from 'jotai';
 import { messagesAtom } from '../expert-iframe/[expertId]';
 
 const ExpertPlayground = () => {
@@ -31,41 +29,12 @@ const ExpertPlayground = () => {
     error,
   } = api.expert.getWidgetExpert.useQuery({ id: expertId }, { enabled: !!expertId });
 
-  const { mutateAsync, data, isLoading } = api.chat.getAnswer.useMutation();
-
-  const [query, setQuery] = useState<string>('');
-
   const messagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
-  async function handleSearch() {
-    if (!query) {
-      alert('Please input a question');
-      return;
-    }
-
-    const question = query.trim();
-    const metadataIds =
-      expert?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
-
-    await mutateAsync({ question, metadataIds, expertId });
-
-    if (data?.response.text) {
-      console.log(data?.response.text);
-    }
-  }
-
-  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && query) {
-      void handleSearch();
-    } else {
-      return;
-    }
-  };
 
   useEffect(() => {
     if (expert && expert.initialMessages && !initialMessagesSet) {

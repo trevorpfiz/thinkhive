@@ -1,4 +1,5 @@
 import { loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
+import { chatHistoryAtom } from '@/pages/expert-iframe/[expertId]';
 import { api } from '@/utils/api';
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
 import { useAtom, useSetAtom } from 'jotai';
@@ -13,6 +14,7 @@ export default function ChatInput({
   inputRef: React.RefObject<HTMLInputElement>;
 }) {
   const setMessages = useSetAtom(messagesAtom);
+  const [chatHistory, setChatHistory] = useAtom(chatHistoryAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
   const router = useRouter();
   const expertId = router.query.expertId as string;
@@ -53,13 +55,19 @@ export default function ChatInput({
       expert?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
 
     setLoading(true);
-    const { response } = await mutateAsync({ question, metadataIds, expertId });
+    const { response } = await mutateAsync({
+      question,
+      chatHistory: chatHistory,
+      metadataIds,
+      expertId,
+    });
     setLoading(false);
     console.log(response);
 
     if (response.text) {
       console.log(response.text);
       addMessage('server', response.text as string);
+      setChatHistory((prevChatHistory) => [...prevChatHistory, question, response.text as string]);
     }
   }
 
