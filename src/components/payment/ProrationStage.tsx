@@ -38,7 +38,6 @@ export default function ProrationStage({ onSubmit, activeSubscription, credits }
   const subscribedProductId = activeSubscription?.price?.product.id;
   const annualProration =
     frequency?.value === 'annual' && activeSubscription.price.interval === 'year';
-  console.log(subscribedProductId, 'subscribedProductId');
 
   useEffect(() => {
     if (subscribedProductCredits !== undefined) {

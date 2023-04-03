@@ -159,7 +159,7 @@ model Product {
   id          String   @id @map(name: "id")
   active      Boolean?
   name        String?
-  description String?
+  description String?  @db.Text
   image       String?
   metadata    Json?
   Price       Price[]
@@ -181,7 +181,7 @@ enum PricingPlanInterval {
 model Price {
   id                String               @id @map(name: "id")
   active            Boolean?
-  description       String?
+  description       String?              @db.Text
   unit_amount       Int?
   currency          String?              @default("''") @db.Text
   type              PricingType?

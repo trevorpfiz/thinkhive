@@ -4,7 +4,7 @@ import { type FileRejection, useDropzone } from 'react-dropzone';
 import type * as CSS from 'csstype';
 import { IconPdf } from '@tabler/icons-react';
 import clsx from 'clsx';
-import { DeltaBar, Card, Flex, Text } from '@tremor/react';
+import { Card, Flex, Text, ProgressBar } from '@tremor/react';
 
 import { api } from '@/utils/api';
 import convertPdfToText from '@/utils/pdf/convert-pdf';
@@ -49,7 +49,7 @@ const hoveredStyle: CSS.Properties = {
   borderColor: '#2196f3',
 };
 
-const maxFileSize = 4 * 1024 * 1024; // 4 MB
+const maxFileSize = 100 * 1024 * 1024; // 4 MB
 const maxLength = 255;
 
 function fileValidator(file: File) {
@@ -320,13 +320,13 @@ export default function FileDropzone() {
                   <Flex className="w-full items-center justify-between">
                     <Text className="w-full">{credits} Credits</Text>
                     <Flex className="justify-end space-x-1">
-                      <Text>-{creditsUsed}</Text>
+                      <Text>{creditsUsed * -1} Credits</Text>
                       <Text>({creditPercentage}%)</Text>
                     </Flex>
                   </Flex>
-                  <DeltaBar
-                    percentageValue={creditPercentage}
-                    isIncreasePositive={true}
+                  <ProgressBar
+                    percentageValue={Math.abs(creditPercentage)}
+                    color="gray"
                     className="mt-3"
                   />
                 </Card>

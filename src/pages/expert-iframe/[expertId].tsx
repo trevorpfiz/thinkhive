@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { atom, useAtom } from 'jotai';
 
 import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
@@ -8,7 +9,6 @@ import Messages from '@/components/widget/Messages';
 import ChatInput from '@/components/widget/ChatInput';
 import * as EventTypes from '@/types/eventTypes';
 import { api } from '@/utils/api';
-import { atom, useAtom } from 'jotai';
 
 interface MessageEventProps extends MessageEvent {
   type: string;
@@ -27,6 +27,9 @@ export interface WidgetMessage {
 const widthAtom = atom(0);
 export const messagesAtom = atom<WidgetMessage[]>([]);
 export const loadingAtom = atom(false);
+export const chatHistoryAtom = atom<string[]>([]);
+// const storage = createJSONStorage<string[]>(() => sessionStorage);
+// export const chatHistoryAtom = atomWithStorage<string[]>('chatHistory', [], storage);
 
 const ExpertWidgetPage = () => {
   const [deviceWidth, setDeviceWidth] = useAtom(widthAtom);
@@ -101,7 +104,12 @@ const ExpertWidgetPage = () => {
           case EventTypes.INIT_IFRAME:
             const isExpertIdValid = expert?.id === event.data.value.expertId;
             const hasValidDomain =
-              !expert?.domains || expert?.domains.split(',').includes(event.data.value.topHost);
+              !expert?.domains ||
+              expert?.domains.split(',').some((domain) => {
+                const subdomains = event.data.value.topHost.split('.');
+                const mainDomain = subdomains.slice(-2).join('.');
+                return domain === mainDomain;
+              });
             console.log(hasValidDomain, event.data.value.topHost, expert?.domains);
             if (isExpertIdValid && hasValidDomain) {
               // get whitelisted domains

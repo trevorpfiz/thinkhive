@@ -91,6 +91,7 @@ export const upsertProduct = async ({
   prisma: PrismaClient;
 }) => {
   const product = event.data.object as Stripe.Product;
+
   const productData = {
     id: product.id,
     active: product.active,
@@ -149,10 +150,12 @@ export const manageSubscriptionStatusChange = async ({
   prisma: PrismaClient;
   stripe: Stripe;
 }) => {
+  // FIXME - there was a 400 on an enterprise checkout
   const subscription = event.data.object as Stripe.Subscription;
   const subscriptionId = subscription.id;
   const customerId = subscription.customer as string;
-  const createAction = event.type === 'customer.subscription.created';
+  const createdEvent = event.type === 'customer.subscription.created';
+  const deletedEvent = event.type === 'customer.subscription.deleted';
 
   // Add a check for the pending_update hash to see if subscription payment failed
 
@@ -207,6 +210,76 @@ export const manageSubscriptionStatusChange = async ({
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
     throw new Error(`Failed to upsert subscription with ID ${subscriptionId}: ${error.message}`);
   }
+
+  // reset the user's credits and usage if subscription deleted
+  if (deletedEvent) {
+    try {
+      const updatedCustomer = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          credits: {
+            set: 0,
+          },
+          uploadUsage: {
+            set: 0,
+          },
+          questionUsage: {
+            set: 0,
+          },
+          responseUsage: {
+            set: 0,
+          },
+          last_reset: {
+            set: new Date(),
+          },
+        },
+      });
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+      throw new Error(`Failed to update user with ID ${userId}: ${error.message}`);
+    }
+  }
+};
+
+export const handleCheckoutSessionCompleted = async ({
+  event,
+  prisma,
+  stripe,
+}: {
+  event: Stripe.Event;
+  prisma: PrismaClient;
+  stripe: Stripe;
+}) => {
+  const session = event.data.object as Stripe.Checkout.Session;
+  const customerId = session.customer as string;
+  const mode = session.mode;
+
+  switch (mode) {
+    case 'payment':
+      // probably would have to reach out to Stripe to get the product ID
+      const updatedCustomer = await prisma.user.update({
+        where: {
+          stripeCustomerId: customerId,
+        },
+        data: {
+          additionalCredits: {
+            increment: 1000,
+          },
+        },
+      });
+
+      if (!updatedCustomer) throw new Error('Customer not found');
+      return updatedCustomer;
+      break;
+    case 'setup':
+      break;
+    case 'subscription':
+      break;
+    default:
+      throw new Error('Unknown mode');
+  }
 };
 
 export const handleInvoicePaid = async ({
@@ -220,6 +293,8 @@ export const handleInvoicePaid = async ({
 }) => {
   const invoice = event.data.object as Stripe.Invoice;
   const subscriptionId = invoice.subscription as string;
+
+  //FIXME - handle if no subscriptionId
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const customerId = subscription.customer as string;
@@ -258,6 +333,6 @@ export const handleInvoicePaid = async ({
     });
   } catch (error: any) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-    throw new Error(`Failed to update subscription with ID ${subscriptionId}: ${error.message}`);
+    throw new Error(`Failed to update user with ID ${userId}: ${error.message}`);
   }
 };

@@ -1,6 +1,8 @@
-import { loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
+import Linkify from 'linkify-react';
+
+import { loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
 import LoadingBars from '../ui/LoadingBars';
 
 export default function Messages() {
@@ -8,14 +10,7 @@ export default function Messages() {
   const [loading] = useAtom(loadingAtom);
 
   // FIXME - might not work for all cases
-  const urlRegex = /((https?:\/\/)|(www\.))[\S]+(?<![,.;!?])/gi;
-
-  const formatMessage = (content: string) => {
-    return content.replace(urlRegex, (url) => {
-      const properUrl = url.startsWith('http') ? url : 'http://' + url;
-      return `<a href="${properUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600">${url}</a>`;
-    });
-  };
+  // const urlRegex = /((https?:\/\/)|(www\.))([\S]*(?:(?![,.;!?])\S)+)/gi;
 
   return (
     <>
@@ -39,7 +34,20 @@ export default function Messages() {
               <div className="flex w-full space-x-3">
                 <div className="flex-1 gap-4">
                   <div className="whitespace-normal text-black [overflow-wrap:anywhere]">
-                    <p dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }} />
+                    <Linkify
+                      as="p"
+                      options={{
+                        tagName: 'a',
+                        className: 'text-blue-500 underline hover:text-blue-700',
+                        formatHref: (href) => href,
+                        attributes: {
+                          target: '_blank',
+                          rel: 'noopener noreferrer',
+                        },
+                      }}
+                    >
+                      {message.content}
+                    </Linkify>
                   </div>
                 </div>
               </div>

@@ -2,7 +2,7 @@ import { api } from '@/utils/api';
 import { useRouter } from 'next/router';
 import Button from '../ui/Button';
 
-export const ManageBilling = () => {
+export const ManageBilling = ({ disabled }: { disabled: boolean }) => {
   const { mutateAsync: createBillingPortalSession } =
     api.stripe.createBillingPortalSession.useMutation();
   const { push } = useRouter();
@@ -15,7 +15,9 @@ export const ManageBilling = () => {
         }
       }}
       intent="solidIndigo"
+      size="large"
       className="rounded-md"
+      disabled={disabled}
     >
       Billing Portal
     </Button>

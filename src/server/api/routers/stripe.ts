@@ -11,10 +11,10 @@ import { TRPCError } from '@trpc/server';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
-    .input(z.object({ selectedPriceId: z.string() }))
+    .input(z.object({ selectedPriceId: z.string(), isSubscription: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const { stripe, session, prisma, req } = ctx;
-      const { selectedPriceId } = input;
+      const { selectedPriceId, isSubscription } = input;
 
       const customer = await getOrCreateStripeCustomerIdForUser({
         prisma,
@@ -32,6 +32,39 @@ export const stripeRouter = createTRPCRouter({
           ? `http://${req.headers.host ?? 'localhost:3000'}`
           : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
 
+      // additional credits checkout
+      if (!isSubscription) {
+        const lineItems = [
+          {
+            price: selectedPriceId,
+            quantity: 1,
+          },
+        ];
+
+        try {
+          const checkoutSession = await stripe.checkout.sessions.create({
+            customer: customerId,
+            client_reference_id: session.user?.id,
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: lineItems,
+            success_url: `${baseUrl}/dashboard/billing/?checkoutSuccess=true`,
+            cancel_url: `${baseUrl}/dashboard/billing/?checkoutCanceled=true`,
+          });
+
+          if (!checkoutSession) {
+            throw new Error('Could not create checkout session');
+          }
+
+          return { checkoutUrl: checkoutSession.url };
+        } catch (error: any) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          console.error('Error creating checkout session:', error.message);
+          throw new Error('Could not create checkout session');
+        }
+      }
+
+      // subscription checkout
       const lineItems = [
         {
           price: selectedPriceId,
