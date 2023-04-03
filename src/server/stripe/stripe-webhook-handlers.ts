@@ -225,10 +225,10 @@ export const manageSubscriptionStatusChange = async ({
           uploadUsage: {
             set: 0,
           },
-          questionUsage: {
+          embeddingUsage: {
             set: 0,
           },
-          responseUsage: {
+          llmUsage: {
             set: 0,
           },
           last_reset: {
@@ -320,10 +320,10 @@ export const handleInvoicePaid = async ({
         uploadUsage: {
           set: 0,
         },
-        questionUsage: {
+        embeddingUsage: {
           set: 0,
         },
-        responseUsage: {
+        llmUsage: {
           set: 0,
         },
         last_reset: {
