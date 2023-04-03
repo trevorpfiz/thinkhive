@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { VectorDBQAChain } from 'langchain/chains';
+import { RetrievalQAChain } from 'langchain/chains';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import { get_encoding } from '@dqbd/tiktoken';
@@ -51,8 +51,8 @@ export const openAiPinecone = createTRPCRouter({
       console.log('questionTokens', questionTokens);
 
       // FIXME - we don't know how many tokens the response will be, which takes away from prisma transaction atomicity, and these are also long queries which will hurt database performance
-      // 1. Check if user has enough credits for the question.
-      await hasEnoughCredits(userId, adaQuestionTokens);
+      // 1. Check if user has enough credits for the question. As long as they have enough for the question, they are good to go. Question can be infinte tokens rn, we need to limit it.
+      await hasEnoughCredits(userId, questionTokens);
 
       // 2. Metadata filtering and VectorDBQAChain.
       const filter = {
@@ -72,7 +72,7 @@ export const openAiPinecone = createTRPCRouter({
 
       const model = openai;
       // create the chain
-      const chain = VectorDBQAChain.fromLLM(model, vectorStore, { k: 4 });
+      const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
       // Ask a question
       const response = await chain.call({
@@ -80,9 +80,6 @@ export const openAiPinecone = createTRPCRouter({
       });
 
       // 3. Update user credits and usage.
-      // Add ada question tokens to total tokens from openai callback
-      const messageTokens = tokenUsage.totalTokens + adaQuestionTokens;
-      console.log(messageTokens, 'messageTokens');
 
       // subtract credits from user
       // TODO - might not be tracking the adaQuestionTokens correctly
@@ -92,7 +89,7 @@ export const openAiPinecone = createTRPCRouter({
         },
         data: {
           credits: {
-            decrement: tokenUsage.totalTokens / 1000,
+            decrement: tokenUsage.totalTokens / 1000 + adaQuestionTokens / 1000,
           },
           questionUsage: {
             increment: questionTokens,

@@ -18,7 +18,7 @@ const tiers: Tier[] = [
     features: [
       '~30 messages',
       'Up to 30,000 words uploaded',
-      '3 Expert',
+      '3 Experts',
       'Optional credit top ups',
       'Chat with your Expert in a playground',
       'Deploy your Expert as a website chatbot',
