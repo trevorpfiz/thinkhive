@@ -22,23 +22,23 @@ export default function CodeSnippet() {
 
   return (
     <div className="relative">
-      <pre
-        className="cursor-pointer overflow-auto rounded bg-gray-100 p-4 text-gray-700"
-        onClick={handleCopy}
-      >
-        <CopyToClipboard text={code} onCopy={() => setIsCopied(true)}>
+      <CopyToClipboard text={code} onCopy={() => setIsCopied(true)}>
+        <pre
+          className="cursor-pointer overflow-auto rounded bg-gray-100 p-4 text-gray-700"
+          onClick={handleCopy}
+        >
           <code>{code}</code>
-        </CopyToClipboard>
-        {isCopied ? (
-          <span className="absolute top-0 right-0 rounded bg-indigo-500 px-2 py-1 text-sm text-white">
-            Copied!
-          </span>
-        ) : (
-          <span className="absolute top-0 right-0 px-2 py-2">
-            <ClipboardIcon className="h-4 w-4" aria-hidden="true" />
-          </span>
-        )}
-      </pre>
+          {isCopied ? (
+            <span className="absolute top-0 right-0 rounded bg-indigo-500 px-2 py-1 text-sm text-white">
+              Copied!
+            </span>
+          ) : (
+            <span className="absolute top-0 right-0 px-2 py-2">
+              <ClipboardIcon className="h-4 w-4" aria-hidden="true" />
+            </span>
+          )}
+        </pre>
+      </CopyToClipboard>
     </div>
   );
 }
