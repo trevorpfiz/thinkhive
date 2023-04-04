@@ -11,9 +11,9 @@ import StatusBadge from '../ui/StatusBadge';
 import Button from '../ui/Button';
 import useNotification from '@/hooks/useNotification';
 import Notification from '../ui/Notification';
-import AvailabilityBadge from '../ui/AvailabilityBadge';
+import VisibilityBadge from '../ui/VisibilityBadge';
 import SettingsModal, { type SettingsData } from './modals/SettingsModal';
-import { Availability } from '@prisma/client';
+import { Visibility } from '@prisma/client';
 import EmbedModal from './modals/EmbedModal';
 
 function classNames(...classes: string[]) {
@@ -29,8 +29,9 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
   const [renameData, setRenameData] = useState('');
   const [settingsData, setSettingsData] = useState<SettingsData>({
     initialMessages: 'Hello!',
-    domains: 'thinkhive.ai',
-    availability: Availability.PRIVATE,
+    domains: '',
+    visibility: Visibility.PRIVATE,
+    systemMessage: '',
   });
 
   const { isError, data: expert, error } = api.expert.getExpert.useQuery({ id: expertId });
@@ -118,6 +119,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
   function handleSettings(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     showLoadingNotification('Changing settings...');
+    console.log(settingsData, 'settingsData');
     if (expert?.id) {
       changeSettings({ id: expert?.id, settings: settingsData });
     }
@@ -148,7 +150,8 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
       setSettingsData({
         initialMessages: expert.initialMessages || 'Hello!',
         domains: expert.domains || '',
-        availability: expert.availability || Availability.PRIVATE,
+        visibility: expert.visibility || Visibility.PRIVATE,
+        systemMessage: expert.systemMessage || '',
       });
     }
   }, [expert]);
@@ -209,8 +212,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
               </div>
             </div>
             <div className="flex gap-4">
-              <AvailabilityBadge availability={expert?.availability} />
-              <StatusBadge status={expert?.status} />
+              <VisibilityBadge visibility={expert?.visibility} />
             </div>
           </div>
 
@@ -263,20 +265,6 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
                           )}
                         >
                           <span>Rename</span>
-                        </button>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          onClick={handleStatusChange}
-                          type="button"
-                          className={classNames(
-                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                            'flex w-full justify-between px-4 py-2 text-sm'
-                          )}
-                        >
-                          <span>{expert?.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}</span>
                         </button>
                       )}
                     </Menu.Item>

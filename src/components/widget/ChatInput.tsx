@@ -57,7 +57,8 @@ export default function ChatInput({
     setLoading(true);
     const { response } = await mutateAsync({
       question,
-      chatHistory: chatHistory,
+      chatHistory,
+      systemMessage: expert?.systemMessage || '',
       metadataIds,
       expertId,
     });
@@ -98,6 +99,9 @@ export default function ChatInput({
             onChange={(e) => setQuery(e.target.value)}
             ref={inputRef}
             autoComplete="off"
+            maxLength={650}
+            minLength={1}
+            required
           />
           <button
             type="submit"

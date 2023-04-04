@@ -12,21 +12,20 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
 import { hasEnoughCredits } from '@/server/helpers/permissions';
-import { SystemChatMessage } from 'langchain/schema';
-import { PromptTemplate } from 'langchain';
 
 export const openAiPinecone = createTRPCRouter({
   getAnswer: publicProcedure
     .input(
       z.object({
-        question: z.string(),
-        chatHistory: z.array(z.string()),
+        question: z.string().max(650),
+        chatHistory: z.array(z.string()).max(100),
+        systemMessage: z.string(),
         metadataIds: z.array(z.string()),
         expertId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { question, chatHistory, metadataIds, expertId } = input;
+      const { question, chatHistory, systemMessage, metadataIds, expertId } = input;
       const { req, prisma } = ctx;
 
       // rate limit
@@ -54,15 +53,15 @@ export const openAiPinecone = createTRPCRouter({
 
       const encoding = get_encoding('cl100k_base');
       const questionTokens = encoding.encode(sanitizedQuestion).length;
+      // chat history tokens, check if needed
       const chatHistoryTokens = encoding.encode(chatHistory.join(' ')).length;
       console.log('questionTokens', questionTokens);
+      console.log(chatHistoryTokens, 'chatHistoryTokens');
       const embeddingTokens = questionTokens + chatHistoryTokens;
 
-
-
       // FIXME - we don't know how many tokens the response will be, which takes away from prisma transaction atomicity, and these are also long queries which will hurt database performance
-      // 1. Check if user has enough credits for the question. As long as they have enough for the question, they are good to go. Question can be infinte tokens rn, we need to limit it. then can just check if credits
-      await hasEnoughCredits(userId, questionTokens);
+      // 1. Check if user has enough credits for the question.
+      await hasEnoughCredits(userId, embeddingTokens / 5);
 
       // 2. Metadata filtering and VectorDBQAChain.
       const filter = {
@@ -79,9 +78,11 @@ export const openAiPinecone = createTRPCRouter({
           filter: filter,
         }
       );
-      const systemMessage = "";
-      const qaTemplate = `Given the context provided below, answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. Provide a concise answer that is helpful. ${systemMessage}
-      Context: {context}
+
+      const qaTemplate = `Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. ${
+        systemMessage || ''
+      }
+      {context}
       Question: {question}
       Helpful Answer:`;
       const model = openai;
@@ -89,7 +90,9 @@ export const openAiPinecone = createTRPCRouter({
       // FIXME - this is a bug in langchain
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {qaTemplate});
+      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+        qaTemplate,
+      });
 
       // Ask a question
       const response = await chain.call({
@@ -99,6 +102,7 @@ export const openAiPinecone = createTRPCRouter({
 
       // 3. Update user credits and usage.
       // subtract credits from user
+      console.log(tokenUsage, 'tokenUsage');
       // TODO - might not be tracking the adaQuestionTokens correctly
       await prisma.user.update({
         where: {
@@ -106,7 +110,7 @@ export const openAiPinecone = createTRPCRouter({
         },
         data: {
           credits: {
-            decrement: (tokenUsage.totalTokens + embeddingTokens/5) / 1000,
+            decrement: (tokenUsage.totalTokens + embeddingTokens / 5) / 1000,
           },
           embeddingUsage: {
             increment: embeddingTokens,

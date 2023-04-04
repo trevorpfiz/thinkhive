@@ -3,27 +3,28 @@ import { prisma } from '@/server/db';
 import { TRPCError } from '@trpc/server';
 
 export async function hasEnoughCredits(userId: string, tokens: number) {
-  // check if user has enough credits and perform the transaction
-  return await prisma.$transaction(async (tx) => {
-    // 1. Decrement credits from user.
-    const user = await tx.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        credits: {
-          decrement: tokens / 1000,
-        },
-      },
-    });
-
-    // 2. Verify that the user's credits didn't go below zero.
-    if (user.credits < 0) {
-      throw new TRPCError({ message: `Not enough credits.`, code: 'FORBIDDEN' });
-    }
-
-    return user;
+  // Find user by ID
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      credits: true,
+    },
   });
+
+  // Check if user exists
+  if (!user) {
+    throw new TRPCError({ message: `User not found.`, code: 'NOT_FOUND' });
+  }
+
+  // Check if user has enough credits
+  const updatedCredits = user.credits - tokens / 1000;
+  if (updatedCredits < 0) {
+    throw new TRPCError({ message: `Not enough credits.`, code: 'FORBIDDEN' });
+  }
+
+  return updatedCredits;
 }
 
 export async function getSubscriptionProductId(userId: string) {

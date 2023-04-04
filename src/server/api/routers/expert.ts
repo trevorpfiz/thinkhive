@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { getMaxExpertsForTier, getSubscriptionProductId } from '@/server/helpers/permissions';
-import { Availability } from '@prisma/client';
+import { Visibility } from '@prisma/client';
 
 export const expertRouter = createTRPCRouter({
   // queries
@@ -204,7 +204,8 @@ export const expertRouter = createTRPCRouter({
         settings: z.object({
           initialMessages: z.string(),
           domains: z.string(),
-          availability: z.nativeEnum(Availability),
+          visibility: z.nativeEnum(Visibility),
+          systemMessage: z.string(),
         }),
       })
     )
@@ -218,7 +219,8 @@ export const expertRouter = createTRPCRouter({
         data: {
           initialMessages: settings.initialMessages,
           domains: settings.domains,
-          availability: settings.availability,
+          visibility: settings.visibility,
+          systemMessage: settings.systemMessage,
         },
       });
 

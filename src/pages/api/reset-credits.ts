@@ -78,8 +78,8 @@ export default async function handler(req: NextRequest) {
             set: getCreditsForProduct(user.stripeSubscription[0]?.price?.product.id as string),
           },
           uploadUsage: { set: 0 },
-          questionUsage: { set: 0 },
-          responseUsage: { set: 0 },
+          embeddingUsage: { set: 0 },
+          llmUsage: { set: 0 },
           last_reset: { set: now },
         },
       })

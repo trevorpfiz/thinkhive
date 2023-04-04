@@ -109,9 +109,7 @@ export const userRouter = createTRPCRouter({
     }
 
     const uploadUsage = parseFloat((data.uploadUsage / 5 / 1000).toFixed(2));
-    const messageUsage = parseFloat(
-      ((data.embeddingUsage / 5 + data.llmUsage) / 1000).toFixed(2)
-    );
+    const messageUsage = parseFloat(((data.embeddingUsage / 5 + data.llmUsage) / 1000).toFixed(2));
     const totalCreditsUsed = parseFloat((uploadUsage + messageUsage).toFixed(2));
 
     return [

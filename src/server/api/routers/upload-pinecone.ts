@@ -10,6 +10,7 @@ import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { uploadLimit, uploadLimitDay } from '@/server/helpers/ratelimit';
 import { TRPCError } from '@trpc/server';
+import { hasEnoughCredits } from '@/server/helpers/permissions';
 
 const MetadataInput = z.object({
   fileName: z.string(),
@@ -18,15 +19,16 @@ const MetadataInput = z.object({
   createdDate: z.string().optional(),
   modifiedDate: z.string().optional(),
   userId: z.string().optional(),
-  tokenCount: z.number().optional(),
+  uploadTokens: z.number().optional(),
 });
 
 export const uploadPinecone = createTRPCRouter({
   uploadText: protectedProcedure
     .input(z.object({ text: z.string(), wordCount: z.number(), metadata: MetadataInput }))
     .mutation(async ({ ctx, input }) => {
+      const { session, prisma } = ctx;
       const { text, wordCount, metadata } = input;
-      const userId = ctx.session.user.id;
+      const userId = session.user.id;
 
       // rate limit
       const { success } = await uploadLimit.limit(userId);
@@ -53,62 +55,57 @@ export const uploadPinecone = createTRPCRouter({
       const metadataIds = texts.map(() => ({ metadataId }));
       const embeddings = new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' });
 
-      // check if user has enough credits and perform the transaction
-      return await ctx.prisma.$transaction(async (tx) => {
-        // 1. Decrement credits from user and add to uploadUsage.
-        const user = await tx.user.update({
-          where: {
-            id: userId,
-          },
-          data: {
-            credits: {
-              decrement: uploadTokens / 5 / 1000,
-            },
-            uploadUsage: {
-              increment: uploadTokens,
-            },
-          },
+      // check if user has enough credits for file embeddings
+      await hasEnoughCredits(userId, uploadTokens / 5);
+
+      // upload to Pinecone
+      try {
+        const index = pinecone.Index(PINECONE_INDEX_NAME);
+        const vectorStore = await PineconeStore.fromTexts(texts, metadataIds, embeddings, {
+          pineconeClient: index,
+          textKey: 'text',
+          namespace: userId,
         });
-
-        // 2. Verify that the user's credits didn't go below zero.
-        if (user.credits < 0) {
-          throw new TRPCError({ message: `Not enough credits to upload file.`, code: 'FORBIDDEN' });
-        }
-
-        // 3. Upload to Pinecone.
-        try {
-          const index = pinecone.Index(PINECONE_INDEX_NAME);
-          const vectorStore = await PineconeStore.fromTexts(texts, metadataIds, embeddings, {
-            pineconeClient: index,
-            textKey: 'text',
-            namespace: userId,
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Pinecone error: ${error.message}`,
           });
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            throw new TRPCError({
-              code: 'INTERNAL_SERVER_ERROR',
-              message: `Pinecone error: ${error.message}`,
-            });
-          } else {
-            throw new TRPCError({
-              code: 'INTERNAL_SERVER_ERROR',
-              message: 'Unknown Pinecone error.',
-            });
-          }
+        } else {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Unknown Pinecone error.',
+          });
         }
+      }
 
-        await ctx.prisma.fileMetadata.create({
-          data: {
-            ...metadata,
-            metadataId,
-            uploadDate,
-            wordCount,
-            tokenCount: uploadTokens,
-            userId,
-          },
-        });
-
-        return user;
+      await prisma.fileMetadata.create({
+        data: {
+          ...metadata,
+          metadataId,
+          uploadDate,
+          wordCount,
+          tokenCount: uploadTokens,
+          userId,
+        },
       });
+
+      // decrement credits from user and add to uploadUsage
+      const user = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          credits: {
+            decrement: uploadTokens / 5 / 1000,
+          },
+          uploadUsage: {
+            increment: uploadTokens,
+          },
+        },
+      });
+
+      return user;
     }),
 });

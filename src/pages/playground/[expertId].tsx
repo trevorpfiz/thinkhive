@@ -3,7 +3,6 @@ import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import { getServerSession } from 'next-auth';
-import { useRouter } from 'next/router';
 import { useAtom } from 'jotai';
 
 import { authOptions } from '@/server/auth';
@@ -15,12 +14,13 @@ import Messages from '@/components/widget/Messages';
 import ChatInput from '@/components/widget/ChatInput';
 import { messagesAtom } from '../expert-iframe/[expertId]';
 
-const ExpertPlayground = () => {
+interface ExpertPlaygroundProps {
+  expertId: string;
+}
+
+const ExpertPlayground = ({ expertId }: ExpertPlaygroundProps) => {
   const [initial, setInitial] = useAtom(messagesAtom);
   const [initialMessagesSet, setInitialMessagesSet] = useState(false);
-
-  const router = useRouter();
-  const expertId = router.query.expertId as string;
 
   const {
     isLoading: isExpertLoading,
@@ -87,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const expert = await prisma.expert.findUnique({
     where: { id: expertId },
-    select: { availability: true, userId: true, status: true },
+    select: { visibility: true, userId: true, status: true },
   });
 
   if (!expert) {
@@ -96,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const isPublic = expert.availability === 'PUBLIC';
+  const isPublic = expert.visibility === 'PUBLIC';
   const isOwner = session?.user.id === expert.userId;
 
   if (!isPublic && !isOwner) {
@@ -108,18 +108,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  if (expert.status === 'INACTIVE' && !isOwner) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
   return {
     props: {
       session,
+      expertId,
     },
   };
 };

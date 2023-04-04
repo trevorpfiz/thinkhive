@@ -112,8 +112,6 @@ const ExpertWidgetPage = () => {
               });
             console.log(hasValidDomain, event.data.value.topHost, expert?.domains);
             if (isExpertIdValid && hasValidDomain) {
-              // get whitelisted domains
-
               // BOOTSTRAP_DONE
               setIsReady(true);
               window.parent.postMessage({ type: EventTypes.BOOTSTRAP_DONE }, '*');
