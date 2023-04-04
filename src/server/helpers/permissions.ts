@@ -10,6 +10,7 @@ export async function hasEnoughCredits(userId: string, tokens: number) {
     },
     select: {
       credits: true,
+      additionalCredits: true,
     },
   });
 
@@ -20,11 +21,16 @@ export async function hasEnoughCredits(userId: string, tokens: number) {
 
   // Check if user has enough credits
   const updatedCredits = user.credits - tokens / 1000;
+  const updatedAdditionalCredits = user.additionalCredits - tokens / 1000;
   if (updatedCredits < 0) {
-    throw new TRPCError({ message: `Not enough credits.`, code: 'FORBIDDEN' });
+    if (updatedAdditionalCredits < 0) {
+      throw new TRPCError({ message: `Not enough credits.`, code: 'FORBIDDEN' });
+    } else {
+      return false;
+    }
   }
 
-  return updatedCredits;
+  return true;
 }
 
 export async function getSubscriptionProductId(userId: string) {

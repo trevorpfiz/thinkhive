@@ -104,12 +104,12 @@ const ExpertWidgetPage = () => {
           case EventTypes.INIT_IFRAME:
             const isExpertIdValid = expert?.id === event.data.value.expertId;
             const hasValidDomain =
-              !expert?.domains ||
-              expert?.domains.split(',').some((domain) => {
+              expert?.domains?.split(',').some((domain) => {
                 const subdomains = event.data.value.topHost.split('.');
                 const mainDomain = subdomains.slice(-2).join('.');
                 return domain === mainDomain;
-              });
+              }) ?? false;
+
             console.log(hasValidDomain, event.data.value.topHost, expert?.domains);
             if (isExpertIdValid && hasValidDomain) {
               // BOOTSTRAP_DONE
