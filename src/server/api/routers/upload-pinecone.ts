@@ -41,8 +41,7 @@ export const uploadPinecone = createTRPCRouter({
 
       // TODO - token count - can use TokenTextSplitter from langchain?
       const encoding = get_encoding('cl100k_base');
-      const tokenCount = encoding.encode(cleanedText).length;
-      const adaUploadTokens = tokenCount / 5;
+      const uploadTokens = encoding.encode(cleanedText).length;
 
       // Prepare the text
       const textSplitter = new RecursiveCharacterTextSplitter({
@@ -63,10 +62,10 @@ export const uploadPinecone = createTRPCRouter({
           },
           data: {
             credits: {
-              decrement: adaUploadTokens / 1000,
+              decrement: uploadTokens / 5 / 1000,
             },
             uploadUsage: {
-              increment: tokenCount,
+              increment: uploadTokens,
             },
           },
         });
@@ -104,7 +103,7 @@ export const uploadPinecone = createTRPCRouter({
             metadataId,
             uploadDate,
             wordCount,
-            tokenCount,
+            tokenCount: uploadTokens,
             userId,
           },
         });

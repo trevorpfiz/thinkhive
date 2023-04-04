@@ -59,8 +59,8 @@ model User {
   credits            Float          @default(30) // 15 decimal
   additionalCredits  Float          @default(0)
   uploadUsage        Int            @default(0)
-  questionUsage      Int            @default(0)
-  responseUsage      Int            @default(0)
+  embeddingUsage     Int            @default(0)
+  llmUsage           Int            @default(0)
   last_reset         DateTime       @default(now())
   stripeSubscription Subscription[]
   accounts           Account[]

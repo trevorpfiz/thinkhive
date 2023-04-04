@@ -54,11 +54,14 @@ export const openAiPinecone = createTRPCRouter({
 
       const encoding = get_encoding('cl100k_base');
       const questionTokens = encoding.encode(sanitizedQuestion).length;
-      const adaQuestionTokens = questionTokens / 5;
+      const chatHistoryTokens = encoding.encode(chatHistory.join(' ')).length;
       console.log('questionTokens', questionTokens);
+      const embeddingTokens = questionTokens + chatHistoryTokens;
+
+
 
       // FIXME - we don't know how many tokens the response will be, which takes away from prisma transaction atomicity, and these are also long queries which will hurt database performance
-      // 1. Check if user has enough credits for the question. As long as they have enough for the question, they are good to go. Question can be infinte tokens rn, we need to limit it.
+      // 1. Check if user has enough credits for the question. As long as they have enough for the question, they are good to go. Question can be infinte tokens rn, we need to limit it. then can just check if credits
       await hasEnoughCredits(userId, questionTokens);
 
       // 2. Metadata filtering and VectorDBQAChain.
@@ -76,9 +79,9 @@ export const openAiPinecone = createTRPCRouter({
           filter: filter,
         }
       );
-      const systemMessage = ""
-      const qa_template = `Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. ${systemMessage}
-      {context}
+      const systemMessage = "";
+      const qaTemplate = `Given the context provided below, answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. Provide a concise answer that is helpful. ${systemMessage}
+      Context: {context}
       Question: {question}
       Helpful Answer:`;
       const model = openai;
@@ -86,7 +89,7 @@ export const openAiPinecone = createTRPCRouter({
       // FIXME - this is a bug in langchain
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {qaTemplate: qa_template});
+      const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {qaTemplate});
 
       // Ask a question
       const response = await chain.call({
@@ -103,12 +106,12 @@ export const openAiPinecone = createTRPCRouter({
         },
         data: {
           credits: {
-            decrement: tokenUsage.totalTokens / 1000 + adaQuestionTokens / 1000,
+            decrement: (tokenUsage.totalTokens + embeddingTokens/5) / 1000,
           },
-          questionUsage: {
-            increment: questionTokens,
+          embeddingUsage: {
+            increment: embeddingTokens,
           },
-          responseUsage: {
+          llmUsage: {
             increment: tokenUsage.totalTokens,
           },
         },
