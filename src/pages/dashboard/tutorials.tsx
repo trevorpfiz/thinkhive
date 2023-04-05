@@ -8,7 +8,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/server/auth';
 import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
-import Demo from '@/components/landing/Demo';
 import Script from 'next/script';
 import { env } from '@/env.mjs';
 
@@ -28,7 +27,20 @@ const TutorialsPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <Demo />
+      <div className="mx-auto h-[630px] max-w-[708px]">
+        <iframe
+          src="https://app.tango.us/app/embed/84432f9f-2215-422a-9344-10d82c1a9741?iframe=true"
+          sandbox="allow-scripts allow-top-navigation-by-user-activation allow-popups allow-same-origin"
+          security="restricted"
+          title="Shopify: How to Add an Expert to Your Store"
+          width="100%"
+          height="100%"
+          referrerPolicy="strict-origin-when-cross-origin"
+          frameBorder="0"
+          allow="fullscreen"
+          className="h-full w-full border-none"
+        />
+      </div>
     </>
   );
 };

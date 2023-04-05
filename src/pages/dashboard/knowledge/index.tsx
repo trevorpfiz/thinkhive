@@ -8,7 +8,7 @@ import type { NextPageWithLayout } from '../../_app';
 import FileDropzone from '@/components/dashboard/FileDropzone';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import FilesTable from '@/components/dashboard/FilesTable';
+import FilesTable from '@/components/dashboard/tables/FilesTable';
 import LoadingBars from '@/components/ui/LoadingBars';
 import Script from 'next/script';
 import { env } from '@/env.mjs';

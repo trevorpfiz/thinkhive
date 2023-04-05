@@ -10,6 +10,7 @@ import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
 import Script from 'next/script';
 import { env } from '@/env.mjs';
+import FilesTable from '@/components/dashboard/tables/FilesTable';
 
 const HelpPage: NextPageWithLayout = () => {
   return (
@@ -27,7 +28,7 @@ const HelpPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <h1>Help Center</h1>
+      <FilesTable />
     </>
   );
 };
