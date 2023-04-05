@@ -79,10 +79,8 @@ export const openAiPinecone = createTRPCRouter({
         }
       );
 
-      const qaTemplate = `Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. ${
-        systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''
-      }
-      {context}
+      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''}
+      Context: {context}
       Question: {question}
       Helpful Answer:`;
       const model = openai;
