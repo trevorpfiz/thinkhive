@@ -55,10 +55,10 @@ export const uploadPinecone = createTRPCRouter({
       const metadataIds = texts.map(() => ({ metadataId }));
       const embeddings = new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' });
 
-      // check if user has enough credits for file embeddings
-      await hasEnoughCredits(userId, uploadTokens / 5);
+      // 1. check if user has enough credits for file embeddings
+      const fromCredits = await hasEnoughCredits(userId, uploadTokens / 5);
 
-      // upload to Pinecone
+      // 2. upload to Pinecone
       try {
         const index = pinecone.Index(PINECONE_INDEX_NAME);
         const vectorStore = await PineconeStore.fromTexts(texts, metadataIds, embeddings, {
@@ -91,14 +91,17 @@ export const uploadPinecone = createTRPCRouter({
         },
       });
 
-      // decrement credits from user and add to uploadUsage
+      // 3. decrement credits from user and add to uploadUsage
       const user = await prisma.user.update({
         where: {
           id: userId,
         },
         data: {
           credits: {
-            decrement: uploadTokens / 5 / 1000,
+            decrement: fromCredits ? uploadTokens / 5 / 1000 : 0,
+          },
+          additionalCredits: {
+            decrement: !fromCredits ? uploadTokens / 5 / 1000 : 0,
           },
           uploadUsage: {
             increment: uploadTokens,

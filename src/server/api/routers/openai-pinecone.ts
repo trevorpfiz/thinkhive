@@ -61,7 +61,7 @@ export const openAiPinecone = createTRPCRouter({
 
       // FIXME - we don't know how many tokens the response will be, which takes away from prisma transaction atomicity, and these are also long queries which will hurt database performance
       // 1. Check if user has enough credits for the question.
-      await hasEnoughCredits(userId, embeddingTokens / 5);
+      const fromCredits = await hasEnoughCredits(userId, embeddingTokens / 5);
 
       // 2. Metadata filtering and VectorDBQAChain.
       const filter = {
@@ -79,8 +79,10 @@ export const openAiPinecone = createTRPCRouter({
         }
       );
 
-      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${systemMessage || ''}
-      Context: {context}
+      const qaTemplate = `Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. ${
+        systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''
+      }
+      {context}
       Question: {question}
       Helpful Answer:`;
       const model = openai;
@@ -108,7 +110,10 @@ export const openAiPinecone = createTRPCRouter({
         },
         data: {
           credits: {
-            decrement: (tokenUsage.totalTokens + embeddingTokens / 5) / 1000,
+            decrement: fromCredits ? (tokenUsage.totalTokens + embeddingTokens / 5) / 1000 : 0,
+          },
+          additionalCredits: {
+            decrement: !fromCredits ? (tokenUsage.totalTokens + embeddingTokens / 5) / 1000 : 0,
           },
           embeddingUsage: {
             increment: embeddingTokens,
