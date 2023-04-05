@@ -10,7 +10,6 @@ import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '../_app';
 import Script from 'next/script';
 import { env } from '@/env.mjs';
-import FilesTable from '@/components/dashboard/tables/FilesTable';
 
 const HelpPage: NextPageWithLayout = () => {
   return (

@@ -23,10 +23,6 @@ import Button from '../ui/Button';
 
 const columnHelper = createColumnHelper<FileTable>();
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 export default function BrainFiles({ brainId }: { brainId: string }) {
   const {
     isLoading: isBrainLoading,

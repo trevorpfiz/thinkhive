@@ -31,10 +31,6 @@ export type FileTable = {
 
 const columnHelper = createColumnHelper<FileTable>();
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 export default function FilesTanStackTable() {
   const {
     isLoading: metadataLoading,
