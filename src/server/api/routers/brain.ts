@@ -172,7 +172,7 @@ export const brainRouter = createTRPCRouter({
             },
             data: {
               files: {
-                connect: ids.map((id) => ({ id })),
+                connect: ids.map((id) => ({ metadataId: id })),
               },
               // size: brain.size + totalSize._sum.wordCount,
             },
@@ -228,7 +228,7 @@ export const brainRouter = createTRPCRouter({
             },
             data: {
               files: {
-                disconnect: ids.map((id) => ({ id })),
+                disconnect: ids.map((id) => ({ metadataId: id })),
               },
               // size: Math.max(0, brain.size - totalSize._sum.wordCount),
             },

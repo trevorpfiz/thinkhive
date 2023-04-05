@@ -315,7 +315,7 @@ export default function FileDropzone() {
                   ))}
                 </ul>
               </div>
-              <div className="flex flex-wrap justify-between">
+              <div className="flex flex-wrap justify-between gap-4">
                 <Card className="max-w-sm shadow-none">
                   <Flex className="w-full items-center justify-between">
                     <Text className="w-full">{credits} Credits</Text>

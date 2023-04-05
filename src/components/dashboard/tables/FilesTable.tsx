@@ -19,8 +19,9 @@ import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 import DebouncedInput from './DebouncedInput';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
+import Button from '@/components/ui/Button';
 
-type FileTable = {
+export type FileTable = {
   metadataId: string;
   fileName: string;
   uploadDate: string;
@@ -246,35 +247,37 @@ export default function FilesTanStackTable() {
         onSubmit={handleDelete}
       />
 
-      <div>
-        <div className="flex flex-wrap items-center gap-4">
-          <DebouncedInput
-            value={globalFilter ?? ''}
-            onChange={(value) => setGlobalFilter(String(value))}
-            className="font-lg border-block border p-2 shadow"
-            placeholder="Search all columns..."
-          />
-          {Object.keys(rowSelection).length > 0 && (
-            <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              type="button"
-              className="z-20 inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white"
-              disabled={Object.keys(rowSelection).length === 0}
-            >
-              Bulk delete
-            </button>
-          )}
-        </div>
-        <div className="flex-grow rounded-lg bg-white p-4 shadow sm:p-6 lg:p-8">
-          <div className="sm:flex sm:items-center">
-            <div className="sm:flex-auto">
-              <h2 className="text-base font-semibold leading-6">Files</h2>
-            </div>
+      <div className="flex-grow rounded-lg bg-white p-4 shadow sm:p-6 lg:p-8">
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h2 className="text-base font-semibold leading-6">Files</h2>
           </div>
-          <div className="mt-8 flow-root">
-            {metadataLoading ? (
-              <LoadingBars />
-            ) : (
+        </div>
+        <div className="mt-8 flow-root">
+          {metadataLoading ? (
+            <LoadingBars />
+          ) : (
+            <>
+              <div className="my-2 mx-0 flex flex-wrap items-center gap-4 rounded-lg sm:-mx-2 lg:-mx-4">
+                <DebouncedInput
+                  value={globalFilter ?? ''}
+                  onChange={(value) => setGlobalFilter(String(value))}
+                  className="font-lg border-block border p-2 pl-8"
+                  placeholder="Search all files..."
+                />
+                {Object.keys(rowSelection).length > 0 && (
+                  <Button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    type="button"
+                    intent="solidIndigo"
+                    className="z-20 rounded-none disabled:cursor-not-allowed disabled:opacity-30"
+                    disabled={Object.keys(rowSelection).length === 0}
+                  >
+                    Bulk delete
+                  </Button>
+                )}
+              </div>
+              {/* table */}
               <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle">
                   <div className="relative max-h-96 overflow-auto">
@@ -362,8 +365,8 @@ export default function FilesTanStackTable() {
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </>

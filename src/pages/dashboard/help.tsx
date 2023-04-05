@@ -28,7 +28,7 @@ const HelpPage: NextPageWithLayout = () => {
         />
       </Head>
 
-      <FilesTable />
+      <h1>Help Center</h1>
     </>
   );
 };

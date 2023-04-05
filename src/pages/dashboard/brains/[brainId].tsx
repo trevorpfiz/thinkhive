@@ -36,7 +36,7 @@ const BrainPage: NextPageWithLayout = () => {
 
       <div className="flex flex-col gap-16">
         <BrainHeader brainId={brainId} />
-        <div className="flex flex-wrap gap-8">
+        <div className="flex flex-col gap-8 sm:flex-row sm:flex-wrap">
           <BrainFiles brainId={brainId} />
           <AvailableFiles brainId={brainId} />
         </div>
