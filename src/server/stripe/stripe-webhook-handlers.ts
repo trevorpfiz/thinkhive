@@ -336,3 +336,89 @@ export const handleInvoicePaid = async ({
     throw new Error(`Failed to update user with ID ${userId}: ${error.message}`);
   }
 };
+
+export const handleInvoicePaymentFailed = async ({
+  event,
+  prisma,
+  stripe,
+}: {
+  event: Stripe.Event;
+  prisma: PrismaClient;
+  stripe: Stripe;
+}) => {
+  const invoice = event.data.object as Stripe.Invoice;
+  const invoiceId = invoice.id;
+  const subscriptionId = invoice.subscription as string;
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const customerId = subscription.customer as string;
+
+  const customerData = await prisma.user.findUnique({
+    where: {
+      stripeCustomerId: customerId,
+    },
+  });
+
+  if (!customerData) throw new Error('Customer not found');
+  const { id: userId } = customerData;
+
+  // Retrieve invoice items associated with the failed invoice
+  const invoiceItems = await stripe.invoiceItems.list({ invoice: invoiceId });
+
+  // Delete invoice items
+  for (const item of invoiceItems.data) {
+    await stripe.invoiceItems.del(item.id);
+  }
+
+  try {
+    const updatedCustomer = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        credits: {
+          set: 0,
+        },
+        uploadUsage: {
+          set: 0,
+        },
+        embeddingUsage: {
+          set: 0,
+        },
+        llmUsage: {
+          set: 0,
+        },
+        last_reset: {
+          set: new Date(),
+        },
+      },
+    });
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+    throw new Error(`Failed to update user with ID ${userId}: ${error.message}`);
+  }
+};
+
+export const handlePaymentIntentPaymentFailed = async ({
+  event,
+  prisma,
+  stripe,
+}: {
+  event: Stripe.Event;
+  prisma: PrismaClient;
+  stripe: Stripe;
+}) => {
+  const paymentIntent = event.data.object as Stripe.PaymentIntent;
+  const customerId = paymentIntent.customer as string;
+  // TODO - const invoiceId = paymentIntent.invoice as string; - why is this null?
+
+  if (customerId) {
+    // Retrieve all invoice items associated with the customer
+    const invoiceItems = await stripe.invoiceItems.list({ customer: customerId });
+
+    // Delete invoice items
+    for (const item of invoiceItems.data) {
+      await stripe.invoiceItems.del(item.id);
+    }
+  }
+};

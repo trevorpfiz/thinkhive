@@ -56,6 +56,7 @@ export async function monthlyToMonthlyOrAnnual(
 
   const stripeSubscriptionUpdated = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: false,
+    payment_behavior: 'error_if_incomplete',
     proration_behavior: 'none',
     billing_cycle_anchor: swapImmediately ? 'now' : 'unchanged',
     items: [
@@ -113,6 +114,7 @@ export async function annualToAnnual(
 
   const stripeSubscriptionUpdated = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: false,
+    payment_behavior: 'error_if_incomplete',
     proration_behavior: 'none',
     billing_cycle_anchor: swapImmediately ? 'unchanged' : 'unchanged',
     items: [
@@ -140,6 +142,7 @@ export async function annualToMonthly(
 
   const stripeSubscriptionUpdated = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: false,
+    payment_behavior: 'error_if_incomplete',
     proration_behavior: 'none',
     items: [
       {

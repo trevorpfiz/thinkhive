@@ -8,6 +8,8 @@ import { buffer } from 'micro';
 import {
   handleCheckoutSessionCompleted,
   handleInvoicePaid,
+  handleInvoicePaymentFailed,
+  handlePaymentIntentPaymentFailed,
   manageSubscriptionStatusChange,
   upsertPrice,
   upsertProduct,
@@ -31,6 +33,8 @@ const relevantEvents = new Set([
   'customer.subscription.updated',
   'customer.subscription.deleted',
   'invoice.paid', // usage query for monthly subscriptions
+  'invoice.payment_failed', // used to reset a failed subscription renewal
+  'payment_intent.payment_failed', // used to reset invoice items
 ]);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -84,6 +88,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             break;
           case 'invoice.paid':
             await handleInvoicePaid({
+              event,
+              prisma,
+              stripe,
+            });
+            break;
+          case 'invoice.payment_failed':
+            await handleInvoicePaymentFailed({
+              event,
+              prisma,
+              stripe,
+            });
+            break;
+          case 'payment_intent.payment_failed':
+            await handlePaymentIntentPaymentFailed({
               event,
               prisma,
               stripe,

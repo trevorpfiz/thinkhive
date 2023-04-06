@@ -91,12 +91,22 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
     useNotification();
 
   // handlers
-  const handleClick = () => {
-    setSelectedPriceId(tier.price[frequency.value as keyof Interval]?.priceId || '');
+  const handleClick = async () => {
+    const newSelectedPriceId = tier.price[frequency.value as keyof Interval]?.priceId || '';
+    setSelectedPriceId(newSelectedPriceId);
+
     if (hasActiveSubscription) {
       setSelectedTier(tier);
       setSelectedAmount(amount);
       setModalStage(3);
+    } else if (newSelectedPriceId) {
+      const { checkoutUrl } = await createCheckoutSession({
+        selectedPriceId: newSelectedPriceId,
+        isSubscription: true,
+      });
+      if (checkoutUrl) {
+        void push(checkoutUrl);
+      }
     }
   };
 
@@ -108,20 +118,6 @@ export const SubscribeButton: React.FC<SubscribeButtonProps> = ({
 
     setModalStage(0);
   }
-
-  useEffect(() => {
-    if (selectedPriceId && !hasActiveSubscription) {
-      void (async () => {
-        const { checkoutUrl } = await createCheckoutSession({
-          selectedPriceId,
-          isSubscription: true,
-        });
-        if (checkoutUrl) {
-          void push(checkoutUrl);
-        }
-      })();
-    }
-  }, [selectedPriceId, createCheckoutSession, push, hasActiveSubscription]);
 
   useEffect(() => {
     if (isChangingSubscription) {
