@@ -14,12 +14,12 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 
 import useNotification from '@/hooks/useNotification';
 import { api } from '@/utils/api';
-import LoadingBars from '../ui/LoadingBars';
-import Notification from '../ui/Notification';
-import DebouncedInput from './tables/DebouncedInput';
-import IndeterminateCheckbox from './tables/IndeterminateCheckbox';
-import { type FileTable } from './tables/FilesTable';
-import Button from '../ui/Button';
+import LoadingBars from '../../ui/LoadingBars';
+import Notification from '../../ui/Notification';
+import DebouncedInput from './DebouncedInput';
+import IndeterminateCheckbox from './IndeterminateCheckbox';
+import { type FileTable } from './FilesTable';
+import Button from '../../ui/Button';
 
 const columnHelper = createColumnHelper<FileTable>();
 
@@ -99,19 +99,23 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
           {info.getValue()}
         </span>
       ),
+      sortingFn: 'alphanumeric',
     }),
     columnHelper.accessor('uploadDate', {
       header: () => <span>Uploaded</span>,
       cell: (info) => (
-        <div className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{info.getValue()}</div>
+        <div className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
+          {info.getValue().toDateString()}
+        </div>
       ),
+      sortingFn: 'datetime',
     }),
     columnHelper.accessor('wordCount', {
       header: () => <span>Words</span>,
       cell: (info) => (
         <div className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{info.getValue()}</div>
       ),
-      // is sorting different from rest because number?
+      sortDescFirst: false,
     }),
     columnHelper.accessor('contentType', {
       header: () => <span>Type</span>,
@@ -141,7 +145,7 @@ export default function BrainFiles({ brainId }: { brainId: string }) {
     return metadata.map((file) => ({
       metadataId: file.metadataId,
       fileName: file.fileName,
-      uploadDate: file.uploadDate.toDateString(),
+      uploadDate: file.uploadDate,
       wordCount: file.wordCount,
       contentType: file.contentType,
     }));

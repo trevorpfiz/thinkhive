@@ -24,7 +24,7 @@ import Button from '@/components/ui/Button';
 export type FileTable = {
   metadataId: string;
   fileName: string;
-  uploadDate: string;
+  uploadDate: Date;
   wordCount: number;
   contentType: string;
 };
@@ -108,18 +108,23 @@ export default function FilesTanStackTable() {
           {info.getValue()}
         </span>
       ),
+      sortingFn: 'alphanumeric',
     }),
     columnHelper.accessor('uploadDate', {
       header: () => <span>Uploaded</span>,
       cell: (info) => (
-        <div className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{info.getValue()}</div>
+        <div className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
+          {info.getValue().toDateString()}
+        </div>
       ),
+      sortingFn: 'datetime',
     }),
     columnHelper.accessor('wordCount', {
       header: () => <span>Words</span>,
       cell: (info) => (
         <div className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{info.getValue()}</div>
       ),
+      sortDescFirst: false,
       // is sorting different from rest because number?
     }),
     columnHelper.accessor('contentType', {
@@ -153,7 +158,7 @@ export default function FilesTanStackTable() {
     return metadata.map((file) => ({
       metadataId: file.metadataId,
       fileName: file.fileName,
-      uploadDate: file.uploadDate.toDateString(),
+      uploadDate: file.uploadDate,
       wordCount: file.wordCount,
       contentType: file.contentType,
     }));

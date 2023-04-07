@@ -5,6 +5,7 @@ import { calculateBrainSizes } from '@/utils/word-count';
 import LoadingBars from '../ui/LoadingBars';
 import Notification from '../ui/Notification';
 import useNotification from '@/hooks/useNotification';
+import Button from '../ui/Button';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -78,6 +79,13 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
         <div className="mt-8 flow-root">
           {isLoading ? (
             <LoadingBars />
+          ) : brains && brains.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-4 py-6">
+              <p>Add some brains!</p>
+              <Button href="/dashboard/brains" intent="solidIndigo">
+                Add Brains
+              </Button>
+            </div>
           ) : (
             <div className="-my-2">
               <div className="inline-block min-w-full py-2 align-middle">
