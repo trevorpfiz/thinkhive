@@ -63,10 +63,10 @@ export default function ChatInput({
       expertId,
     });
     setLoading(false);
-    // console.log(response.sourceDocuments[0].pageContent);
-    // console.log(response.sourceDocuments[1].pageContent);
-    // console.log(response.sourceDocuments[2].pageContent);
-    // console.log(response.sourceDocuments[3].pageContent);
+    console.log(response.sourceDocuments[0].pageContent);
+    console.log(response.sourceDocuments[1].pageContent);
+    console.log(response.sourceDocuments[2].pageContent);
+    console.log(response.sourceDocuments[3].pageContent);
 
     if (response.text) {
       console.log(response.text);
