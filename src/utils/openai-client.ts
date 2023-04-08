@@ -14,7 +14,7 @@ export let tokenUsage = {
 };
 
 export const openai = new ChatOpenAI({
-  temperature: 1,
+  temperature: 0,
   maxTokens: 300,
   modelName: 'gpt-3.5-turbo',
   streaming: false,

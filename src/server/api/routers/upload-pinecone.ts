@@ -47,13 +47,13 @@ export const uploadPinecone = createTRPCRouter({
 
       // Prepare the text
       const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 1000,
-        chunkOverlap: 200,
+        chunkSize: 800,
+        chunkOverlap: 300
       });
 
       const texts = await textSplitter.splitText(cleanedText);
       const metadataIds = texts.map(() => ({ metadataId }));
-      const embeddings = new OpenAIEmbeddings({ modelName: 'text-embedding-ada-002' });
+      const embeddings = new OpenAIEmbeddings();
 
       // 1. check if user has enough credits for file embeddings
       const fromCredits = await hasEnoughCredits(userId, uploadTokens / 5);
