@@ -91,6 +91,7 @@ export const openAiPinecone = createTRPCRouter({
       // @ts-ignore
       const chain = ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
         qaTemplate,
+        returnSourceDocuments: true
       });
 
       // Ask a question
@@ -98,7 +99,6 @@ export const openAiPinecone = createTRPCRouter({
         question: sanitizedQuestion,
         chat_history: chatHistory,
       });
-
       // 3. Update user credits and usage.
       // subtract credits from user
       // TODO - might not be tracking the adaQuestionTokens correctly

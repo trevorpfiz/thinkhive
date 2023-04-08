@@ -13,8 +13,7 @@
     "postinstall": "prisma generate",
     "prisma:push": "npx prisma db push",
     "prisma:studio": "npx prisma studio",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest",
-    "ingest": "tsx -r dotenv/config src/scripts/ingest-data.ts"
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest"
   },
   "dependencies": {
     "@dqbd/tiktoken": "^1.0.3",
