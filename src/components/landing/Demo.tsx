@@ -13,7 +13,7 @@ function Demo() {
 
       <div className="w-full">
         <ReactPlayer
-          url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+          url="/thinkhive-demo.mp4"
           controls={true}
           playing={true}
           muted={true}

@@ -1,5 +1,7 @@
 // @ts-check
 
+import nextMdx from '@next/mdx';
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
@@ -7,8 +9,17 @@
 !process.env.SKIP_ENV_VALIDATION && (await import('./src/env.mjs'));
 
 /** @type {import("next").NextConfig} */
+const withMDX = nextMdx({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
 const config = {
   reactStrictMode: true,
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     scrollRestoration: true,
   },
@@ -38,4 +49,4 @@ const config = {
     return config;
   },
 };
-export default config;
+export default withMDX(config);
