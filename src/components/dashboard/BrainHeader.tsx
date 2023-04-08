@@ -38,7 +38,6 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
       utils.brain.getBrain.setData(undefined, (old) => newBrain);
 
       // Return the previous data so we can revert if something goes wrong
-      console.log(prevData, 'prevData');
       return { prevData };
     },
     onError(err, newPost, ctx) {

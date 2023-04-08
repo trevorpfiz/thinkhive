@@ -24,7 +24,6 @@ export const openai = new ChatOpenAI({
       const { generations, llmOutput } = output;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       tokenUsage = llmOutput?.tokenUsage;
-      console.log(tokenUsage, 'openai token usage');
     },
   }),
 });

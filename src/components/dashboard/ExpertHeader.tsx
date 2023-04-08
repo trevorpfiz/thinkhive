@@ -51,7 +51,6 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
       utils.expert.getExpert.setData(undefined, (old) => newExpert);
 
       // Return the previous data so we can revert if something goes wrong
-      console.log(prevData, 'prevData');
       return { prevData };
     },
     onError(err, newPost, ctx) {
@@ -120,7 +119,7 @@ export default function ExpertHeader({ expertId }: { expertId: string }) {
   function handleSettings(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     showLoadingNotification('Changing settings...');
-    console.log(settingsData, 'settingsData');
+
     if (expert?.id) {
       changeSettings({ id: expert?.id, settings: settingsData });
     }

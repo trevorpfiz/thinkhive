@@ -14,7 +14,7 @@ export const apiCallRouter = createTRPCRouter({
     .input(z.object({ ids: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
       const { ids } = input;
-      console.log(ids);
+
       // Delete all files that match the user id and the selected file metadataIds
       const deletedFiles = await ctx.prisma.fileMetadata.deleteMany({
         where: {

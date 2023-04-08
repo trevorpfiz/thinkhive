@@ -21,9 +21,7 @@ export const run = async () => {
     });
 
     const docs = await textSplitter.splitDocuments(rawDocs);
-    console.log('split docs', docs);
 
-    console.log('creating vector store...');
     /*create and store the embeddings in the vectorStore*/
     const embeddings = new OpenAIEmbeddings();
     const index = pinecone.Index(PINECONE_INDEX_NAME); //change to your own index name
@@ -33,12 +31,10 @@ export const run = async () => {
       textKey: 'text',
     });
   } catch (error) {
-    console.log('error', error);
     throw new Error('Failed to ingest your data');
   }
 };
 
 void (async () => {
   await run();
-  console.log('ingestion complete');
 })();

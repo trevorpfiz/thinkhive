@@ -177,7 +177,7 @@ export default function AvailableFiles({ brainId }: { brainId: string }) {
   // handlers
   function handleLearn(metadataIds: string[]) {
     showLoadingNotification('Brain learning...');
-    console.log(metadataIds, 'metadataIds');
+
     learnMutate({ brainId, ids: metadataIds });
     // Reset the selected files state
     setRowSelection({});

@@ -6,7 +6,6 @@ import { Document } from 'langchain/document';
 export async function processMarkDownFiles(directoryPath: string): Promise<Document[]> {
   try {
     const fileNames = await glob('**/*.md', { cwd: directoryPath });
-    console.log('files', fileNames);
 
     const docs: Document[] = [];
     for (const fileName of fileNames) {
@@ -22,10 +21,9 @@ export async function processMarkDownFiles(directoryPath: string): Promise<Docum
         })
       );
     }
-    console.log('docs', docs);
+
     return docs;
   } catch (error) {
-    console.log('error', error);
     throw new Error(`Could not read directory path ${directoryPath} `);
   }
 }

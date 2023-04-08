@@ -55,8 +55,7 @@ export const openAiPinecone = createTRPCRouter({
       const questionTokens = encoding.encode(sanitizedQuestion).length;
       // chat history tokens, check if needed
       const chatHistoryTokens = encoding.encode(chatHistory.join(' ')).length;
-      console.log('questionTokens', questionTokens);
-      console.log(chatHistoryTokens, 'chatHistoryTokens');
+
       const embeddingTokens = questionTokens + chatHistoryTokens;
 
       // FIXME - we don't know how many tokens the response will be, which takes away from prisma transaction atomicity, and these are also long queries which will hurt database performance
@@ -102,7 +101,6 @@ export const openAiPinecone = createTRPCRouter({
 
       // 3. Update user credits and usage.
       // subtract credits from user
-      console.log(tokenUsage, 'tokenUsage');
       // TODO - might not be tracking the adaQuestionTokens correctly
       await prisma.user.update({
         where: {

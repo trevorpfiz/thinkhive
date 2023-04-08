@@ -231,7 +231,6 @@ export const expertRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
-      console.log(id);
 
       await ctx.prisma.expert.deleteMany({
         where: {

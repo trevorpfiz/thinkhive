@@ -205,7 +205,7 @@ export const stripeRouter = createTRPCRouter({
       const subscriptionChangeType = `${currentPriceType}To${newPriceType
         .charAt(0)
         .toUpperCase()}${newPriceType.slice(1)}`;
-      console.log(subscriptionChangeType);
+
       switch (subscriptionChangeType) {
         case 'monthToMonth':
         case 'monthToYear':

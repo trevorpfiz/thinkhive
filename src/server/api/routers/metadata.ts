@@ -16,7 +16,6 @@ export const metadataRouter = createTRPCRouter({
     .input(z.object({ ids: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
       const { ids } = input;
-      console.log(ids);
 
       // metadata filtering
       const filter = {
@@ -30,8 +29,6 @@ export const metadataRouter = createTRPCRouter({
           namespace: ctx.session.user.id,
         },
       });
-
-      console.log('deletedFilesPinecone', deletedFilesPinecone);
 
       // Delete all files that match the user id and the selected file metadataIds
       const deletedFiles = await ctx.prisma.fileMetadata.deleteMany({

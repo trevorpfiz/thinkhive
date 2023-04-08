@@ -55,8 +55,6 @@ const ExpertWidgetPage = () => {
 
   const [isReady, setIsReady] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isShowButton, setIsShowButton] = useState(true);
-  const [isShowMessages, setIsShowMessages] = useState(false);
 
   const isWidgetEvent = (event: MessageEvent<MessageEventProps>) => {
     return !!event && event.data && event.data.type && event.data.type in EventTypes;
@@ -149,17 +147,6 @@ const ExpertWidgetPage = () => {
   }, [receiveMessage]);
 
   useEffect(() => {
-    if (isOpen) {
-      setIsShowMessages(true);
-    }
-
-    if (!isOpen) {
-      // setTimeout(() => setIsShowButton(true), 1);
-      setIsShowButton(true);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     if (!isReady && expert && expert.id) {
       window.parent.postMessage(
         {
@@ -169,10 +156,6 @@ const ExpertWidgetPage = () => {
       );
     }
   }, [expert, isReady]);
-
-  useEffect(() => {
-    console.log(isOpen);
-  }, [isOpen]);
 
   useEffect(() => {
     if (expert && expert.initialMessages && !initialMessagesSet) {

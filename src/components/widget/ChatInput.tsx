@@ -63,10 +63,8 @@ export default function ChatInput({
       expertId,
     });
     setLoading(false);
-    console.log(response);
 
     if (response.text) {
-      console.log(response.text);
       addMessage('server', response.text as string);
       setChatHistory((prevChatHistory) => [...prevChatHistory, question, response.text as string]);
     }
@@ -74,7 +72,6 @@ export default function ChatInput({
 
   useEffect(() => {
     scrollToBottom();
-    console.log('scroll to bottom useEffect');
   }, [loading, scrollToBottom]);
 
   if (isError) {

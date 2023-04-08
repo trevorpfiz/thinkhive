@@ -136,7 +136,8 @@ export default function FileDropzone() {
           updatedFileTexts[newFile.name] = text;
           updatedFileMetadata[newFile.name] = metadata;
         } else {
-          console.log(`File ${newFile.name} already exists`);
+          // FIXME - this is not showing
+          showErrorNotification(`File ${newFile.name} already staged`, 'File already staged');
         }
       }
       showSuccessNotification('Files staged for upload');
@@ -145,7 +146,15 @@ export default function FileDropzone() {
       setFileTexts(updatedFileTexts);
       setFileMetadata(updatedFileMetadata);
     },
-    [myFiles, wordCounts, fileTexts, fileMetadata, showLoadingNotification, showSuccessNotification]
+    [
+      myFiles,
+      wordCounts,
+      fileTexts,
+      fileMetadata,
+      showLoadingNotification,
+      showSuccessNotification,
+      showErrorNotification,
+    ]
   );
 
   // Remove focus after drop
