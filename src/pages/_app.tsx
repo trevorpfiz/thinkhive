@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'focus-visible';
+import { Inter, Lexend } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
+import { Provider } from 'jotai';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import type { ReactElement, ReactNode } from 'react';
+
 import type { NextPage } from 'next';
 import type { AppProps, AppType } from 'next/app';
-import { Provider } from 'jotai';
-import { Analytics } from '@vercel/analytics/react';
-
-import { Inter, Lexend } from 'next/font/google';
-
+import type { ReactElement, ReactNode } from 'react';
 import { api } from '@/utils/api';
-
 import '@/styles/globals.css';
 
 // If loading a variable font, you don't need to specify the font weight

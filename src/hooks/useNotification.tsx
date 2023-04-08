@@ -10,13 +10,19 @@ type NotificationProps = {
 };
 
 const useNotification = () => {
-  const [notification, setNotification] = useState<NotificationProps>({
+  const closeNotification = () => {
+    setNotification({ ...notification, show: false });
+  };
+
+  const initialNotificationState: NotificationProps = {
     intent: 'error',
     message: '',
     description: '',
     show: false,
-    onClose: () => setNotification({ ...notification, show: false }),
-  });
+    onClose: closeNotification,
+  };
+
+  const [notification, setNotification] = useState<NotificationProps>(initialNotificationState);
 
   const showSuccessNotification = (message: string, description = '') => {
     setNotification({
@@ -24,7 +30,7 @@ const useNotification = () => {
       message,
       description,
       show: true,
-      onClose: notification.onClose,
+      onClose: closeNotification,
       timeout: 3000,
     });
   };
@@ -35,7 +41,7 @@ const useNotification = () => {
       message,
       description,
       show: true,
-      onClose: notification.onClose,
+      onClose: closeNotification,
     });
   };
 
@@ -45,7 +51,7 @@ const useNotification = () => {
       message,
       description,
       show: true,
-      onClose: notification.onClose,
+      onClose: closeNotification,
     });
   };
 

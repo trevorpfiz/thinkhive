@@ -1,21 +1,19 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-import { api } from '@/utils/api';
-import SubscribeModal from './SubscribeModal';
-import Notification from '../ui/Notification';
-import useNotification from '@/hooks/useNotification';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+
+import type { Interval, Metadata, Tier } from './Plans';
+import useNotification from '@/hooks/useNotification';
+import { api } from '@/utils/api';
+import Notification from '../ui/Notification';
 import {
   buttonDisabledAtom,
   frequencyAtom,
   selectedAmountAtom,
   selectedPriceIdAtom,
   selectedTierAtom,
-  type Interval,
-  type Metadata,
-  type Tier,
 } from './Plans';
-import { useEffect } from 'react';
+import SubscribeModal from './SubscribeModal';
 
 interface SubscribeButtonProps {
   tier: Tier;

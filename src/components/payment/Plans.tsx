@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import { RadioGroup } from '@headlessui/react';
-import type { Product, Price, Prisma } from '@prisma/client';
+import { CheckIcon } from '@heroicons/react/20/solid';
+import { atom, useAtom } from 'jotai';
+
+import type { Price, Prisma, Product } from '@prisma/client';
 import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
-import { ManageBilling } from './ManageBilling';
-import { atom, useAtom } from 'jotai';
-import { SubscribeButton } from './SubscribeButton';
-import { CheckIcon } from '@heroicons/react/20/solid';
-import UsageStats from './UsageStats';
 import StatusBadge from '../ui/StatusBadge';
 import AdditionalCredits from './AdditionalCredits';
+import { ManageBilling } from './ManageBilling';
+import { SubscribeButton } from './SubscribeButton';
+import UsageStats from './UsageStats';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },

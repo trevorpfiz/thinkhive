@@ -1,10 +1,10 @@
-import { loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
-import { chatHistoryAtom } from '@/pages/expert-iframe/[expertId]';
-import { api } from '@/utils/api';
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
 import { useAtom, useSetAtom } from 'jotai';
-import { useRouter } from 'next/router';
-import { useCallback, useEffect, useState } from 'react';
+
+import { chatHistoryAtom, loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
+import { api } from '@/utils/api';
 
 export default function ChatInput({
   messagesRef,

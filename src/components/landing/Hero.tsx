@@ -1,6 +1,7 @@
+import { signIn } from 'next-auth/react';
+
 import Button from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { signIn } from 'next-auth/react';
 
 export function Hero() {
   return (

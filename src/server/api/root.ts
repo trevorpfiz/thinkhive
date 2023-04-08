@@ -1,12 +1,13 @@
-import { createTRPCRouter } from '@/server/api/trpc';
 import { openAiPinecone } from '@/server/api/routers/openai-pinecone';
 import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
-import { metadataRouter } from './routers/metadata';
-import { expertRouter } from './routers/expert';
-import { brainRouter } from './routers/brain';
+import { createTRPCRouter } from '@/server/api/trpc';
 import { apiCallRouter } from './routers/api-call';
+import { brainRouter } from './routers/brain';
+import { expertRouter } from './routers/expert';
+import { metadataRouter } from './routers/metadata';
 import { stripeRouter } from './routers/stripe';
 import { userRouter } from './routers/user';
+
 /**
  * This is the primary router for your server.
  *

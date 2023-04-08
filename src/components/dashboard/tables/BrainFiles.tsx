@@ -1,25 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { FileMetadata } from '@prisma/client';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import {
+  createColumnHelper,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
-  type SortingState,
-  useReactTable,
-  createColumnHelper,
   getFilteredRowModel,
-  type VisibilityState,
+  getSortedRowModel,
+  useReactTable,
 } from '@tanstack/react-table';
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 
+import type { FileMetadata } from '@prisma/client';
+import type { SortingState, VisibilityState } from '@tanstack/react-table';
 import useNotification from '@/hooks/useNotification';
 import { api } from '@/utils/api';
+import Button from '../../ui/Button';
 import LoadingBars from '../../ui/LoadingBars';
 import Notification from '../../ui/Notification';
 import DebouncedInput from './DebouncedInput';
-import IndeterminateCheckbox from './IndeterminateCheckbox';
 import { type FileTable } from './FilesTable';
-import Button from '../../ui/Button';
+import IndeterminateCheckbox from './IndeterminateCheckbox';
 
 const columnHelper = createColumnHelper<FileTable>();
 

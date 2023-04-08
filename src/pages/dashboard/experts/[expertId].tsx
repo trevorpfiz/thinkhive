@@ -1,18 +1,18 @@
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-import type { ReactElement } from 'react';
-
-import MetaDescription from '@/components/seo/MetaDescription';
-import Meta from '@/components/seo/Meta';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/server/auth';
-import SidebarLayout from '@/components/ui/SidebarLayout';
-import type { NextPageWithLayout } from '../../_app';
-import ExpertBrains from '@/components/dashboard/ExpertBrains';
-import AvailableBrains from '@/components/dashboard/AvailableBrains';
-import ExpertHeader from '@/components/dashboard/ExpertHeader';
 import Script from 'next/script';
+import { getServerSession } from 'next-auth';
+
+import type { ReactElement } from 'react';
+import type { NextPageWithLayout } from '../../_app';
+import AvailableBrains from '@/components/dashboard/AvailableBrains';
+import ExpertBrains from '@/components/dashboard/ExpertBrains';
+import ExpertHeader from '@/components/dashboard/ExpertHeader';
+import Meta from '@/components/seo/Meta';
+import MetaDescription from '@/components/seo/MetaDescription';
+import SidebarLayout from '@/components/ui/SidebarLayout';
 import { env } from '@/env.mjs';
+import { authOptions } from '@/server/auth';
 
 interface ExpertPageProps {
   expertId: string;

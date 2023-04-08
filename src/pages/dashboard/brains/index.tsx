@@ -1,16 +1,16 @@
-import Head from 'next/head';
-import type { ReactElement } from 'react';
 import { type GetServerSideProps } from 'next';
+import Head from 'next/head';
+import Script from 'next/script';
 import { getServerSession } from 'next-auth';
 
-import MetaDescription from '@/components/seo/MetaDescription';
-import Meta from '@/components/seo/Meta';
-import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '@/pages/_app';
+import type { ReactElement } from 'react';
 import BrainsTable from '@/components/dashboard/BrainsTable';
-import { authOptions } from '@/server/auth';
-import Script from 'next/script';
+import Meta from '@/components/seo/Meta';
+import MetaDescription from '@/components/seo/MetaDescription';
+import SidebarLayout from '@/components/ui/SidebarLayout';
 import { env } from '@/env.mjs';
+import { authOptions } from '@/server/auth';
 
 const BrainsPage: NextPageWithLayout = () => {
   return (

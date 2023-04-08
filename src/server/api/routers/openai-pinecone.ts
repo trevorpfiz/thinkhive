@@ -1,17 +1,17 @@
-import { z } from 'zod';
+import { get_encoding } from '@dqbd/tiktoken';
+import { TRPCError } from '@trpc/server';
 import { ConversationalRetrievalQAChain } from 'langchain/chains';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
-import { get_encoding } from '@dqbd/tiktoken';
 import { getClientIp } from 'request-ip';
+import { z } from 'zod';
 
-import { openai, tokenUsage } from '@/utils/openai-client';
-import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
-import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
-import { TRPCError } from '@trpc/server';
 import { hasEnoughCredits } from '@/server/helpers/permissions';
+import { messageLimitDay, messageLimitMinute } from '@/server/helpers/ratelimit';
+import { openai, tokenUsage } from '@/utils/openai-client';
+import { pinecone } from '@/utils/pinecone';
 
 export const openAiPinecone = createTRPCRouter({
   getAnswer: publicProcedure
@@ -79,7 +79,9 @@ export const openAiPinecone = createTRPCRouter({
         }
       );
 
-      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''}
+      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${
+        systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''
+      }
       Context: {context}
       Question: {question}
       Helpful Answer:`;

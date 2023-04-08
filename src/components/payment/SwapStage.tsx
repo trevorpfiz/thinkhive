@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSetAtom } from 'jotai';
+
 import { modalStageAtom, swapImmediatelyAtom } from './SubscribeButton';
 
 const timeframes = [

@@ -1,7 +1,6 @@
+import type Stripe from 'stripe';
 import { env } from '@/env.mjs';
 import { getProrationAmountsAnnual, getProrationAmountsMonthly } from '@/utils/payments';
-import type Stripe from 'stripe';
-
 import { stripe } from '../stripe/client';
 
 export function getCreditsForProduct(productId: string) {

@@ -1,11 +1,12 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { modalStageAtom } from './SubscribeButton';
 import { useAtom } from 'jotai';
-import ProrationStage from './ProrationStage';
-import SwapStage from './SwapStage';
+
 import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
+import ProrationStage from './ProrationStage';
+import { modalStageAtom } from './SubscribeButton';
+import SwapStage from './SwapStage';
 
 interface ModalProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;

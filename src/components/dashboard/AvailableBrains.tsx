@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import useNotification from '@/hooks/useNotification';
 import { api } from '@/utils/api';
 import { calculateBrainSizes } from '@/utils/word-count';
+import Button from '../ui/Button';
 import LoadingBars from '../ui/LoadingBars';
 import Notification from '../ui/Notification';
-import useNotification from '@/hooks/useNotification';
-import Button from '../ui/Button';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');

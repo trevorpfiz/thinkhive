@@ -1,24 +1,25 @@
-import { ArrowUpOnSquareStackIcon, UserGroupIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowUpOnSquareStackIcon,
+  ChatBubbleLeftRightIcon,
+  UserGroupIcon,
+} from '@heroicons/react/24/outline';
 
 const features = [
   {
     name: 'Upload your knowledge base',
-    description:
-      'Easily upload your documents and know they are secure.',
+    description: 'Easily upload your documents and know they are secure.',
     href: '#',
     icon: ArrowUpOnSquareStackIcon,
   },
   {
     name: 'Train your own Experts',
-    description:
-      'Customize your Experts according to your knowledge base.',
+    description: 'Customize your Experts according to your knowledge base.',
     href: '#',
     icon: UserGroupIcon,
   },
   {
     name: 'Deploy your custom-built Experts',
-    description:
-      'Quickly make your Experts accessible to your customers.',
+    description: 'Quickly make your Experts accessible to your customers.',
     href: '#',
     icon: ChatBubbleLeftRightIcon,
   },
@@ -30,7 +31,7 @@ export default function FeatureList() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          We have everything you need to build your team.
+            We have everything you need to build your team.
           </h2>
           {/* <p className="mt-6 text-lg leading-8 text-gray-600">
             Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum

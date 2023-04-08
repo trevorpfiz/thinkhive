@@ -1,9 +1,10 @@
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PineconeStore } from 'langchain/vectorstores';
-import { pinecone } from '@/utils/pinecone';
-import { processMarkDownFiles } from '@/utils/helpers';
+
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
+import { processMarkDownFiles } from '@/utils/helpers';
+import { pinecone } from '@/utils/pinecone';
 
 /* Name of directory to retrieve files from. You can change this as required */
 const directoryPath = 'Notion_DB';

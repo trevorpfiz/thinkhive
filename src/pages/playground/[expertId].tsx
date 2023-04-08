@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+import { useEffect, useRef, useState } from 'react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { useEffect, useRef, useState } from 'react';
-import { getServerSession } from 'next-auth';
 import { useAtom } from 'jotai';
+import { getServerSession } from 'next-auth';
 
-import { authOptions } from '@/server/auth';
-import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
-import { api } from '@/utils/api';
-import { prisma } from '@/server/db';
-import Messages from '@/components/widget/Messages';
+import MetaDescription from '@/components/seo/MetaDescription';
 import ChatInput from '@/components/widget/ChatInput';
+import Messages from '@/components/widget/Messages';
+import { authOptions } from '@/server/auth';
+import { prisma } from '@/server/db';
+import { api } from '@/utils/api';
 import { messagesAtom } from '../expert-iframe/[expertId]';
 
 interface ExpertPlaygroundProps {

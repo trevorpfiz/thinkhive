@@ -1,9 +1,9 @@
 import Image from 'next/image';
+import { signIn } from 'next-auth/react';
 
 import Button from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import backgroundImage from '@/images/background-call-to-action.jpg';
-import { signIn } from 'next-auth/react';
 
 export function CallToAction() {
   return (
@@ -22,7 +22,8 @@ export function CallToAction() {
             Get started today
           </h2>
           <p className="mt-4 text-lg tracking-tight text-white">
-          With the help of your Experts, your customers get the support they need, when they need it, while you can focus on growing your business.
+            With the help of your Experts, your customers get the support they need, when they need
+            it, while you can focus on growing your business.
           </p>
           <Button onClick={() => signIn()} intent="solidWhite" className="mt-10">
             Build your Experts

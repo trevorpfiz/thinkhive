@@ -1,8 +1,9 @@
 import { useId } from 'react';
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
 
+import type { StaticImageData } from 'next/image';
 import { Container } from '@/components/ui/Container';
 import screenshotContacts from '@/images/screenshots/contacts.png';
 import screenshotInventory from '@/images/screenshots/inventory.png';

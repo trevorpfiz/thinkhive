@@ -1,5 +1,6 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
+import Script from 'next/script';
 
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
@@ -7,7 +8,6 @@ import Pricing from '@/components/landing/Pricing';
 import { PricingFaqs } from '@/components/landing/PricingFaqs';
 import Meta from '@/components/seo/Meta';
 import MetaDescription from '@/components/seo/MetaDescription';
-import Script from 'next/script';
 import { env } from '@/env.mjs';
 
 const PricingPage: NextPage = () => {
