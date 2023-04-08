@@ -1,4 +1,6 @@
-import React, { type HTMLProps } from 'react';
+import React from 'react';
+
+import type { HTMLProps } from 'react';
 
 export default function IndeterminateCheckbox({
   indeterminate,

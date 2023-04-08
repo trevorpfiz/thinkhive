@@ -1,13 +1,13 @@
-import Head from 'next/head';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { atom, useAtom } from 'jotai';
 import normalizeUrl from 'normalize-url';
 
-import MetaDescription from '@/components/seo/MetaDescription';
 import Meta from '@/components/seo/Meta';
-import { useRouter } from 'next/router';
-import Messages from '@/components/widget/Messages';
+import MetaDescription from '@/components/seo/MetaDescription';
 import ChatInput from '@/components/widget/ChatInput';
+import Messages from '@/components/widget/Messages';
 import * as EventTypes from '@/types/eventTypes';
 import { api } from '@/utils/api';
 

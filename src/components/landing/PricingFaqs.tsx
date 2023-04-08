@@ -49,7 +49,6 @@ const faqs = [
       answer:
         "Yes you can! Just head to the billing page in the dashboard where you can see your usage. Here is where you can buy more credits. 1 credit = ~1 message or ~1,000 words uploaded. Purchased credits will persist between subscription periods and your plan's credits will be used up first.",
     },
-   
   ],
 ];
 
@@ -77,7 +76,8 @@ export function PricingFaqs() {
             Pricing FAQs
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you have any confusion whatsoever, talk to our Expert using the chat widget. Give us feedback through our{' '}
+            If you have any confusion whatsoever, talk to our Expert using the chat widget. Give us
+            feedback through our{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
               target="_blank"

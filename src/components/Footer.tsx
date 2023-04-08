@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import Logo from '@/components/ui/Logo';
 import { Container } from '@/components/ui/Container';
+import Logo from '@/components/ui/Logo';
 import { NavLink } from '@/components/ui/NavLink';
 import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
 
@@ -17,8 +17,12 @@ export function Footer() {
             <div className="-my-1 flex justify-center gap-x-6">
               <NavLink href="/#features">Features</NavLink>
               <NavLink href="/pricing">Pricing</NavLink>
-              <NavLink href="https://app.termly.io/document/privacy-policy/f7b7ce7d-ed9b-4fc0-802c-1ae5fcbde7a1">Privacy</NavLink>
-              <NavLink href="https://app.termly.io/document/terms-and-conditions/183699fa-a057-4dfe-a345-75b22cd2b3bf">Terms</NavLink>
+              <NavLink href="https://app.termly.io/document/privacy-policy/f7b7ce7d-ed9b-4fc0-802c-1ae5fcbde7a1">
+                Privacy
+              </NavLink>
+              <NavLink href="https://app.termly.io/document/terms-and-conditions/183699fa-a057-4dfe-a345-75b22cd2b3bf">
+                Terms
+              </NavLink>
             </div>
           </nav>
         </div>

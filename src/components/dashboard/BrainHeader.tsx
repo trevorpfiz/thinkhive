@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Fragment, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import { useRouter } from 'next/router';
 
+import useNotification from '@/hooks/useNotification';
 import { api } from '@/utils/api';
-import RenameModal from './modals/RenameModal';
-import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 import Button from '../ui/Button';
 import Notification from '../ui/Notification';
-import useNotification from '@/hooks/useNotification';
+import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
+import RenameModal from './modals/RenameModal';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');

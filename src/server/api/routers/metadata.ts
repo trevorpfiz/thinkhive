@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { pinecone } from '@/utils/pinecone';
 
 export const metadataRouter = createTRPCRouter({

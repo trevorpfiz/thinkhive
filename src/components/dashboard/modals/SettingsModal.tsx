@@ -1,7 +1,9 @@
-import { Fragment, useState, useEffect, type ChangeEvent } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
+
 import type { Visibility } from '@prisma/client';
+import type { ChangeEvent } from 'react';
 
 export interface SettingsData {
   initialMessages: string;

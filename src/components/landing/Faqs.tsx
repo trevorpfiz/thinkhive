@@ -84,7 +84,8 @@ export function Faqs() {
             Frequently asked questions
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, talk to our Expert using the chat widget. Give us feedback by joining the ThinkHive{' '}
+            If you can’t find what you’re looking for, talk to our Expert using the chat widget.
+            Give us feedback by joining the ThinkHive{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
               target="_blank"

@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useCallback, useMemo, useState } from 'react';
-import { type FileRejection, useDropzone } from 'react-dropzone';
-import type * as CSS from 'csstype';
 import { IconPdf } from '@tabler/icons-react';
+import { Card, Flex, ProgressBar, Text } from '@tremor/react';
 import clsx from 'clsx';
-import { Card, Flex, Text, ProgressBar } from '@tremor/react';
+import { useDropzone } from 'react-dropzone';
 
+import type { PdfMetadata } from '@/utils/pdf/metadata';
+import type * as CSS from 'csstype';
+import type { FileRejection } from 'react-dropzone';
+import useNotification from '@/hooks/useNotification';
 import { api } from '@/utils/api';
 import convertPdfToText from '@/utils/pdf/convert-pdf';
-import { getPdfMetadata, type PdfMetadata } from '@/utils/pdf/metadata';
+import { getPdfMetadata } from '@/utils/pdf/metadata';
 import Button from '../ui/Button';
 import Notification from '../ui/Notification';
-import useNotification from '@/hooks/useNotification';
 
 const baseStyle: CSS.Properties = {
   width: '100%',

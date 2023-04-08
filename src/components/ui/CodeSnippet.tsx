@@ -1,7 +1,7 @@
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { ClipboardIcon } from '@heroicons/react/24/outline';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 export default function CodeSnippet() {
   const router = useRouter();

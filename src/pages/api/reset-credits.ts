@@ -1,6 +1,8 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/server/db';
+import { NextResponse } from 'next/server';
+
+import type { NextRequest } from 'next/server';
 import { env } from '@/env.mjs';
+import { prisma } from '@/server/db';
 
 export const config = {
   runtime: 'edge',

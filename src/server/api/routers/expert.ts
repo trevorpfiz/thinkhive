@@ -1,7 +1,8 @@
+import { Visibility } from '@prisma/client';
 import { z } from 'zod';
+
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 import { getMaxExpertsForTier, getSubscriptionProductId } from '@/server/helpers/permissions';
-import { Visibility } from '@prisma/client';
 
 export const expertRouter = createTRPCRouter({
   // queries

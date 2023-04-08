@@ -1,5 +1,5 @@
-import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function UserButton() {
   const { data: sessionData } = useSession();

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { CallbackManager } from 'langchain/callbacks';
-import type { LLMResult } from 'langchain/schema';
 import { ChatOpenAI } from 'langchain/chat_models';
+
+import type { LLMResult } from 'langchain/schema';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OpenAI Credentials');

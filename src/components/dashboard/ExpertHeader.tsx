@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import { useRouter } from 'next/router';
-
-import { api } from '@/utils/api';
-import RenameModal from './modals/RenameModal';
-import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
-import StatusBadge from '../ui/StatusBadge';
-import Button from '../ui/Button';
-import useNotification from '@/hooks/useNotification';
-import Notification from '../ui/Notification';
-import VisibilityBadge from '../ui/VisibilityBadge';
-import SettingsModal, { type SettingsData } from './modals/SettingsModal';
 import { Visibility } from '@prisma/client';
+
+import type { SettingsData } from './modals/SettingsModal';
+import useNotification from '@/hooks/useNotification';
+import { api } from '@/utils/api';
+import Button from '../ui/Button';
+import Notification from '../ui/Notification';
+import StatusBadge from '../ui/StatusBadge';
+import VisibilityBadge from '../ui/VisibilityBadge';
+import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 import EmbedModal from './modals/EmbedModal';
+import RenameModal from './modals/RenameModal';
+import SettingsModal from './modals/SettingsModal';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');

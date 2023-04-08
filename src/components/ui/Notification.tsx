@@ -1,7 +1,7 @@
 import { Fragment, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
+import { ArrowPathIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { XMarkIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 
 export interface NotificationProps {

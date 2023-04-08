@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { RadioGroup } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 
 const frequencies: Frequency[] = [
   { value: 'monthly', label: 'Monthly', priceSuffix: '/month' },

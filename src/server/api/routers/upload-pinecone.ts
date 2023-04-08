@@ -1,16 +1,16 @@
-import { z } from 'zod';
-import { ulid } from 'ulid';
-import { PineconeStore } from 'langchain/vectorstores';
+import { get_encoding } from '@dqbd/tiktoken';
+import { TRPCError } from '@trpc/server';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { get_encoding } from '@dqbd/tiktoken';
+import { PineconeStore } from 'langchain/vectorstores';
+import { ulid } from 'ulid';
+import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { pinecone } from '@/utils/pinecone';
 import { PINECONE_INDEX_NAME } from '@/config/pinecone';
-import { uploadLimit, uploadLimitDay } from '@/server/helpers/ratelimit';
-import { TRPCError } from '@trpc/server';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { hasEnoughCredits } from '@/server/helpers/permissions';
+import { uploadLimit, uploadLimitDay } from '@/server/helpers/ratelimit';
+import { pinecone } from '@/utils/pinecone';
 
 const MetadataInput = z.object({
   fileName: z.string(),

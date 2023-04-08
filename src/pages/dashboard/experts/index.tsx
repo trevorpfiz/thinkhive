@@ -1,16 +1,16 @@
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-import type { ReactElement } from 'react';
+import Script from 'next/script';
 import { getServerSession } from 'next-auth';
 
-import MetaDescription from '@/components/seo/MetaDescription';
-import Meta from '@/components/seo/Meta';
-import { authOptions } from '@/server/auth';
-import SidebarLayout from '@/components/ui/SidebarLayout';
 import type { NextPageWithLayout } from '@/pages/_app';
+import type { ReactElement } from 'react';
 import ExpertsTable from '@/components/dashboard/ExpertsTable';
-import Script from 'next/script';
+import Meta from '@/components/seo/Meta';
+import MetaDescription from '@/components/seo/MetaDescription';
+import SidebarLayout from '@/components/ui/SidebarLayout';
 import { env } from '@/env.mjs';
+import { authOptions } from '@/server/auth';
 
 const ExpertsPage: NextPageWithLayout = () => {
   return (

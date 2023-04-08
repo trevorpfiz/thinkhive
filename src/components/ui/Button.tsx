@@ -1,5 +1,7 @@
-import { cva, type VariantProps } from 'class-variance-authority';
 import Link from 'next/link';
+import { cva } from 'class-variance-authority';
+
+import type { VariantProps } from 'class-variance-authority';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 
 const button = cva(
