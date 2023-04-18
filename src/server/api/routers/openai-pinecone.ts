@@ -78,9 +78,7 @@ export const openAiPinecone = createTRPCRouter({
         }
       );
 
-      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${
-        systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''
-      }
+      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''}
       Context: {context}
       Question: {question}
       Helpful Answer:`;
