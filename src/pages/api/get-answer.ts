@@ -68,10 +68,8 @@ const handler = async (req: NextRequest): Promise<Response> => {
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 
   const questionTokens = encoding.encode(sanitizedQuestion).length;
-  // chat history tokens, check if needed
   const chatHistoryTokens = encoding.encode(chatHistory.join(' ')).length;
   const embeddingTokens = questionTokens + chatHistoryTokens;
-  console.log(embeddingTokens);
 
   // 1. Check if user has enough credits for the question.
   const fromCredits = await hasEnoughCredits(userId, embeddingTokens / 5);
@@ -151,7 +149,6 @@ Helpful Answer:`;
         void updateUsage(userId, fromCredits, totalTokens, embeddingTokens);
       },
       handleLLMError: async (e) => {
-        console.log('error!!!!!!!!!!!!!!!', e);
         await writer.ready;
         await writer.abort(e);
       },
@@ -159,7 +156,6 @@ Helpful Answer:`;
   });
 
   // create the chain
-  // FIXME - this is a bug in langchain
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const chain = RetrievalQAChain.fromLLM(openai, vectorStore.asRetriever(), {
