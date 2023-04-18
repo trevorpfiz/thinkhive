@@ -125,8 +125,7 @@ export default function Pricing() {
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-          Choose an affordable plan that’s packed with the best features for enhancing user
-          satisfaction, fostering customer loyalty, and driving sales.
+        Select a cost-effective plan that's designed to improve user satisfaction, empower health-conscious decision-making, and promote better health outcomes.
         </p>
         <div className="mt-16 flex justify-center">
           <RadioGroup
