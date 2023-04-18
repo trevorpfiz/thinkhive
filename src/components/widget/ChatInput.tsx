@@ -80,6 +80,7 @@ export default function ChatInput({
             controller.abort();
             // Complete
           } else {
+            console.log(event.data);
             // Stream text
             const serverResponseTokens = event.data.split(' ');
 
@@ -99,10 +100,14 @@ export default function ChatInput({
               // Update the existing message with the unique id
               const updatedMessages = [...prevMessages];
               serverResponseTokens.forEach((token, index) => {
-                if (index === 0) {
-                  updatedMessages[existingMessageIndex]!.content += token;
+                if (token === '') {
+                  updatedMessages[existingMessageIndex]!.content += ' ';
                 } else {
-                  updatedMessages[existingMessageIndex]!.content += ' ' + token;
+                  if (index === 0) {
+                    updatedMessages[existingMessageIndex]!.content += token;
+                  } else {
+                    updatedMessages[existingMessageIndex]!.content += ' ' + token;
+                  }
                 }
               });
               return updatedMessages;

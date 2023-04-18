@@ -7,9 +7,11 @@ import { getMaxAssistantsForTier, getSubscriptionProductId } from '~/server/help
 export const assistantRouter = createTRPCRouter({
   // queries
   getAssistants: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.assistant.findMany({
+    const { prisma, session } = ctx;
+
+    return prisma.assistant.findMany({
       where: {
-        userId: ctx.session.user.id,
+        userId: session.user.id,
       },
       include: {
         brains: { include: { files: true } },
@@ -23,12 +25,13 @@ export const assistantRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) => {
+      const { prisma, session } = ctx;
       const { id } = input;
 
-      return ctx.prisma.assistant.findFirst({
+      return prisma.assistant.findFirst({
         where: {
           id,
-          userId: ctx.session.user.id,
+          userId: session.user.id,
         },
         include: {
           brains: { include: { files: true } },
@@ -42,11 +45,12 @@ export const assistantRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) => {
+      const { prisma, session } = ctx;
       const { id } = input;
 
-      return ctx.prisma.brain.findMany({
+      return prisma.brain.findMany({
         where: {
-          userId: ctx.session.user.id,
+          userId: session.user.id,
           assistants: {
             some: {
               id,
