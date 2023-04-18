@@ -73,7 +73,7 @@ export default function AssistantBrains({ assistantId }: { assistantId: string }
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
             <h2 className="text-base font-semibold leading-6 text-gray-900">
-              Assistant has {totalSize} words
+              Assistant knows {totalSize} words
             </h2>
           </div>
         </div>
