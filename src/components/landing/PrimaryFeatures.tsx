@@ -11,24 +11,24 @@ import screenshotTrouble from '~/images/screenshots/troubletest.png';
 
 const features = [
   {
-    title: 'Instant access to product information',
-    description: 'Accurately answer customer questions within seconds.',
+    title: 'Instant access to health wisdom',
+    description: 'Accurately answers health-related questions within seconds.',
     image: screenshotInstant,
   },
   {
-    title: 'Personalized product recommendations',
-    description: "Recommend products based on your customers' needs and wants.",
+    title: 'Personalized first aid assistance',
+    description: "Guides users through essential first aid steps tailored to their specific needs.",
     image: screenshotRec,
   },
   {
-    title: 'Hassle-free navigation assistance',
-    description: "Help customers quickly and easily find what they're looking for.",
+    title: 'Streamlined health platform experience',
+    description: "Helps users easily find platform-specific health information.",
     image: screenshotNav,
   },
   {
-    title: 'Expert product troubleshooting',
+    title: 'Clinical decision support',
     description:
-      'Offer expert-level support to resolve any issues customers may have with your products.',
+      'Assists healthcare professionals in making well-informed decisions by providing relevant data and recommendations.',
     image: screenshotTrouble,
   },
 ];
@@ -68,7 +68,7 @@ export function PrimaryFeatures() {
       <Container className="relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
-            Experts provide many benefits to your customers.
+          Your healthcare Assistants provide numerous benefits.
           </h2>
         </div>
         <Tab.Group

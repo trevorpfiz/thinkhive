@@ -12,14 +12,14 @@ const features = [
     icon: ArrowUpOnSquareStackIcon,
   },
   {
-    name: 'Train your own Experts',
-    description: 'Customize your Experts according to your knowledge base.',
+    name: 'Train your own healthcare Assistants',
+    description: 'Customize your Assistants according to your knowledge base.',
     href: '#',
     icon: UserGroupIcon,
   },
   {
-    name: 'Deploy your custom-built Experts',
-    description: 'Quickly make your Experts accessible to your customers.',
+    name: 'Deploy your custom-built healthcare Assistants',
+    description: 'Quickly make your Assistants accessible to your users and team members.',
     href: '#',
     icon: ChatBubbleLeftRightIcon,
   },
@@ -31,7 +31,7 @@ export default function FeatureList() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            We have everything you need to build your team.
+          We provide everything you need to build your healthcare support system.
           </h2>
           {/* <p className="mt-6 text-lg leading-8 text-gray-600">
             Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum
