@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import { getServerSession } from 'next-auth';
 import { signIn } from 'next-auth/react';
+
 import Meta from '~/components/seo/Meta';
 import MetaDescription from '~/components/seo/MetaDescription';
 import { AuthLayout } from '~/components/ui/AuthLayout';
@@ -28,7 +29,7 @@ export default function Login() {
       'email',
       { email },
       {
-        callbackUrl: '/dashboard/experts',
+        callbackUrl: '/dashboard/assistants',
       }
     ); // Call the signIn function with the email
   }
@@ -63,7 +64,7 @@ export default function Login() {
                 <button
                   onClick={() =>
                     void signIn('google', {
-                      callbackUrl: '/dashboard/experts',
+                      callbackUrl: '/dashboard/assistants',
                     })
                   }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
@@ -80,7 +81,7 @@ export default function Login() {
                 <button
                   onClick={() =>
                     void signIn('azure-ad-b2c', {
-                      callbackUrl: '/dashboard/experts',
+                      callbackUrl: '/dashboard/assistants',
                     })
                   }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
@@ -95,7 +96,7 @@ export default function Login() {
                 <button
                   onClick={() =>
                     void signIn('discord', {
-                      callbackUrl: '/dashboard/experts',
+                      callbackUrl: '/dashboard/assistants',
                     })
                   }
                   className="inline-flex w-full rounded-md bg-white py-2 px-5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
@@ -167,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (session) {
     return {
       redirect: {
-        destination: '/dashboard/experts',
+        destination: '/dashboard/assistants',
         permanent: false,
       },
     };

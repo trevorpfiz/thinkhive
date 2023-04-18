@@ -1,15 +1,15 @@
-import type { Brain, Expert, FileMetadata } from '@prisma/client';
+import type { Assistant, Brain, FileMetadata } from '@prisma/client';
 
 interface BrainWithFiles extends Brain {
   files: FileMetadata[];
 }
 
-interface ExpertWithBrains extends Expert {
+interface AssistantWithBrains extends Assistant {
   brains: BrainWithFiles[];
 }
 
-interface ExpertSummary {
-  expertSize: number;
+interface AssistantSummary {
+  assistantSize: number;
   brainSizes: number[];
 }
 
@@ -18,34 +18,34 @@ interface BrainSummary {
   brainSizes: number[];
 }
 
-export function calculateExpertsSizes(experts: ExpertWithBrains[]): [number[], number] {
+export function calculateAssistantsSizes(assistants: AssistantWithBrains[]): [number[], number] {
   let totalSize = 0;
   const sizes: number[] = [];
 
-  experts.forEach((expert) => {
-    const brainSummary = expert?.brains?.reduce(
+  assistants.forEach((assistant) => {
+    const brainSummary = assistant?.brains?.reduce(
       (summary, brain) => {
         const brainSize = brain.files.reduce((size, file) => size + file.wordCount, 0);
         return {
-          expertSize: summary.expertSize + brainSize,
+          assistantSize: summary.assistantSize + brainSize,
           brainSizes: [...summary.brainSizes, brainSize],
         };
       },
-      { expertSize: 0, brainSizes: [] } as ExpertSummary
+      { assistantSize: 0, brainSizes: [] } as AssistantSummary
     );
 
-    sizes.push(brainSummary.expertSize);
-    totalSize += brainSummary.expertSize;
+    sizes.push(brainSummary.assistantSize);
+    totalSize += brainSummary.assistantSize;
   });
 
   return [sizes, totalSize];
 }
 
-export function calculateExpertSizes(expert: ExpertWithBrains): [number[], number] {
+export function calculateAssistantSizes(assistant: AssistantWithBrains): [number[], number] {
   let totalSize = 0;
   const sizes: number[] = [];
 
-  expert.brains.forEach((brain) => {
+  assistant.brains.forEach((brain) => {
     const brainSummary = brain?.files?.reduce(
       (summary, file) => {
         const fileSize = file?.wordCount || 0;

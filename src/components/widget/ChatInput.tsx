@@ -5,7 +5,7 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useAtom } from 'jotai';
 import { ulid } from 'ulid';
 
-import { chatHistoryAtom, loadingAtom, messagesAtom } from '~/pages/expert-iframe/[expertId]';
+import { chatHistoryAtom, loadingAtom, messagesAtom } from '~/pages/assistant-iframe/[assistantId]';
 import { api } from '~/utils/api';
 
 export default function ChatInput({
@@ -19,14 +19,14 @@ export default function ChatInput({
   const [chatHistory, setChatHistory] = useAtom(chatHistoryAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
   const router = useRouter();
-  const expertId = router.query.expertId as string;
+  const assistantId = router.query.assistantId as string;
 
   const {
-    isLoading: isExpertLoading,
+    isLoading: isAssistantLoading,
     isError,
-    data: expert,
+    data: assistant,
     error,
-  } = api.expert.getWidgetExpert.useQuery({ id: expertId }, { enabled: !!expertId });
+  } = api.assistant.getWidgetAssistant.useQuery({ id: assistantId }, { enabled: !!assistantId });
 
   const [query, setQuery] = useState<string>('');
 
@@ -48,7 +48,7 @@ export default function ChatInput({
     setMessages([...messages, { type: 'user', content: question, id: Date.now().toString() }]);
     setQuery('');
     const metadataIds =
-      expert?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
+      assistant?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
 
     setLoading(true);
     const controller = new AbortController();
@@ -63,9 +63,9 @@ export default function ChatInput({
         body: JSON.stringify({
           question,
           chatHistory,
-          systemMessage: expert?.systemMessage || '',
+          systemMessage: assistant?.systemMessage || '',
           metadataIds,
-          expertId,
+          assistantId,
         }),
         signal: controller.signal,
         onmessage: (event) => {
@@ -149,7 +149,7 @@ export default function ChatInput({
           <button
             type="submit"
             className="flex flex-none items-center px-3 text-blue-600 hover:text-blue-800 focus:outline-none disabled:opacity-30"
-            disabled={isExpertLoading || !expert || !query || loading}
+            disabled={isAssistantLoading || !assistant || !query || loading}
           >
             <PaperAirplaneIcon className="h-5 w-5" />
           </button>

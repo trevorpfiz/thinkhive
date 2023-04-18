@@ -2,6 +2,9 @@ import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { getServerSession } from 'next-auth';
+
+import type { AnchorHTMLAttributes, ImgHTMLAttributes, ReactElement } from 'react';
+import type { NextPageWithLayout } from '../_app';
 import { Content } from '~/components/mdx/Content';
 import { Heading } from '~/components/mdx/Heading';
 import CustomImage from '~/components/mdx/Image';
@@ -11,9 +14,6 @@ import SidebarLayout from '~/components/ui/SidebarLayout';
 import UserGuide from '~/docs/UserGuide.mdx';
 import { env } from '~/env.mjs';
 import { authOptions } from '~/server/auth';
-
-import type { AnchorHTMLAttributes, ImgHTMLAttributes, ReactElement } from 'react';
-import type { NextPageWithLayout } from '../_app';
 
 const components = {
   img: ({ src, alt }: ImgHTMLAttributes<HTMLImageElement>) => {
@@ -34,7 +34,7 @@ const HelpPage: NextPageWithLayout = () => {
     <>
       <Script
         src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
-        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+        data-assistantId={env.NEXT_PUBLIC_ASSISTANT_ID}
       />
       <Head>
         <title>Help Center - ThinkHive</title>
@@ -49,8 +49,8 @@ const HelpPage: NextPageWithLayout = () => {
         <div className="py-8">
           <h1 className="text-3xl font-bold">Need Help?</h1>
           <p className="max-w-prose mt-4 text-lg tracking-tight text-slate-700">
-            Talk with the ThinkHive Expert using the chat bubble in the bottom right, or reach out
-            to us on our{' '}
+            Talk with the ThinkHive Assistant using the chat bubble in the bottom right, or reach
+            out to us on our{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
               target="_blank"

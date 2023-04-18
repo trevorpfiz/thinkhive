@@ -15,15 +15,15 @@ import { messageLimitDay, messageLimitMinute } from '~/server/helpers/ratelimit'
 import { initPinecone } from '~/utils/pinecone';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { question, chatHistory, systemMessage, metadataIds, expertId } = req.body as {
+  const { question, chatHistory, systemMessage, metadataIds, assistantId } = req.body as {
     question?: string;
     chatHistory?: string[];
     systemMessage?: string;
     metadataIds?: string[];
-    expertId?: string;
+    assistantId?: string;
   };
 
-  if (!question || !chatHistory || !metadataIds || !expertId) {
+  if (!question || !chatHistory || !metadataIds || !assistantId) {
     return res.status(400).json({ message: 'Invalid request payload' });
   }
 
@@ -35,18 +35,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { success: successDay } = await messageLimitDay.limit(ip);
   if (!successDay) throw new Error('TOO_MANY_REQUESTS');
 
-  // get userId from expertId
-  const expertUserId = await prisma.expert.findUnique({
+  // get userId from assistantId
+  const assistantUserId = await prisma.assistant.findUnique({
     where: {
-      id: expertId,
+      id: assistantId,
     },
     select: {
       userId: true,
     },
   });
 
-  if (!expertUserId) throw new Error('BAD_REQUEST');
-  const userId = expertUserId?.userId;
+  if (!assistantUserId) throw new Error('BAD_REQUEST');
+  const userId = assistantUserId?.userId;
 
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 

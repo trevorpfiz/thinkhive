@@ -13,22 +13,22 @@ import Messages from '~/components/widget/Messages';
 import { authOptions } from '~/server/auth';
 import { prisma } from '~/server/db';
 import { api } from '~/utils/api';
-import { messagesAtom } from '../expert-iframe/[expertId]';
+import { messagesAtom } from '../assistant-iframe/[assistantId]';
 
-interface ExpertPlaygroundProps {
-  expertId: string;
+interface AssistantPlaygroundProps {
+  assistantId: string;
 }
 
-const ExpertPlayground = ({ expertId }: ExpertPlaygroundProps) => {
+const AssistantPlayground = ({ assistantId }: AssistantPlaygroundProps) => {
   const [initial, setInitial] = useAtom(messagesAtom);
   const [initialMessagesSet, setInitialMessagesSet] = useState(false);
 
   const {
-    isLoading: isExpertLoading,
+    isLoading: isAssistantLoading,
     isError,
-    data: expert,
+    data: assistant,
     error,
-  } = api.expert.getWidgetExpert.useQuery({ id: expertId }, { enabled: !!expertId });
+  } = api.assistant.getWidgetAssistant.useQuery({ id: assistantId }, { enabled: !!assistantId });
 
   const messagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,15 +38,15 @@ const ExpertPlayground = ({ expertId }: ExpertPlaygroundProps) => {
   }, []);
 
   useEffect(() => {
-    if (expert && expert.initialMessages && !initialMessagesSet) {
-      const initialMessages = expert.initialMessages.split('\n').map((msg) => ({
+    if (assistant && assistant.initialMessages && !initialMessagesSet) {
+      const initialMessages = assistant.initialMessages.split('\n').map((msg) => ({
         type: 'server',
         content: msg,
       }));
       setInitial(initialMessages);
       setInitialMessagesSet(true); // Set the flag to true after setting initial messages
     }
-  }, [expert, setInitial, initialMessagesSet]);
+  }, [assistant, setInitial, initialMessagesSet]);
 
   if (isError) {
     return <div>Error: {error.message}</div>;
@@ -84,21 +84,21 @@ const ExpertPlayground = ({ expertId }: ExpertPlaygroundProps) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
-  const expertId = context.params?.expertId as string;
+  const assistantId = context.params?.assistantId as string;
 
-  const expert = await prisma.expert.findUnique({
-    where: { id: expertId },
+  const assistant = await prisma.assistant.findUnique({
+    where: { id: assistantId },
     select: { visibility: true, userId: true, status: true },
   });
 
-  if (!expert) {
+  if (!assistant) {
     return {
       notFound: true,
     };
   }
 
-  const isPublic = expert.visibility === 'PUBLIC';
-  const isOwner = session?.user.id === expert.userId;
+  const isPublic = assistant.visibility === 'PUBLIC';
+  const isOwner = session?.user.id === assistant.userId;
 
   if (!isPublic && !isOwner) {
     return {
@@ -112,9 +112,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       session,
-      expertId,
+      assistantId,
     },
   };
 };
 
-export default ExpertPlayground;
+export default AssistantPlayground;

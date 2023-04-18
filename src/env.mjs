@@ -46,7 +46,7 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
-  NEXT_PUBLIC_EXPERT_ID: z.string(),
+  NEXT_PUBLIC_ASSISTANT_ID: z.string(),
 });
 
 /**
@@ -82,7 +82,7 @@ const processEnv = {
   STRIPE_ENTERPRISE_PRODUCT_ID: process.env.STRIPE_ENTERPRISE_PRODUCT_ID,
   STRIPE_ADDITIONAL_PRODUCT_ID: process.env.STRIPE_ADDITIONAL_PRODUCT_ID,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
-  NEXT_PUBLIC_EXPERT_ID: process.env.NEXT_PUBLIC_EXPERT_ID,
+  NEXT_PUBLIC_ASSISTANT_ID: process.env.NEXT_PUBLIC_ASSISTANT_ID,
 };
 
 // Don't touch the part below

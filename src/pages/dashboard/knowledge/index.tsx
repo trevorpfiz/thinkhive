@@ -2,6 +2,9 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import { useSession } from 'next-auth/react';
+
+import type { ReactElement } from 'react';
+import type { NextPageWithLayout } from '../../_app';
 import FileDropzone from '~/components/dashboard/FileDropzone';
 import FilesTable from '~/components/dashboard/tables/FilesTable';
 import Meta from '~/components/seo/Meta';
@@ -9,9 +12,6 @@ import MetaDescription from '~/components/seo/MetaDescription';
 import LoadingBars from '~/components/ui/LoadingBars';
 import SidebarLayout from '~/components/ui/SidebarLayout';
 import { env } from '~/env.mjs';
-
-import type { ReactElement } from 'react';
-import type { NextPageWithLayout } from '../../_app';
 
 const KnowledgePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const KnowledgePage: NextPageWithLayout = () => {
     <>
       <Script
         src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
-        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+        data-assistantId={env.NEXT_PUBLIC_ASSISTANT_ID}
       />
       <Head>
         <title>Knowledge - ThinkHive</title>

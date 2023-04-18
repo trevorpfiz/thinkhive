@@ -2,25 +2,25 @@ import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { getServerSession } from 'next-auth';
-import ExpertsTable from '~/components/dashboard/ExpertsTable';
+
+import type { ReactElement } from 'react';
+import type { NextPageWithLayout } from '~/pages/_app';
+import AssistantsTable from '~/components/dashboard/AssistantsTable';
 import Meta from '~/components/seo/Meta';
 import MetaDescription from '~/components/seo/MetaDescription';
 import SidebarLayout from '~/components/ui/SidebarLayout';
 import { env } from '~/env.mjs';
 import { authOptions } from '~/server/auth';
 
-import type { ReactElement } from 'react';
-import type { NextPageWithLayout } from '~/pages/_app';
-
-const ExpertsPage: NextPageWithLayout = () => {
+const AssistantsPage: NextPageWithLayout = () => {
   return (
     <>
       <Script
         src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
-        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+        data-assistantId={env.NEXT_PUBLIC_ASSISTANT_ID}
       />
       <Head>
-        <title>Experts - ThinkHive</title>
+        <title>Assistants - ThinkHive</title>
         <Meta />
         <MetaDescription
           value="Create intelligent chatbots that answer questions based on your organization's
@@ -29,13 +29,13 @@ const ExpertsPage: NextPageWithLayout = () => {
       </Head>
 
       <div className="flex flex-col gap-16">
-        <ExpertsTable />
+        <AssistantsTable />
       </div>
     </>
   );
 };
 
-ExpertsPage.getLayout = function getLayout(page: ReactElement) {
+AssistantsPage.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout>{page}</SidebarLayout>;
 };
 
@@ -58,4 +58,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default ExpertsPage;
+export default AssistantsPage;

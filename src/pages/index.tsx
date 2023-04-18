@@ -1,6 +1,7 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
+
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
 import { CallToAction } from '~/components/landing/CallToAction';
@@ -18,7 +19,7 @@ const HomePage: NextPage = () => {
     <>
       <Script
         src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
-        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+        data-assistantId={env.NEXT_PUBLIC_ASSISTANT_ID}
       />
       <Head>
         <title>ThinkHive</title>

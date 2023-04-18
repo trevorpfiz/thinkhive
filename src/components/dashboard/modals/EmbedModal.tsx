@@ -6,6 +6,7 @@ import {
   PencilSquareIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+
 import CodeSnippet from '~/components/ui/CodeSnippet';
 
 interface ModalProps {
@@ -64,7 +65,7 @@ export default function EmbedModal({ modal }: ModalProps) {
                       {`Embed on website`}
                     </Dialog.Title>
                     <div className="mt-1">
-                      <p className="text-sm text-gray-500">{`Add this expert to the bottom right of your website. Just add this script tag to the html`}</p>
+                      <p className="text-sm text-gray-500">{`Add this assistant to the bottom right of your website. Just add this script tag to the html`}</p>
                     </div>
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+
 import { env } from '~/env.mjs';
 import { prisma } from '~/server/db';
 
@@ -58,7 +59,7 @@ export async function getSubscriptionProductId(userId: string) {
   return subscription?.price?.product.id;
 }
 
-export function getMaxExpertsForTier(tier: string | null | undefined) {
+export function getMaxAssistantsForTier(tier: string | null | undefined) {
   switch (tier) {
     case env.STRIPE_HANGOUT_PRODUCT_ID:
       return 20;

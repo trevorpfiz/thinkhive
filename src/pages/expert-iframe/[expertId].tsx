@@ -14,7 +14,7 @@ import { api } from '~/utils/api';
 interface MessageEventProps extends MessageEvent {
   type: string;
   value: {
-    expertId: string;
+    assistantId: string;
     topHost: string;
     deviceWidth: number;
   };
@@ -33,7 +33,7 @@ export const chatHistoryAtom = atom<string[]>([]);
 // const storage = createJSONStorage<string[]>(() => sessionStorage);
 // export const chatHistoryAtom = atomWithStorage<string[]>('chatHistory', [], storage);
 
-const ExpertWidgetPage = () => {
+const AssistantWidgetPage = () => {
   const [deviceWidth, setDeviceWidth] = useAtom(widthAtom);
   const [initial, setInitial] = useAtom(messagesAtom);
   const [initialMessagesSet, setInitialMessagesSet] = useState(false);
@@ -45,14 +45,14 @@ const ExpertWidgetPage = () => {
   }, []);
 
   const router = useRouter();
-  const expertId = router.query.expertId as string;
+  const assistantId = router.query.assistantId as string;
 
   const {
     isLoading,
     isError,
-    data: expert,
+    data: assistant,
     error,
-  } = api.expert.getWidgetExpert.useQuery({ id: expertId }, { enabled: !!expertId });
+  } = api.assistant.getWidgetAssistant.useQuery({ id: assistantId }, { enabled: !!assistantId });
 
   const [isReady, setIsReady] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -102,11 +102,11 @@ const ExpertWidgetPage = () => {
         switch (event.data.type) {
           // INIT_IFRAME
           case EventTypes.INIT_IFRAME:
-            const isExpertIdValid = expert?.id === event.data.value.expertId;
+            const isAssistantIdValid = assistant?.id === event.data.value.assistantId;
 
             const hasValidDomain =
-              expert?.domains?.split(',').some((domain) => {
-                const normalizedExpertDomain = normalizeUrl(domain, {
+              assistant?.domains?.split(',').some((domain) => {
+                const normalizedAssistantDomain = normalizeUrl(domain, {
                   stripProtocol: true,
                   stripHash: true,
                 });
@@ -115,11 +115,11 @@ const ExpertWidgetPage = () => {
                   stripHash: true,
                 });
 
-                return normalizedExpertDomain === normalizedTopHost;
+                return normalizedAssistantDomain === normalizedTopHost;
               }) ?? false;
 
-            console.log(hasValidDomain, event.data.value.topHost, expert?.domains);
-            if (isExpertIdValid && hasValidDomain) {
+            console.log(hasValidDomain, event.data.value.topHost, assistant?.domains);
+            if (isAssistantIdValid && hasValidDomain) {
               // BOOTSTRAP_DONE
               setIsReady(true);
               window.parent.postMessage({ type: EventTypes.BOOTSTRAP_DONE }, '*');
@@ -138,7 +138,7 @@ const ExpertWidgetPage = () => {
         }
       }
     },
-    [expert, isOpen, setDeviceWidth, setIsOpen, setIsReady]
+    [assistant, isOpen, setDeviceWidth, setIsOpen, setIsReady]
   );
 
   useEffect(() => {
@@ -148,7 +148,7 @@ const ExpertWidgetPage = () => {
   }, [receiveMessage]);
 
   useEffect(() => {
-    if (!isReady && expert && expert.id) {
+    if (!isReady && assistant && assistant.id) {
       window.parent.postMessage(
         {
           type: EventTypes.INITIATE_INIT_IFRAME,
@@ -156,11 +156,11 @@ const ExpertWidgetPage = () => {
         '*'
       );
     }
-  }, [expert, isReady]);
+  }, [assistant, isReady]);
 
   useEffect(() => {
-    if (expert && expert.initialMessages && !initialMessagesSet) {
-      const initialMessages = expert.initialMessages.split('\n').map((msg) => ({
+    if (assistant && assistant.initialMessages && !initialMessagesSet) {
+      const initialMessages = assistant.initialMessages.split('\n').map((msg) => ({
         type: 'server',
         content: msg,
         id: Date.now().toString(),
@@ -168,7 +168,7 @@ const ExpertWidgetPage = () => {
       setInitial(initialMessages);
       setInitialMessagesSet(true); // Set the flag to true after setting initial messages
     }
-  }, [expert, setInitial, initialMessagesSet]);
+  }, [assistant, setInitial, initialMessagesSet]);
 
   if (isError) {
     return <div>Error: {error.message}</div>;
@@ -206,4 +206,4 @@ const ExpertWidgetPage = () => {
   );
 };
 
-export default ExpertWidgetPage;
+export default AssistantWidgetPage;

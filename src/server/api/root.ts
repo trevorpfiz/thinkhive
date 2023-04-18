@@ -1,10 +1,9 @@
 import { openAiPinecone } from '~/server/api/routers/openai-pinecone';
 import { uploadPinecone } from '~/server/api/routers/upload-pinecone';
 import { createTRPCRouter } from '~/server/api/trpc';
-
 import { apiCallRouter } from './routers/api-call';
+import { assistantRouter } from './routers/assistant';
 import { brainRouter } from './routers/brain';
-import { expertRouter } from './routers/expert';
 import { metadataRouter } from './routers/metadata';
 import { stripeRouter } from './routers/stripe';
 import { userRouter } from './routers/user';
@@ -20,7 +19,7 @@ export const appRouter = createTRPCRouter({
   chat: openAiPinecone,
   upload: uploadPinecone,
   metadata: metadataRouter,
-  expert: expertRouter,
+  assistant: assistantRouter,
   brain: brainRouter,
   apiCall: apiCallRouter,
 });

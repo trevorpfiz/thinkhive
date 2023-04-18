@@ -23,11 +23,11 @@ export const openAiPinecone = createTRPCRouter({
         chatHistory: z.array(z.string()).max(100),
         systemMessage: z.string(),
         metadataIds: z.array(z.string()),
-        expertId: z.string(),
+        assistantId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { question, chatHistory, systemMessage, metadataIds, expertId } = input;
+      const { question, chatHistory, systemMessage, metadataIds, assistantId } = input;
       const { req, prisma } = ctx;
 
       // rate limit
@@ -38,18 +38,18 @@ export const openAiPinecone = createTRPCRouter({
       const { success: successDay } = await messageLimitDay.limit(ip);
       if (!successDay) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
 
-      // get userId from expertId
-      const expertUserId = await prisma.expert.findUnique({
+      // get userId from assistantId
+      const assistantUserId = await prisma.assistant.findUnique({
         where: {
-          id: expertId,
+          id: assistantId,
         },
         select: {
           userId: true,
         },
       });
 
-      if (!expertUserId) throw new TRPCError({ code: 'BAD_REQUEST' });
-      const userId = expertUserId?.userId;
+      if (!assistantUserId) throw new TRPCError({ code: 'BAD_REQUEST' });
+      const userId = assistantUserId?.userId;
 
       const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 
@@ -81,7 +81,9 @@ export const openAiPinecone = createTRPCRouter({
         }
       );
 
-      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''}
+      const qaTemplate = `Given the context provided below, answer the question. If the exact information requested is unavailable, provide any relevant information related to the topic from the context. Provide a helpful and concise answer. ${
+        systemMessage ? systemMessage.replace(/\{/g, '(').replace(/\}/g, ')') : ''
+      }
       Context: {context}
       Question: {question}
       Helpful Answer:`;
@@ -155,11 +157,11 @@ export const openAiPinecone = createTRPCRouter({
   //       chatHistory: z.array(z.string()).max(100),
   //       systemMessage: z.string(),
   //       metadataIds: z.array(z.string()),
-  //       expertId: z.string(),
+  //       assistantId: z.string(),
   //     })
   //   )
   //   .mutation(async ({ ctx, input }) => {
-  //     const { question, chatHistory, systemMessage, metadataIds, expertId } = input;
+  //     const { question, chatHistory, systemMessage, metadataIds, assistantId } = input;
   //     const { req, prisma } = ctx;
 
   //     // rate limit
@@ -170,18 +172,18 @@ export const openAiPinecone = createTRPCRouter({
   //     const { success: successDay } = await messageLimitDay.limit(ip);
   //     if (!successDay) throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
 
-  //     // get userId from expertId
-  //     const expertUserId = await prisma.expert.findUnique({
+  //     // get userId from assistantId
+  //     const assistantUserId = await prisma.assistant.findUnique({
   //       where: {
-  //         id: expertId,
+  //         id: assistantId,
   //       },
   //       select: {
   //         userId: true,
   //       },
   //     });
 
-  //     if (!expertUserId) throw new TRPCError({ code: 'BAD_REQUEST' });
-  //     const userId = expertUserId?.userId;
+  //     if (!assistantUserId) throw new TRPCError({ code: 'BAD_REQUEST' });
+  //     const userId = assistantUserId?.userId;
 
   //     const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 

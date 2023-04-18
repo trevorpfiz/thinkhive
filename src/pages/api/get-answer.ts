@@ -21,15 +21,15 @@ export const config = {
 };
 
 const handler = async (req: NextRequest): Promise<Response> => {
-  const { question, chatHistory, systemMessage, metadataIds, expertId } = (await req.json()) as {
+  const { question, chatHistory, systemMessage, metadataIds, assistantId } = (await req.json()) as {
     question?: string;
     chatHistory?: string[];
     systemMessage?: string;
     metadataIds?: string[];
-    expertId?: string;
+    assistantId?: string;
   };
 
-  if (!question || !chatHistory || !metadataIds || !expertId) {
+  if (!question || !chatHistory || !metadataIds || !assistantId) {
     return new Response('Invalid request payload', { status: 400 });
   }
 
@@ -52,18 +52,18 @@ const handler = async (req: NextRequest): Promise<Response> => {
 
   const encoding = new Tiktoken(model.bpe_ranks, model.special_tokens, model.pat_str);
 
-  // get userId from expertId
-  const expertUserId = await prisma.expert.findUnique({
+  // get userId from assistantId
+  const assistantUserId = await prisma.assistant.findUnique({
     where: {
-      id: expertId,
+      id: assistantId,
     },
     select: {
       userId: true,
     },
   });
 
-  if (!expertUserId) throw new Error('BAD_REQUEST');
-  const userId = expertUserId?.userId;
+  if (!assistantUserId) throw new Error('BAD_REQUEST');
+  const userId = assistantUserId?.userId;
 
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 

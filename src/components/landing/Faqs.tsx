@@ -1,4 +1,5 @@
 import Image from 'next/image';
+
 import { Container } from '~/components/ui/Container';
 import backgroundImage from '~/images/background-faqs.jpg';
 
@@ -7,7 +8,7 @@ const faqs = [
     {
       question: 'What is an AI-Powered Healthcare Assistant?',
       answer:
-        'An AI-Powered Healthcare Assistant is a chatbot that has been trained to intelligently answer questions about a set of uploaded documents. This chatbot can become an expert on your business processes, allowing users or team members to talk to the chatbot anytime to better understand your business or its processes.',
+        'An AI-Powered Healthcare Assistant is a chatbot that has been trained to intelligently answer questions about a set of uploaded documents. This chatbot can become an assistant on your business processes, allowing users or team members to talk to the chatbot anytime to better understand your business or its processes.',
     },
     {
       question: 'What documents can be uploaded to the chatbot?',

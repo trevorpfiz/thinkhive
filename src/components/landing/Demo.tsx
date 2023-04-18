@@ -13,7 +13,7 @@ function Demo() {
 
       <div className="w-full">
         <ReactPlayer
-          url="/thinkhive-demo.mp4"
+          url="/thinkhive-mayo-first-aid.mp4"
           controls={true}
           playing={true}
           muted={true}

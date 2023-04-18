@@ -3,9 +3,9 @@ import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
+
 import useNotification from '~/hooks/useNotification';
 import { api } from '~/utils/api';
-
 import Button from '../ui/Button';
 import Notification from '../ui/Notification';
 import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
@@ -135,7 +135,7 @@ export default function BrainHeader({ brainId }: { brainId: string }) {
           </div>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-6 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
-            <Button href={`/dashboard/experts`} intent="solidSlate" className="rounded-md">
+            <Button href={`/dashboard/assistants`} intent="solidSlate" className="rounded-md">
               Attach
             </Button>
             <Menu as="div" className="relative inline-block text-left">

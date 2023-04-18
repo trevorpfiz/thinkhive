@@ -3,6 +3,9 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import { getServerSession } from 'next-auth';
+
+import type { ReactElement } from 'react';
+import type { NextPageWithLayout } from '../../_app';
 import BrainHeader from '~/components/dashboard/BrainHeader';
 import AvailableFiles from '~/components/dashboard/tables/AvailableFiles';
 import BrainFiles from '~/components/dashboard/tables/BrainFiles';
@@ -12,9 +15,6 @@ import SidebarLayout from '~/components/ui/SidebarLayout';
 import { env } from '~/env.mjs';
 import { authOptions } from '~/server/auth';
 
-import type { ReactElement } from 'react';
-import type { NextPageWithLayout } from '../../_app';
-
 const BrainPage: NextPageWithLayout = () => {
   const router = useRouter();
   const brainId = router.query.brainId as string;
@@ -23,7 +23,7 @@ const BrainPage: NextPageWithLayout = () => {
     <>
       <Script
         src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
-        data-expertId={env.NEXT_PUBLIC_EXPERT_ID}
+        data-assistantId={env.NEXT_PUBLIC_ASSISTANT_ID}
       />
       <Head>
         <title>Brain - ThinkHive</title>

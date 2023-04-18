@@ -205,7 +205,7 @@ export default function SettingsModal({ modal, formData, onChange, onSubmit }: M
                       value={systemMessage}
                       onChange={onChange}
                       maxLength={500}
-                      placeholder="A system message will modify the performance and behavior of your expert."
+                      placeholder="A system message will modify the performance and behavior of your assistant."
                     />
                   </div>
                   {/* Save and Cancel buttons */}

@@ -12,13 +12,13 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import UserButton from '~/components/dashboard/UserButton';
 
+import UserButton from '~/components/dashboard/UserButton';
 import Logo from './Logo';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: Square2StackIcon },
-  { name: 'AI Assistants', href: '/dashboard/experts', icon: UsersIcon },
+  { name: 'AI Assistants', href: '/dashboard/assistants', icon: UsersIcon },
   { name: 'Brains', href: '/dashboard/brains', icon: CpuChipIcon },
   {
     name: 'Knowledge Base',

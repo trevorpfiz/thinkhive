@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useAtom } from 'jotai';
 import Linkify from 'linkify-react';
 
-import { loadingAtom, messagesAtom } from '~/pages/expert-iframe/[expertId]';
+import { loadingAtom, messagesAtom } from '~/pages/assistant-iframe/[assistantId]';
 import LoadingBars from '../ui/LoadingBars';
 
 export default function Messages() {

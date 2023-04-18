@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+
 import useNotification from '~/hooks/useNotification';
 import { api } from '~/utils/api';
 import { calculateBrainSizes } from '~/utils/word-count';
-
 import Button from '../ui/Button';
 import LoadingBars from '../ui/LoadingBars';
 import Notification from '../ui/Notification';
@@ -11,22 +11,22 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function AvailableBrains({ expertId }: { expertId: string }) {
+export default function AvailableBrains({ assistantId }: { assistantId: string }) {
   const {
     isLoading,
     isError,
     data: brains,
     error,
-  } = api.expert.getDetachedBrains.useQuery({ id: expertId });
+  } = api.assistant.getDetachedBrains.useQuery({ id: assistantId });
 
   const utils = api.useContext();
 
-  const { mutate } = api.expert.attachBrain.useMutation({
+  const { mutate } = api.assistant.attachBrain.useMutation({
     onSuccess() {
       showSuccessNotification('Brain attached');
       // Refetch the query after a successful attach
-      void utils.expert.getExpert.invalidate();
-      void utils.expert.getDetachedBrains.invalidate();
+      void utils.assistant.getAssistant.invalidate();
+      void utils.assistant.getDetachedBrains.invalidate();
     },
     onError: (errorAttach) => {
       showErrorNotification('Error Attaching Brain', errorAttach.message);
@@ -40,7 +40,7 @@ export default function AvailableBrains({ expertId }: { expertId: string }) {
   // handlers
   function handleAttach(brainId: string) {
     showLoadingNotification('Attaching brain...');
-    mutate({ expertId, brainId });
+    mutate({ assistantId, brainId });
   }
 
   const [brainSizes, setBrainSizes] = useState<number[]>([]);

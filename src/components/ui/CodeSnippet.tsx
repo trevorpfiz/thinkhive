@@ -5,7 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 export default function CodeSnippet() {
   const router = useRouter();
-  const expertId = router.query.expertId as string;
+  const assistantId = router.query.assistantId as string;
 
   const [isCopied, setIsCopied] = useState(false);
 
@@ -17,7 +17,7 @@ export default function CodeSnippet() {
   const code = `<script
   async
   src="https://cdn.jsdelivr.net/gh/ElektrikSpark/thinkhive-widget@latest/index.min.js"
-  data-expertId="${expertId}"
+  data-assistantId="${assistantId}"
 ></script>`;
 
   return (
