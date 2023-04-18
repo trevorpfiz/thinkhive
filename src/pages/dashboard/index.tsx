@@ -2,14 +2,14 @@ import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { getServerSession } from 'next-auth';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import SidebarLayout from '~/components/ui/SidebarLayout';
+import { env } from '~/env.mjs';
+import { authOptions } from '~/server/auth';
 
 import type { ReactElement } from 'react';
 import type { NextPageWithLayout } from '../_app';
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import SidebarLayout from '@/components/ui/SidebarLayout';
-import { env } from '@/env.mjs';
-import { authOptions } from '@/server/auth';
 
 const DashboardPage: NextPageWithLayout = () => {
   return (

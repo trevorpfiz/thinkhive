@@ -8,11 +8,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import useNotification from '~/hooks/useNotification';
+import { api } from '~/utils/api';
 
 import type { FileMetadata } from '@prisma/client';
 import type { SortingState, VisibilityState } from '@tanstack/react-table';
-import useNotification from '@/hooks/useNotification';
-import { api } from '@/utils/api';
 import Button from '../../ui/Button';
 import LoadingBars from '../../ui/LoadingBars';
 import Notification from '../../ui/Notification';

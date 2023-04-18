@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-
-import Button from '@/components/ui/Button';
-import { Container } from '@/components/ui/Container';
-import backgroundImage from '@/images/background-call-to-action.jpg';
+import Button from '~/components/ui/Button';
+import { Container } from '~/components/ui/Container';
+import backgroundImage from '~/images/background-call-to-action.jpg';
 
 export function CallToAction() {
   return (

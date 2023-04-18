@@ -2,15 +2,15 @@ import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { getServerSession } from 'next-auth';
+import Plans from '~/components/payment/Plans';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import SidebarLayout from '~/components/ui/SidebarLayout';
+import { env } from '~/env.mjs';
+import { authOptions } from '~/server/auth';
 
 import type { ReactElement } from 'react';
 import type { NextPageWithLayout } from '../_app';
-import Plans from '@/components/payment/Plans';
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import SidebarLayout from '@/components/ui/SidebarLayout';
-import { env } from '@/env.mjs';
-import { authOptions } from '@/server/auth';
 
 const BillingPage: NextPageWithLayout = () => {
   return (

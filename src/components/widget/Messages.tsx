@@ -2,15 +2,12 @@ import clsx from 'clsx';
 import { useAtom } from 'jotai';
 import Linkify from 'linkify-react';
 
-import { loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
+import { loadingAtom, messagesAtom } from '~/pages/expert-iframe/[expertId]';
 import LoadingBars from '../ui/LoadingBars';
 
 export default function Messages() {
   const [messages] = useAtom(messagesAtom);
   const [loading] = useAtom(loadingAtom);
-
-  // FIXME - might not work for all cases
-  // const urlRegex = /((https?:\/\/)|(www\.))([\S]*(?:(?![,.;!?])\S)+)/gi;
 
   return (
     <>

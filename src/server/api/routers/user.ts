@@ -1,6 +1,6 @@
-import { env } from '@/env.mjs';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { getCreditsForProduct } from '@/server/helpers/payments';
+import { env } from '~/env.mjs';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { getCreditsForProduct } from '~/server/helpers/payments';
 
 export const userRouter = createTRPCRouter({
   getSubscription: protectedProcedure.query(async ({ ctx }) => {

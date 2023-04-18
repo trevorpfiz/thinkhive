@@ -3,9 +3,9 @@ import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
+import useNotification from '~/hooks/useNotification';
+import { api } from '~/utils/api';
 
-import useNotification from '@/hooks/useNotification';
-import { api } from '@/utils/api';
 import Button from '../ui/Button';
 import Notification from '../ui/Notification';
 import ConfirmDeleteModal from './modals/ConfirmDeleteModal';

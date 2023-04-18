@@ -6,12 +6,12 @@ import { Analytics } from '@vercel/analytics/react';
 import { Provider } from 'jotai';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
+import { api } from '~/utils/api';
 
 import type { NextPage } from 'next';
 import type { AppProps, AppType } from 'next/app';
 import type { ReactElement, ReactNode } from 'react';
-import { api } from '@/utils/api';
-import '@/styles/globals.css';
+import '~/styles/globals.css';
 
 // If loading a variable font, you don't need to specify the font weight
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });

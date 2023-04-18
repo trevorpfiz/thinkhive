@@ -1,7 +1,6 @@
 import { Head, Html, Main, NextScript } from 'next/document';
-
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
 
 export default function Document() {
   return (

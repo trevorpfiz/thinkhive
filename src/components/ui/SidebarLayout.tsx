@@ -12,8 +12,8 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import UserButton from '~/components/dashboard/UserButton';
 
-import UserButton from '@/components/dashboard/UserButton';
 import Logo from './Logo';
 
 const navigation = [

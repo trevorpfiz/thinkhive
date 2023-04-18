@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import { getServerSession } from 'next-auth';
 import { signIn } from 'next-auth/react';
-
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import { AuthLayout } from '@/components/ui/AuthLayout';
-import { GoogleLogo } from '@/components/ui/GoogleLogo';
-import Logo from '@/components/ui/Logo';
-import DiscordLogo from '@/images/logos/discord-mark-blue.svg';
-import { authOptions } from '@/server/auth';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import { AuthLayout } from '~/components/ui/AuthLayout';
+import { GoogleLogo } from '~/components/ui/GoogleLogo';
+import Logo from '~/components/ui/Logo';
+import DiscordLogo from '~/images/logos/discord-mark-blue.svg';
+import { authOptions } from '~/server/auth';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;

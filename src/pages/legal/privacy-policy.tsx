@@ -1,7 +1,6 @@
 import Head from 'next/head';
-
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
 
 function PrivacyPolicy() {
   return (

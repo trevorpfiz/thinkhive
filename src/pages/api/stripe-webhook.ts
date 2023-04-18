@@ -2,12 +2,9 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
 import { buffer } from 'micro';
-
-import type { NextApiRequest, NextApiResponse } from 'next';
-import type Stripe from 'stripe';
-import { env } from '@/env.mjs';
-import { prisma } from '@/server/db';
-import { stripe } from '@/server/stripe/client';
+import { env } from '~/env.mjs';
+import { prisma } from '~/server/db';
+import { stripe } from '~/server/stripe/client';
 import {
   handleCheckoutSessionCompleted,
   handleInvoicePaid,
@@ -16,7 +13,10 @@ import {
   manageSubscriptionStatusChange,
   upsertPrice,
   upsertProduct,
-} from '@/server/stripe/stripe-webhook-handlers';
+} from '~/server/stripe/stripe-webhook-handlers';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
+import type Stripe from 'stripe';
 
 // Stripe requires the raw body to construct the event.
 export const config = {

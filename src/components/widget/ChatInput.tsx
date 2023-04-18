@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
-import { useAtom, useSetAtom } from 'jotai';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { useAtom } from 'jotai';
+import { ulid } from 'ulid';
 
-import { chatHistoryAtom, loadingAtom, messagesAtom } from '@/pages/expert-iframe/[expertId]';
-import { api } from '@/utils/api';
+import { chatHistoryAtom, loadingAtom, messagesAtom } from '~/pages/expert-iframe/[expertId]';
+import { api } from '~/utils/api';
 
 export default function ChatInput({
   messagesRef,
@@ -13,7 +15,7 @@ export default function ChatInput({
   messagesRef: React.RefObject<HTMLDivElement>;
   inputRef: React.RefObject<HTMLInputElement>;
 }) {
-  const setMessages = useSetAtom(messagesAtom);
+  const [messages, setMessages] = useAtom(messagesAtom);
   const [chatHistory, setChatHistory] = useAtom(chatHistoryAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
   const router = useRouter();
@@ -26,13 +28,7 @@ export default function ChatInput({
     error,
   } = api.expert.getWidgetExpert.useQuery({ id: expertId }, { enabled: !!expertId });
 
-  const { mutateAsync } = api.chat.getAnswer.useMutation();
-
   const [query, setQuery] = useState<string>('');
-
-  function addMessage(type: string, content: string) {
-    setMessages((prevMessages) => [...prevMessages, { type, content }]);
-  }
 
   const scrollToBottom = useCallback(() => {
     if (messagesRef.current) {
@@ -41,7 +37,7 @@ export default function ChatInput({
   }, [messagesRef]);
 
   // search
-  async function handleSearch(e: React.FormEvent<HTMLFormElement>) {
+  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!query) {
       alert('Please input a question');
@@ -49,34 +45,80 @@ export default function ChatInput({
     }
 
     const question = query.trim();
-    addMessage('user', question);
+    setMessages([...messages, { type: 'user', content: question, id: Date.now().toString() }]);
     setQuery('');
     const metadataIds =
       expert?.brains?.flatMap((brain) => brain.files?.flatMap((file) => file.metadataId)) ?? [];
 
     setLoading(true);
-    const { response } = await mutateAsync({
-      question,
-      chatHistory,
-      systemMessage: expert?.systemMessage || '',
-      metadataIds,
-      expertId,
-    });
-    setLoading(false);
-    // console.log(response.sourceDocuments[0].pageContent);
-    // console.log(response.sourceDocuments[1].pageContent);
-    // console.log(response.sourceDocuments[2].pageContent);
-    // console.log(response.sourceDocuments[3].pageContent);
+    const controller = new AbortController();
+    const serverResponseId = ulid();
 
-    if (response.text) {
-      addMessage('server', response.text as string);
-      setChatHistory((prevChatHistory) => [...prevChatHistory, question, response.text as string]);
+    try {
+      void fetchEventSource('/api/get-answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question,
+          chatHistory,
+          systemMessage: expert?.systemMessage || '',
+          metadataIds,
+          expertId,
+        }),
+        signal: controller.signal,
+        onmessage: (event) => {
+          setLoading(false);
+          if (event.data === '[DONE]') {
+            setChatHistory((prevChatHistory) => [
+              ...prevChatHistory,
+              question,
+              messages[messages.length - 1]?.content || '',
+            ]);
+            setLoading(false);
+            controller.abort();
+            // Complete
+          } else {
+            // Stream text
+            const serverResponseTokens = event.data.split(' ');
+
+            setMessages((prevMessages) => {
+              const existingMessageIndex = prevMessages.findIndex(
+                (msg) => msg.id === serverResponseId
+              );
+
+              if (existingMessageIndex === -1) {
+                // Add an empty server message with the unique id if it doesn't exist
+                return [
+                  ...prevMessages,
+                  { type: 'server', content: serverResponseTokens[0] ?? '', id: serverResponseId },
+                ];
+              }
+
+              // Update the existing message with the unique id
+              const updatedMessages = [...prevMessages];
+              serverResponseTokens.forEach((token, index) => {
+                if (index === 0) {
+                  updatedMessages[existingMessageIndex]!.content += token;
+                } else {
+                  updatedMessages[existingMessageIndex]!.content += ' ' + token;
+                }
+              });
+              return updatedMessages;
+            });
+          }
+        },
+      });
+    } catch (error) {
+      setLoading(false);
+      console.log(error, 'error');
     }
   }
 
   useEffect(() => {
     scrollToBottom();
-  }, [loading, scrollToBottom]);
+  }, [loading, scrollToBottom, messages]);
 
   if (isError) {
     return <div>Error: {error.message}</div>;
@@ -107,7 +149,7 @@ export default function ChatInput({
           <button
             type="submit"
             className="flex flex-none items-center px-3 text-blue-600 hover:text-blue-800 focus:outline-none disabled:opacity-30"
-            disabled={isExpertLoading || !expert || !query}
+            disabled={isExpertLoading || !expert || !query || loading}
           >
             <PaperAirplaneIcon className="h-5 w-5" />
           </button>

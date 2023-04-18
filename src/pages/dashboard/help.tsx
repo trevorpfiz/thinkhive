@@ -2,18 +2,18 @@ import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { getServerSession } from 'next-auth';
+import { Content } from '~/components/mdx/Content';
+import { Heading } from '~/components/mdx/Heading';
+import CustomImage from '~/components/mdx/Image';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import SidebarLayout from '~/components/ui/SidebarLayout';
+import UserGuide from '~/docs/UserGuide.mdx';
+import { env } from '~/env.mjs';
+import { authOptions } from '~/server/auth';
 
 import type { AnchorHTMLAttributes, ImgHTMLAttributes, ReactElement } from 'react';
 import type { NextPageWithLayout } from '../_app';
-import { Content } from '@/components/mdx/Content';
-import { Heading } from '@/components/mdx/Heading';
-import CustomImage from '@/components/mdx/Image';
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import SidebarLayout from '@/components/ui/SidebarLayout';
-import UserGuide from '@/docs/UserGuide.mdx';
-import { env } from '@/env.mjs';
-import { authOptions } from '@/server/auth';
 
 const components = {
   img: ({ src, alt }: ImgHTMLAttributes<HTMLImageElement>) => {

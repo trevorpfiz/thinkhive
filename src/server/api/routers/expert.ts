@@ -1,8 +1,7 @@
 import { Visibility } from '@prisma/client';
 import { z } from 'zod';
-
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
-import { getMaxExpertsForTier, getSubscriptionProductId } from '@/server/helpers/permissions';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc';
+import { getMaxExpertsForTier, getSubscriptionProductId } from '~/server/helpers/permissions';
 
 export const expertRouter = createTRPCRouter({
   // queries
@@ -285,4 +284,44 @@ export const expertRouter = createTRPCRouter({
         },
       });
     }),
+
+  // testTokenizer: publicProcedure
+  //   .input(
+  //     z.object({
+  //       texttt: z.string(),
+  //     })
+  //   )
+  //   .query(({ ctx, input }) => {
+  //     const { texttt } = input;
+
+  //     const bertTokenizer = new BertTokenizer(undefined, true, 512);
+
+  //     const tokenIds = bertTokenizer.tokenize(texttt);
+  //     const tokens = bertTokenizer.convertIdsToTokens(tokenIds);
+
+  //     function buildDict(inputBatch: number[][]): SparseValues[] {
+  //       return inputBatch.map((tokenIds) => {
+  //         const tokenCounts = tokenIds.reduce((acc, tokenId) => {
+  //           acc[tokenId] = (acc[tokenId] || 0) + 1;
+  //           return acc;
+  //         }, {} as Record<number, number>);
+
+  //         return {
+  //           indices: Object.keys(tokenCounts).map(Number),
+  //           values: Object.values(tokenCounts),
+  //         };
+  //       });
+  //     }
+
+  //     console.log(tokenIds, 'tokenIds');
+  //     const sparseVec = buildDict([tokenIds])[0];
+
+  //     const convertedExample = bertTokenizer.convertSingleExample(texttt);
+
+  //     return {
+  //       tokens: tokens,
+  //       sparseVec: sparseVec,
+  //       convertedExample: convertedExample,
+  //     };
+  //   }),
 });

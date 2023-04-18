@@ -4,14 +4,14 @@ import { IconPdf } from '@tabler/icons-react';
 import { Card, Flex, ProgressBar, Text } from '@tremor/react';
 import clsx from 'clsx';
 import { useDropzone } from 'react-dropzone';
+import useNotification from '~/hooks/useNotification';
+import { api } from '~/utils/api';
+import convertPdfToText from '~/utils/pdf/convert-pdf';
+import { getPdfMetadata } from '~/utils/pdf/metadata';
 
-import type { PdfMetadata } from '@/utils/pdf/metadata';
 import type * as CSS from 'csstype';
 import type { FileRejection } from 'react-dropzone';
-import useNotification from '@/hooks/useNotification';
-import { api } from '@/utils/api';
-import convertPdfToText from '@/utils/pdf/convert-pdf';
-import { getPdfMetadata } from '@/utils/pdf/metadata';
+import type { PdfMetadata } from '~/utils/pdf/metadata';
 import Button from '../ui/Button';
 import Notification from '../ui/Notification';
 

@@ -1,7 +1,6 @@
 import { TRPCError } from '@trpc/server';
-
-import { env } from '@/env.mjs';
-import { prisma } from '@/server/db';
+import { env } from '~/env.mjs';
+import { prisma } from '~/server/db';
 
 export async function hasEnoughCredits(userId: string, tokens: number) {
   // Find user by ID
