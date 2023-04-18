@@ -7,7 +7,7 @@ const faqs = [
     {
       question: 'What counts as one message?',
       answer:
-        'Each time a user asks a question to an Expert and receives a response, it counts as one message.',
+        'Each time a user asks a question to an Assistant and receives a response, it counts as one message.',
     },
     {
       question: 'What is the word count of the files that I wish to upload?',
@@ -17,7 +17,7 @@ const faqs = [
     {
       question: 'How can I determine if I need more usage?',
       answer:
-        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your Experts and uploading new information will not be possible. However, you can purchase more credits.',
+        'You can monitor your usage and billing information in the dashboard, which will display the amount of remaining usage and the next billing date. Once you reach your usage limit, you will not receive any further responses from your Assistants and uploading new information will not be possible. However, you can purchase more credits.',
     },
   ],
   [
@@ -75,7 +75,7 @@ export function PricingFaqs() {
             Pricing FAQs
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you have any confusion whatsoever, talk to our Expert using the chat widget. Give us
+            If you have any confusion whatsoever, talk to our Assistant using the chat widget. Give us
             feedback through our{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"

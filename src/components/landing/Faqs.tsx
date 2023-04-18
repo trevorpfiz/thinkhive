@@ -5,9 +5,9 @@ import backgroundImage from '~/images/background-faqs.jpg';
 const faqs = [
   [
     {
-      question: 'What is an AI-Powered Business Expert?',
+      question: 'What is an AI-Powered Healthcare Assistant?',
       answer:
-        'An AI-Powered Business Expert is a chatbot that has been trained to intelligently answer questions about a set of uploaded documents. This chatbot can become an expert on your business processes, allowing users or team members to talk to the chatbot anytime to better understand your business or its processes.',
+        'An AI-Powered Healthcare Assistant is a chatbot that has been trained to intelligently answer questions about a set of uploaded documents. This chatbot can become an expert on your business processes, allowing users or team members to talk to the chatbot anytime to better understand your business or its processes.',
     },
     {
       question: 'What documents can be uploaded to the chatbot?',
@@ -17,7 +17,7 @@ const faqs = [
     {
       question: 'Where is my data stored?',
       answer:
-        'The complete documents are not stored, only their content is securely saved using Google Cloud servers. The content is restricted to be accessed only by users who engage with your Expert.',
+        'The complete documents are not stored, only their content is securely saved using Google Cloud servers. The content is restricted to be accessed only by users who engage with your Assistant.',
     },
   ],
   [
@@ -52,9 +52,9 @@ const faqs = [
       answer: `Yes, the chatbot can be used for customer support. Customers can ask the chatbot questions about your products or services, and the chatbot will provide accurate answers based on the uploaded documents.`,
     },
     {
-      question: 'What industries can benefit from using the chatbot?',
+      question: 'What parts of the healthcare ecosystem can benefit from using the chatbot?',
       answer:
-        'The chatbot is useful for any industry since there will always be team members or users who do not have complete knowledge or information about certain aspects of the business. The chatbot can provide such information easily and quickly.',
+        'The chatbot is useful for healthcare providers, insurers, and other stakeholders since there will always be team members or users who do not have complete knowledge or information about certain aspects of the business. The chatbot can provide such information easily and quickly.',
     },
   ],
 ];
@@ -83,7 +83,7 @@ export function Faqs() {
             Frequently asked questions
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, talk to our Expert using the chat widget.
+            If you can’t find what you’re looking for, talk to our Assistant using the chat widget.
             Give us feedback by joining the ThinkHive{' '}
             <a
               href="https://discord.gg/xYw9VScdzg"
