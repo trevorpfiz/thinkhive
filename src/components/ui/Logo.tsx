@@ -1,7 +1,7 @@
 import Image from 'next/image';
+import thinkhivelogo from '~/images/logos/ThinkHive-logo-black.png';
 
 import type { ImageProps } from 'next/image';
-import thinkhivelogo from '@/images/logos/ThinkHive-logo-black.png';
 
 interface LogoProps extends Omit<ImageProps, 'src' | 'alt'> {
   src?: string;

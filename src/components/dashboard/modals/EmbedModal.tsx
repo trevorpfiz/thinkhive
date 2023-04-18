@@ -6,8 +6,7 @@ import {
   PencilSquareIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-
-import CodeSnippet from '@/components/ui/CodeSnippet';
+import CodeSnippet from '~/components/ui/CodeSnippet';
 
 interface ModalProps {
   modal: [boolean, React.Dispatch<React.SetStateAction<boolean>>];

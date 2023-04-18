@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
+import { api } from '~/utils/api';
 
-import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
 import ProrationStage from './ProrationStage';
 import { modalStageAtom } from './SubscribeButton';

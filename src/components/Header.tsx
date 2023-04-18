@@ -3,11 +3,10 @@ import Link from 'next/link';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { signIn } from 'next-auth/react';
-
-import Button from '@/components/ui/Button';
-import { Container } from '@/components/ui/Container';
-import Logo from '@/components/ui/Logo';
-import { NavLink } from '@/components/ui/NavLink';
+import Button from '~/components/ui/Button';
+import { Container } from '~/components/ui/Container';
+import Logo from '~/components/ui/Logo';
+import { NavLink } from '~/components/ui/NavLink';
 
 function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (

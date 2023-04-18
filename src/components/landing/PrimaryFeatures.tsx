@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
-
-import { Container } from '@/components/ui/Container';
-import backgroundImage from '@/images/background-features.jpg';
-import screenshotInstant from '@/images/screenshots/instanttest.png';
-import screenshotNav from '@/images/screenshots/navtest.png';
-import screenshotRec from '@/images/screenshots/rectest.png';
-import screenshotTrouble from '@/images/screenshots/troubletest.png';
+import { Container } from '~/components/ui/Container';
+import backgroundImage from '~/images/background-features.jpg';
+import screenshotInstant from '~/images/screenshots/instanttest.png';
+import screenshotNav from '~/images/screenshots/navtest.png';
+import screenshotRec from '~/images/screenshots/rectest.png';
+import screenshotTrouble from '~/images/screenshots/troubletest.png';
 
 const features = [
   {

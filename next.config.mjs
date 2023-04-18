@@ -45,7 +45,11 @@ const config = {
       use: ['@svgr/webpack'],
     });
 
-    config.experiments = { ...config.experiments, topLevelAwait: true };
+    config.experiments = {
+      // topLevelAwait: true,
+      asyncWebAssembly: true,
+      layers: true,
+    };
 
     return config;
   },

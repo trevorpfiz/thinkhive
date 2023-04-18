@@ -6,13 +6,13 @@ import Head from 'next/head';
 import { useAtom } from 'jotai';
 import { getServerSession } from 'next-auth';
 
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import ChatInput from '@/components/widget/ChatInput';
-import Messages from '@/components/widget/Messages';
-import { authOptions } from '@/server/auth';
-import { prisma } from '@/server/db';
-import { api } from '@/utils/api';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import ChatInput from '~/components/widget/ChatInput';
+import Messages from '~/components/widget/Messages';
+import { authOptions } from '~/server/auth';
+import { prisma } from '~/server/db';
+import { api } from '~/utils/api';
 import { messagesAtom } from '../expert-iframe/[expertId]';
 
 interface ExpertPlaygroundProps {

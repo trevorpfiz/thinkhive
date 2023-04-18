@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { PINECONE_INDEX_NAME } from '@/config/pinecone';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { pinecone } from '@/utils/pinecone';
+import { PINECONE_INDEX_NAME } from '~/config/pinecone';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { initPinecone } from '~/utils/pinecone';
 
 export const metadataRouter = createTRPCRouter({
   getMetadata: protectedProcedure.query(({ ctx }) => {
@@ -22,6 +22,7 @@ export const metadataRouter = createTRPCRouter({
         metadataId: { $in: ids },
       };
 
+      const pinecone = await initPinecone();
       const index = pinecone.Index(PINECONE_INDEX_NAME);
       const deletedFilesPinecone = await index._delete({
         deleteRequest: {

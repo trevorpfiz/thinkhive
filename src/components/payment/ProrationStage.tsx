@@ -4,9 +4,9 @@
 import { useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { useAtomValue, useSetAtom } from 'jotai';
+import { api } from '~/utils/api';
+import { getProrationAmountsAnnual, getProrationAmountsMonthly } from '~/utils/payments';
 
-import { api } from '@/utils/api';
-import { getProrationAmountsAnnual, getProrationAmountsMonthly } from '@/utils/payments';
 import LoadingBars from '../ui/LoadingBars';
 import { frequencyAtom, selectedAmountAtom, selectedTierAtom } from './Plans';
 import { modalStageAtom } from './SubscribeButton';

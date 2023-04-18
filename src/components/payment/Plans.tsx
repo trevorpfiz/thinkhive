@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { RadioGroup } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { atom, useAtom } from 'jotai';
+import { api } from '~/utils/api';
 
 import type { Price, Prisma, Product } from '@prisma/client';
-import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
 import StatusBadge from '../ui/StatusBadge';
 import AdditionalCredits from './AdditionalCredits';

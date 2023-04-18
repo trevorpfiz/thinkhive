@@ -1,6 +1,6 @@
 import { Card, Flex, Metric, ProgressBar, Text } from '@tremor/react';
+import { api } from '~/utils/api';
 
-import { api } from '@/utils/api';
 import LoadingBars from '../ui/LoadingBars';
 
 export default function UsageStats() {

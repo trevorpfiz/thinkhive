@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import useNotification from '~/hooks/useNotification';
+import { api } from '~/utils/api';
 
 import type { Interval, Metadata, Tier } from './Plans';
-import useNotification from '@/hooks/useNotification';
-import { api } from '@/utils/api';
 import Notification from '../ui/Notification';
 import {
   buttonDisabledAtom,

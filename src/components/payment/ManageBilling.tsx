@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
+import { api } from '~/utils/api';
 
-import { api } from '@/utils/api';
 import Button from '../ui/Button';
 
 export const ManageBilling = ({ disabled }: { disabled: boolean }) => {

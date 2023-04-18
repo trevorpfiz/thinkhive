@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import useNotification from '~/hooks/useNotification';
+import { api } from '~/utils/api';
+import { calculateBrainSizes } from '~/utils/word-count';
 
-import useNotification from '@/hooks/useNotification';
-import { api } from '@/utils/api';
-import { calculateBrainSizes } from '@/utils/word-count';
 import Button from '../ui/Button';
 import LoadingBars from '../ui/LoadingBars';
 import Notification from '../ui/Notification';

@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { atom, useAtom } from 'jotai';
 import normalizeUrl from 'normalize-url';
 
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import ChatInput from '@/components/widget/ChatInput';
-import Messages from '@/components/widget/Messages';
-import * as EventTypes from '@/types/eventTypes';
-import { api } from '@/utils/api';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import ChatInput from '~/components/widget/ChatInput';
+import Messages from '~/components/widget/Messages';
+import * as EventTypes from '~/types/eventTypes';
+import { api } from '~/utils/api';
 
 interface MessageEventProps extends MessageEvent {
   type: string;
@@ -21,8 +21,9 @@ interface MessageEventProps extends MessageEvent {
 }
 
 export interface WidgetMessage {
-  type?: string;
+  type: string;
   content: string;
+  id?: string;
 }
 
 const widthAtom = atom(0);
@@ -162,6 +163,7 @@ const ExpertWidgetPage = () => {
       const initialMessages = expert.initialMessages.split('\n').map((msg) => ({
         type: 'server',
         content: msg,
+        id: Date.now().toString(),
       }));
       setInitial(initialMessages);
       setInitialMessagesSet(true); // Set the flag to true after setting initial messages

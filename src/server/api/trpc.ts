@@ -25,9 +25,9 @@ import { type Session } from 'next-auth';
 import superjson from 'superjson';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerAuthSession } from '@/server/auth';
-import { prisma } from '@/server/db';
-import { stripe } from '@/server/stripe/client';
+import { getServerAuthSession } from '~/server/auth';
+import { prisma } from '~/server/db';
+import { stripe } from '~/server/stripe/client';
 
 type CreateContextOptions = {
   session: Session | null;

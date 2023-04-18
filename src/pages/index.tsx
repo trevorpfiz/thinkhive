@@ -1,18 +1,17 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
-
-import { Footer } from '@/components/Footer';
-import { Header } from '@/components/Header';
-import { CallToAction } from '@/components/landing/CallToAction';
-import Demo from '@/components/landing/Demo';
-import { Faqs } from '@/components/landing/Faqs';
-import FeatureList from '@/components/landing/FeatureList';
-import { Hero } from '@/components/landing/Hero';
-import { PrimaryFeatures } from '@/components/landing/PrimaryFeatures';
-import Meta from '@/components/seo/Meta';
-import MetaDescription from '@/components/seo/MetaDescription';
-import { env } from '@/env.mjs';
+import { Footer } from '~/components/Footer';
+import { Header } from '~/components/Header';
+import { CallToAction } from '~/components/landing/CallToAction';
+import Demo from '~/components/landing/Demo';
+import { Faqs } from '~/components/landing/Faqs';
+import FeatureList from '~/components/landing/FeatureList';
+import { Hero } from '~/components/landing/Hero';
+import { PrimaryFeatures } from '~/components/landing/PrimaryFeatures';
+import Meta from '~/components/seo/Meta';
+import MetaDescription from '~/components/seo/MetaDescription';
+import { env } from '~/env.mjs';
 
 const HomePage: NextPage = () => {
   return (

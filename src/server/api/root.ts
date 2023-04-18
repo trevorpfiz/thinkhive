@@ -1,6 +1,7 @@
-import { openAiPinecone } from '@/server/api/routers/openai-pinecone';
-import { uploadPinecone } from '@/server/api/routers/upload-pinecone';
-import { createTRPCRouter } from '@/server/api/trpc';
+import { openAiPinecone } from '~/server/api/routers/openai-pinecone';
+import { uploadPinecone } from '~/server/api/routers/upload-pinecone';
+import { createTRPCRouter } from '~/server/api/trpc';
+
 import { apiCallRouter } from './routers/api-call';
 import { brainRouter } from './routers/brain';
 import { expertRouter } from './routers/expert';

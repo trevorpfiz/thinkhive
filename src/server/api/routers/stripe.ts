@@ -1,14 +1,13 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-
-import { env } from '@/env.mjs';
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { env } from '~/env.mjs';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 import {
   annualToAnnual,
   getCreditsForProduct,
   monthlyToMonthlyOrAnnual,
-} from '@/server/helpers/payments';
-import { getOrCreateStripeCustomerIdForUser } from '@/server/stripe/stripe-webhook-handlers';
+} from '~/server/helpers/payments';
+import { getOrCreateStripeCustomerIdForUser } from '~/server/stripe/stripe-webhook-handlers';
 
 export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
