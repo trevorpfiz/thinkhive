@@ -2,34 +2,35 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
+
 import { Container } from '~/components/ui/Container';
 import backgroundImage from '~/images/background-features.jpg';
-import screenshotInstant from '~/images/screenshots/instanttest.png';
-import screenshotNav from '~/images/screenshots/navtest.png';
-import screenshotRec from '~/images/screenshots/rectest.png';
-import screenshotTrouble from '~/images/screenshots/troubletest.png';
+import screenshotCDSS from '~/images/screenshots/cdss.png';
+import screenshotFirstAid from '~/images/screenshots/first-aid.png';
+import screenshotHealthPlatform from '~/images/screenshots/health-platform.png';
+import screenshotWisdom from '~/images/screenshots/wisdom.png';
 
 const features = [
   {
     title: 'Instant access to health wisdom',
     description: 'Accurately answers health-related questions within seconds.',
-    image: screenshotInstant,
+    image: screenshotWisdom,
   },
   {
     title: 'Personalized first aid assistance',
-    description: "Guides users through essential first aid steps tailored to their specific needs.",
-    image: screenshotRec,
+    description: 'Guides users through essential first aid steps tailored to their specific needs.',
+    image: screenshotFirstAid,
   },
   {
     title: 'Streamlined health platform experience',
-    description: "Helps users easily find platform-specific health information.",
-    image: screenshotNav,
+    description: 'Helps users easily find platform-specific health information.',
+    image: screenshotHealthPlatform,
   },
   {
     title: 'Clinical decision support',
     description:
       'Assists healthcare professionals in making well-informed decisions by providing relevant data and recommendations.',
-    image: screenshotTrouble,
+    image: screenshotCDSS,
   },
 ];
 
@@ -68,7 +69,7 @@ export function PrimaryFeatures() {
       <Container className="relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
-          Your healthcare Assistants provide numerous benefits.
+            Your healthcare Assistants provide numerous benefits.
           </h2>
         </div>
         <Tab.Group
