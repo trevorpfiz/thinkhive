@@ -63,20 +63,15 @@ const AssistantPlayground = ({ assistantId }: AssistantPlaygroundProps) => {
         />
       </Head>
 
-      <div className="flex h-screen flex-col justify-between bg-white">
-        <div className="relative h-full w-full">
-          <div className="relative h-full w-full overflow-hidden">
-            <div
-              className="absolute inset-0 overflow-y-auto overflow-x-hidden px-2 py-2 lg:px-4 lg:py-4"
-              ref={messagesRef}
-            >
-              <Messages />
-            </div>
+      <div className="flex h-full max-w-full flex-col bg-white">
+        <main className="flex flex-col h-full">
+          <div className="flex-1 overflow-y-auto px-2 py-2 lg:px-4 lg:py-4" ref={messagesRef}>
+            <Messages />
           </div>
-        </div>
-        <div className="px-2 lg:px-4">
-          <ChatInput messagesRef={messagesRef} inputRef={inputRef} />
-        </div>
+          <div className="bg-white px-2 lg:px-4">
+            <ChatInput messagesRef={messagesRef} inputRef={inputRef} />
+          </div>
+        </main>
       </div>
     </>
   );

@@ -80,7 +80,6 @@ export default function ChatInput({
             controller.abort();
             // Complete
           } else {
-            console.log(event.data);
             // Stream text
             const serverResponseTokens = event.data.split(' ');
 
@@ -130,7 +129,7 @@ export default function ChatInput({
   }
 
   return (
-    <div>
+    <>
       <div className="pt-1"></div>
       <form onSubmit={(e) => handleSearch(e)} className="flex items-center">
         <div className="flex w-full rounded-md border border-gray-300">
@@ -161,6 +160,6 @@ export default function ChatInput({
         </div>
       </form>
       <div className="pb-2 lg:pb-4"></div>
-    </div>
+    </>
   );
 }
